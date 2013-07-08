@@ -17,7 +17,7 @@ in ManuScript, the language for Sibelius plugins.
 MEIMassaging is expected to handle at least some of the following
 transformations which may be necessary after export via sibmei:
 
- * Adding additional clef information, through the use of <choice>.
+ * Adding additional clef information, through the use of `<choice>`.
    If original clefs have been used in the Sibelius file, appropriate
    "modern" clefs should be automatically supplied. If non-original
    clefs have been used, a form should be available to supply this
@@ -34,7 +34,7 @@ transformations which may be necessary after export via sibmei:
  
  * Responsibility
  
- * Encoding bracketed (and italicized?) lyrics using the <supplied> tag
+ * Encoding bracketed (and italicized?) lyrics using the `<supplied>` tag
  
- * Changing <arranger> to <editor>
+ * Changing `<arranger>` to `<editor>`
  
