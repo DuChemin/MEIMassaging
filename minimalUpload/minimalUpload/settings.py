@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'C:\\Users\\Phil\\Desktop\\Du Chemin\\Django sites\\minimalUpload\\minimalUpload\\database\\database.sqlite3',                      # Or path to database file if using sqlite3.
+        'NAME': 'minimalUpload\\database\\database.sqlite3',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -50,7 +50,8 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = 'C:\\Users\\Phil\\Desktop\\Du Chemin\\Django sites\\minimalUpload\\minimalUpload\\media\\'
+MEDIA_ROOT = 'minimalUpload\\minimalUpload\\media\\'
+# WARNING: EDIT THIS SO IT WORKS WITH THE ACTUAL SERVER
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
