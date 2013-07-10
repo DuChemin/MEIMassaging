@@ -92,7 +92,7 @@ def normalize(clef_group):
 		      "Original clefs will not be provided.")
 		return EMPTY_CLEFS
 
-def clefs(MEI_tree, data):
+def clefs(MEI_tree, orig_clefs):
 	"""Finds the clefs in a document, adds regularized clefs
 	if appropriate, and adds original clefs if provided.
 	"""
@@ -104,9 +104,9 @@ def clefs(MEI_tree, data):
 				parent = staffGrp.getParent()
 				parent.addChild(reg_clefs_choice(staffGrp))
 				parent.removeChild(staffGrp)
-			elif normalize(data.orig_clefs) != EMPTY_CLEFS:
+			elif normalize(orig_clefs) != EMPTY_CLEFS:
 				parent = staffGrp.getParent()
-				parent.addChild(orig_clefs_choice(staffGrp, data.orig_clefs))
+				parent.addChild(orig_clefs_choice(staffGrp, orig_clefs))
 				parent.removeChild(staffGrp)
 			else:
 				pass
