@@ -19,9 +19,9 @@ transformations which may be necessary after export via sibmei:
 
  * Adding additional clef information, through the use of `<choice>`.
    If original clefs have been used in the Sibelius file, appropriate
-   "modern" clefs should be automatically supplied. If non-original
-   clefs have been used, a form should be available to supply this
-   information manually.
+   regularized clefs should be automatically supplied. If the MEI file
+   uses regularized clefs, a form should be available to manually supply
+   information about original clefs.
  
  * In the Du Chemin repertory, the final note of each part should
    be changed to a longa.
