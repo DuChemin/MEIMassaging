@@ -2,9 +2,9 @@ import sys
 sys.path.insert(0, '..')
 
 from constants import *
-#from pymei import XmlImport
+from pymei import XmlImport
 
-def orig_clefs_missing(MEI_tree):
+def staff_info(MEI_tree):
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
 	for staffGrp in all_staffGrp:
 		# Only check if not part of <orig> or <reg> to begin with
