@@ -1,10 +1,10 @@
 import sys
 sys.path.insert(0, '..')
 
-import clefs
-import arranger
 from constants import *
 from pymei import XmlImport, XmlExport
+from clefs import clefs
+from arranger import arranger
 
 class TransformData:
 	def __init__(self, orig_clefs=EMPTY_CLEFS, arranger_editor=False):
@@ -16,8 +16,8 @@ def TEST_SET_UP(data):
 
 def transform(MEI_doc, data=TransformData()):
 	MEI_tree = MEI_doc.getRootElement()
-	clefs.clefs(MEI_tree, data.orig_clefs)
-	arranger.arranger(MEI_tree, data.arranger_editor)
+	clefs(MEI_tree, data.orig_clefs)
+	arranger(MEI_tree, data.arranger_editor)
 	return MEI_doc
 
 def ui():
