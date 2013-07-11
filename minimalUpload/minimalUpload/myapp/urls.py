@@ -3,5 +3,7 @@ from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('minimalUpload.myapp.views',
     url(r'^list/$', 'list', name='list'),
-    url(r'^process/(\d{4})/(\d{2})/(\d{2})/', 'process'),
+#    url(r'^select/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/', 'select'),
+	url(r'^select/$', 'select', name='select'),
+	url(r'^process/$', 'process', name='process')
 )

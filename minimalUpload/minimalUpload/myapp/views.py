@@ -16,7 +16,7 @@ def list(request):
 			newdoc.save()
 
 			# Redirect to the document list after POST
-			return HttpResponseRedirect(reverse('minimalUpload.myapp.views.list'))
+			return HttpResponseRedirect(reverse('minimalUpload.myapp.views.select'))
 	else:
 		form = DocumentForm() # A empty, unbound form
 
@@ -30,6 +30,36 @@ def list(request):
 		context_instance=RequestContext(request)
 	)
 
-def process(request, a, b, c):
-	html = "<html><body>haha no</body></html>"
+def select(request):
+
+#	if request.method == 'POST':
+#		form = MEIForm(request.POST, request.FILES)
+#		if form.is_valid():
+#			newdoc = Document(docfile = request.FILES['docfile'])
+#			newdoc.save()
+#	else:
+#		form = MEIForm()
+#
+	documents = Document.objects.all()
+
+	return render_to_response(
+		'myapp/select.html',
+		{'documents': documents},
+		context_instance=RequestContext(request)
+	)
+
+def process(request):
+	html = "<html><body>"
+	if request.method == 'POST':
+		processType = request.POST.get('processType')
+		html += "processing " + processType + " "
+
+		processFile = request.POST.get('selection')
+		html += "for " + processFile
+
+	else:
+		html = "<html><body>No file selected</body></html>"
+
+	html += "</body></html>"
+
 	return HttpResponse(html)
