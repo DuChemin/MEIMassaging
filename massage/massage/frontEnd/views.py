@@ -36,14 +36,14 @@ def list(request):
 
 def select(request):
 
-#	if request.method == 'POST':
-#		form = MEIForm(request.POST, request.FILES)
-#		if form.is_valid():
-#			newdoc = Document(docfile = request.FILES['docfile'])
-#			newdoc.save()
-#	else:
-#		form = MEIForm()
-#
+	# if request.method == 'POST':
+	# 	form = MEIForm(request.POST, request.FILES)
+	# 	if form.is_valid():
+	# 		newdoc = Document(docfile = request.FILES['docfile'])
+	# 		newdoc.save()
+	# else:
+	# 	form = MEIForm()
+
 	documents = Document.objects.all()
 
 	return render_to_response(
@@ -72,4 +72,4 @@ def metadata(request):
 		{'document': processFile},
 		context_instance=RequestContext(request)
 		)
-#	return HttpResponse(html)
+	# return HttpResponse(html)
