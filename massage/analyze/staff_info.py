@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from constants import *
-from pymei import XmlImport
+# from pymei import XmlImport
 
 def staff_info(MEI_tree):
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')

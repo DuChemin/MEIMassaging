@@ -1,7 +1,7 @@
 
-import staff_info
-import orig_clefs_missing
-from pymei import XmlImport
+import analyze.staff_info
+import analyze.orig_clefs_missing
+# from pymei import XmlImport
 
 class AnalyzeData:
 	def __init__(self, staff_info, orig_clefs_missing):

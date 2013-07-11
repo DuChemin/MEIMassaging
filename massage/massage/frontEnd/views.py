@@ -55,21 +55,20 @@ def select(request):
 def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
-		html += "processing "
+		process_file = request.POST.get('selection')
+		analysis = analyze(filename)
+		for clef in analysis.staff_names:
 
-		processFile = request.POST.get('selection')
-		html += processFile
 
 	else:
 		html = "<html><body>No file selected</body></html>"
-
-	html += "</body></html>"
+		return HttpResponse(html)
 
 
 
 	return render_to_response(
 		'frontEnd/metadata.html',
-		{'document': processFile},
+		{'document': process_file, 'clefs' : analysis.staff_names},
 		context_instance=RequestContext(request)
 		)
 #	return HttpResponse(html)

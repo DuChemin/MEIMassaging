@@ -7,14 +7,19 @@
 	<body>
 		{% if document %}
 			Processing:
-			{{ document.docfile.url }}
+			{{ document }}
 
 			<p>	
 			<form action ="{ url "list" %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+
+				{% if clefs %}
+					{% for clef in clefs %}
+
 				<input type="radio" name="processType" value="variant">Variant
 				<input type="radio" name="processType" value="reconstruction">Reconstruction
 				<p><input type="submit" value="Process" /></p>
+				
 			</form>
 
 		{% else %}
