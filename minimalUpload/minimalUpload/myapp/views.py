@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import sys
+sys.path.insert(0, '../../../analyze')
+
+from analyze import analyze
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -48,18 +52,24 @@ def select(request):
 		context_instance=RequestContext(request)
 	)
 
-def process(request):
+def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
-		processType = request.POST.get('processType')
-		html += "processing " + processType + " "
+		html += "processing "
 
 		processFile = request.POST.get('selection')
-		html += "for " + processFile
+		html += processFile
 
 	else:
 		html = "<html><body>No file selected</body></html>"
 
 	html += "</body></html>"
 
-	return HttpResponse(html)
+
+
+	return render_to_response(
+		'myapp/metadata.html',
+		{'document': processFile},
+		context_instance=RequestContext(request)
+		)
+#	return HttpResponse(html)

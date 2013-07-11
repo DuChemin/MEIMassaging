@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>	
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -6,16 +6,14 @@
 	</head>
 	<body>
 		{% if documents %}
-			<form action="{% url "process" %}" method="post" enctype="multipart/form-data">
+			<form action="{% url "metadata" %}" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				{% for document in documents %}
 				<input type="radio" name="selection" value={{document.docfile}}>
 				<a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a><br>
 
 				{% endfor %}
-			<p>	
-			<input type="radio" name="processType" value="variant">Variant
-			<input type="radio" name="processType" value="reconstruction">Reconstruction
+			<p>	x
 			<p><input type="submit" value="Process" /></p>
 			</form>
 

@@ -5,5 +5,5 @@ urlpatterns = patterns('minimalUpload.myapp.views',
     url(r'^list/$', 'list', name='list'),
 #    url(r'^select/(?P<year>\d{4})/(?P<month>\d{2})/(?P<day>\d{2})/', 'select'),
 	url(r'^select/$', 'select', name='select'),
-	url(r'^process/$', 'process', name='process')
+	url(r'^metadata/$', 'metadata', name='metadata')
 )

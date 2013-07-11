@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Processing</title>   
+	</head>
+	<body>
+		{% if document %}
+			Processing:
+			{{ document.docfile.name }}
+
+			<p>	
+			<form action ="{ url "list" %}" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+				<input type="radio" name="processType" value="variant">Variant
+				<input type="radio" name="processType" value="reconstruction">Reconstruction
+				<p><input type="submit" value="Process" /></p>
+			</form>
+
+		{% else %}
+		<p>No document selected.</p>
+		{% endif %}
+
+		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<input type="submit" value="Go back"/>
+		</form>
+	</body>
+</html>
