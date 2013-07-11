@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '..')
+
 import clefs
 import arranger
 from constants import *
@@ -12,11 +15,10 @@ def TEST_SET_UP(data):
 	data.arranger_editor = True
 
 def transform(MEI_doc, data=TransformData()):
-	new_doc = MEI_doc
-	tree = new_doc.getRootElement()
-	clefs.clefs(tree, data.orig_clefs)
-	arranger.arranger(tree, data.arranger_editor)
-	return new_doc
+	MEI_tree = MEI_doc.getRootElement()
+	clefs.clefs(MEI_tree, data.orig_clefs)
+	arranger.arranger(MEI_tree, data.arranger_editor)
+	return MEI_doc
 
 def ui():
 	old_filename = raw_input("Filename to transform: ")

@@ -1,5 +1,6 @@
 
 from constants import *
+from utilities import has_C_clef
 from pymei import MeiElement
 
 def reg_clefs_choice(staffGrp_orig):
@@ -63,12 +64,6 @@ def orig_clefs_choice(staffGrp_reg, orig_clefs):
 	for staffDef in staffGrp_reg.getChildren():
 		staffGrp_orig.addChild()
 	return choice
-
-def has_C_clef(staffGrp):
-	for staffDef in staffGrp.getChildren():
-		if staffDef.getAttribute('clef.shape').getValue() == 'C':
-			return True
-	return False
 
 def normalize(clef_group):
 	"""Makes sure clefs are in correct format, such as 'C3'."""
