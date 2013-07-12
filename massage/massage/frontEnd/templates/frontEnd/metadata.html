@@ -15,18 +15,23 @@
 
 				{% if clefs %}
 					{% for Altclef in clefs %}
-						Staff {{Altclef}} is an alt reading of staff 
-						<select name="readingOf">
+						{% value|add:"1" %}
+
+						Staff {{Altclef|escape}} is an alt reading of staff 
+						<select name="readingOf{{value}}">
 							{% for origClef in clefs %}
 								<option value = {{origClef}}>{{origClef}}</option>
 						</select>
-						from source SOMEWHERE
+						from source SOMEWHERE<br>
+					{% endfor %}
 
 				{% else %}
 					<p>No clefs were detected! What a Cagian piece!</p>
 				{% endif %}
 				<input type="radio" name="processType" value="variant">Variant
 				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
+
+				<input type="checkbox" name="arranger_to_editor" value=""
 				<p><input type="submit" value="Process" /></p>
 
 			</form>

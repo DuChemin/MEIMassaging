@@ -56,15 +56,10 @@ def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
 		process_file = request.POST.get('selection')
-		orig_clef_missing_str = request.POST.get('orig_clef_missing')
-
-		if orig_clef_missing_str == "True":
-			orig_clef_missing = True
-		elif orig_clef_missing_str == "False":
-			orig_clef_missing = False
-			
-
 #		analysis = analyze(process_file)
+		#process process_file into the analysis data structure
+		processType = request.POST.get('processType')
+		arranger_editor = request.POST.get('arranger_to_editor') #should be boolean
 		# for clef in analysis.staff_names:
 
 
@@ -76,7 +71,7 @@ def metadata(request):
 
 	return render_to_response(
 		'frontEnd/metadata.html',
-		 {'document': process_file, 'clefs' : analysis.staff_names},
+		 {'document': process_file, 'clefs' : analysis.staff_names, 'value' : 0, 'arranger_to_editor' : arranger_editor},
 		context_instance=RequestContext(request)
 		)
 	# return HttpResponse(html)
