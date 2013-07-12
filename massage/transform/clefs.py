@@ -4,6 +4,13 @@ from utilities import has_C_clef
 from pymei import MeiElement
 
 def reg_clefs_choice(staffGrp_orig):
+	"""Returns <choice> tag with a <reg> and an <orig>.
+	The <orig> tag contains the <staffGrp> of original
+	clefs that was already there. The <reg> tag contains
+	the <staffGrp> with regularized clefs, computed from
+	the original clefs (e.g. tenor clef becomes treble_8).
+	Compare orig_clefs_choice.
+	"""
 	# Create new MEI elements
 	choice = MeiElement('choice')
 	orig = MeiElement('orig')
@@ -22,6 +29,9 @@ def reg_clefs_choice(staffGrp_orig):
 	return choice
 
 def regularize_clef(staffDef_orig):
+	"""Produces a single staffDef with a regularized clef
+	based on a staffDef with an original clef.
+	"""
 	staffDef_reg = MeiElement('staffDef')
 	# First, get clef information and use that to add regularized clefs
 	# Save o_clef (original clef) as tuple, e.g. ('C', '3')
@@ -48,6 +58,13 @@ def regularize_clef(staffDef_orig):
 	return staffDef_reg
 
 def orig_clefs_choice(staffGrp_reg, orig_clefs):
+	"""Returns <choice> tag with a <reg> and an <orig>.
+	The <reg> tag contains the <staffGrp> of regularized
+	clefs that was already there. The <orig> tag contains
+	the original clefs, which are provided as a parameter
+	in the form of a tuple of strings.
+	Compare reg_clefs_choice.
+	"""
 	# Create new MEI elements
 	choice = pymei.createInstance('choice')
 	orig = pymei.createInstance('orig')

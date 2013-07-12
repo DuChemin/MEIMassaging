@@ -3,6 +3,7 @@ from constants import *
 # from pymei import MeiElement
 
 def longa(MEI_tree):
+	"""Changes duration of final note in each part to a longa."""
 	all_measures = MEI_tree.getDescendantsByName('measure')
 	last_measure = all_measures[-1]
 	last_staves = last_measure.getChildren()
