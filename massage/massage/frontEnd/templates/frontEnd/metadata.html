@@ -7,7 +7,7 @@
 	<body>
 		{% if document %}
 			Processing:
-			{{ document.docfile|escape }}
+			{{ document.docfile.name|escape }}
 
 			<p>	
 			<form action ="{ url "select" %}" method="post" enctype="multipart/form-data">

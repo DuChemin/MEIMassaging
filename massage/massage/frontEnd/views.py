@@ -2,7 +2,7 @@
 import sys
 sys.path.insert(0, '../../../analyze')
 
-from analyze.analyze import analyze
+from analyze.analyze import analyze as make_analysis
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -61,8 +61,8 @@ def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
 		MEI_filename = request.POST.get('selection')
-		analysis = analyze(str(MEI_filename))
-		#process process_file into the analysis data structure
+		analysis = make_analysis(str(MEI_filename))
+		#process MEI_filename into the analysis data structure
 		# for clef in analysis.staff_names:
 
 
@@ -74,7 +74,7 @@ def metadata(request):
 
 	return render_to_response(
 		'frontEnd/metadata.html',
-		 {'document': process_file, 'clefs' : analysis.staff_names, 'value' : 0, 'arranger_to_editor' : arranger_editor},
+		 {'document': MEI_filename, 'clefs' : analysis.staff_names, 'value' : 0, 'arranger_to_editor' : arranger_editor},
 		context_instance=RequestContext(request)
 		)
 	# return HttpResponse(html)
