@@ -3,13 +3,16 @@ sys.path.insert(0, '..')
 
 from arranger import arranger
 from clefs import clefs
+from incipit import obliterate_incipit
 from longa import longa
 
 from constants import *
 from pymei import XmlImport, XmlExport
 
 class TransformData:
-	def __init__(self, arranger_editor=False,
+	def __init__(self,
+	             arranger_editor=False,
+	             obliterate_incipit=False,
 	             orig_clefs=EMPTY_CLEFS,
 	             replace_longa=False):
 		self.arranger_editor = arranger_editor
@@ -23,10 +26,12 @@ def TEST_SET_UP(data):
 
 def transform(MEI_doc, data=TransformData()):
 	MEI_tree = MEI_doc.getRootElement()
-	if data.arranger_editor:
-		arranger(MEI_tree)
 	if True:
 		clefs(MEI_tree, data.orig_clefs)
+	if data.arranger_editor:
+		arranger(MEI_tree)
+	if data.obliterate_incipit:
+		obliterate_incipit(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
 	return MEI_doc
