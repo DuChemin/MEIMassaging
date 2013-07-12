@@ -81,7 +81,9 @@ def normalize(clef_group):
 				clef_group[i] = clef_group[i][1] + clef_group[i][0]
 			# There must be a digit indicating the line of the clef
 			assert clef_group[i][1] in POSSIBLE_LINES
-			return clef_group
+			# Make sure it's uppercase
+			clef_group[i] = clef_group[i][0].upper() + clef_group[i][1]
+		return clef_group
 	except AssertionError or IndexError:
 		print("The clef information provided is invalid. "
 		      "Original clefs will not be provided.")
