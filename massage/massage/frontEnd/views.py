@@ -2,7 +2,7 @@
 import sys
 sys.path.insert(0, '../../../analyze')
 
-from analyze import analyze
+from analyze.analyze import analyze
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -60,8 +60,8 @@ def select(request):
 def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
-		process_file = request.POST.get('selection')
-#		analysis = analyze(process_file)
+		MEI_filename = request.POST.get('selection')
+		analysis = analyze(str(MEI_filename))
 		#process process_file into the analysis data structure
 		# for clef in analysis.staff_names:
 
