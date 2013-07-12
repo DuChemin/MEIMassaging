@@ -31,7 +31,9 @@
 				<input type="radio" name="processType" value="variant">Variant
 				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
 
-				<input type="checkbox" name="arranger_to_editor" value=""
+				<input type="checkbox" name="arranger_to_editor"
+				{% if arranger_to_editor %} checked="checked" {% else %}{% endif %}>
+
 				<p><input type="submit" value="Process" /></p>
 
 			</form>

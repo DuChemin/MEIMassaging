@@ -44,6 +44,11 @@ def select(request):
 	# else:
 	# 	form = MEIForm()
 
+	if request.method == 'POST':
+		processType = request.POST.get('processType') # "variant" or "reconstruction"
+		arranger_editor = request.POST.get('arranger_to_editor') # should be boolean
+
+
 	documents = Document.objects.all()
 
 	return render_to_response(
@@ -58,8 +63,6 @@ def metadata(request):
 		process_file = request.POST.get('selection')
 #		analysis = analyze(process_file)
 		#process process_file into the analysis data structure
-		processType = request.POST.get('processType')
-		arranger_editor = request.POST.get('arranger_to_editor') #should be boolean
 		# for clef in analysis.staff_names:
 
 
@@ -75,3 +78,4 @@ def metadata(request):
 		context_instance=RequestContext(request)
 		)
 	# return HttpResponse(html)
+
