@@ -56,8 +56,16 @@ def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
 		process_file = request.POST.get('selection')
-		analysis = analyze(filename)
-		for clef in analysis.staff_names:
+		orig_clef_missing_str = request.POST.get('orig_clef_missing')
+
+		if orig_clef_missing_str == "True":
+			orig_clef_missing = True
+		elif orig_clef_missing_str == "False":
+			orig_clef_missing = False
+			
+
+#		analysis = analyze(process_file)
+		# for clef in analysis.staff_names:
 
 
 	else:
@@ -68,7 +76,7 @@ def metadata(request):
 
 	return render_to_response(
 		'frontEnd/metadata.html',
-		{'document': process_file, 'clefs' : analysis.staff_names},
+		 {'document': process_file, 'clefs' : analysis.staff_names},
 		context_instance=RequestContext(request)
 		)
 	# return HttpResponse(html)

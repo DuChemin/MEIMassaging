@@ -7,23 +7,32 @@
 	<body>
 		{% if document %}
 			Processing:
-			{{ document }}
+			{{ document.docfile|escape }}
 
 			<p>	
-			<form action ="{ url "list" %}" method="post" enctype="multipart/form-data">
+			<form action ="{ url "select" %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 
 				{% if clefs %}
-					{% for clef in clefs %}
+					{% for Altclef in clefs %}
+						Staff {{Altclef}} is an alt reading of staff 
+						<select name="readingOf">
+							{% for origClef in clefs %}
+								<option value = {{origClef}}>{{origClef}}</option>
+						</select>
+						from source SOMEWHERE
 
+				{% else %}
+					<p>No clefs were detected! What a Cagian piece!</p>
+				{% endif %}
 				<input type="radio" name="processType" value="variant">Variant
-				<input type="radio" name="processType" value="reconstruction">Reconstruction
+				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
 				<p><input type="submit" value="Process" /></p>
-				
+
 			</form>
 
 		{% else %}
-		<p>No document selected.</p>
+			<p>No document selected.</p>
 		{% endif %}
 
 		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
