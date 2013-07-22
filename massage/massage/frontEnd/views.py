@@ -34,22 +34,6 @@ def list(request):
 	)
 
 def select(request):
-
-	# if request.method == 'POST':
-	# 	form = MEIForm(request.POST, request.FILES)
-	# 	if form.is_valid():
-	# 		newdoc = Document(docfile = request.FILES['docfile'])
-	# 		newdoc.save()
-	# else:
-	# 	form = MEIForm()
-
-	if request.method == 'POST':
-		# "variant" or "reconstruction"
-		processType = request.POST.get('processType')
-		# should be boolean
-		arranger_editor = request.POST.get('arranger_to_editor')
-
-
 	documents = Document.objects.all()
 
 	return render_to_response('frontEnd/select.html',
@@ -62,14 +46,13 @@ def metadata(request):
 	if request.method == 'POST':
 		MEI_filename = request.POST.get('selection')
 		analysis = make_analysis(str(MEI_filename))
-		# # Process MEI_filename into the analysis data structure
-		# for clef in analysis.staff_names:
-		#     ...
+		# "variant" or "reconstruction"
+		processType = request.POST.get('processType')
+		# should be boolean
+		arranger_editor = request.POST.get('arranger_to_editor')
 	else:
 		html = "<html><body>No file selected</body></html>"
 		return HttpResponse(html)
-
-
 
 	return render_to_response('frontEnd/metadata.html',
 	                          {'document': MEI_filename,
@@ -79,5 +62,3 @@ def metadata(request):
 	                          },
 	                           context_instance=RequestContext(request)
 	                         )
-	# return HttpResponse(html)
-
