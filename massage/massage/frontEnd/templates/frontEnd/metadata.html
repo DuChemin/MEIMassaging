@@ -15,9 +15,9 @@
 
 				{% if clefs %}
 					{% for Altclef in clefs %}
-						{{ value|add:"1" }}
-
-						Staff {{Altclef|escape}} is an alt reading of staff 
+						
+						Staff {{ value|add:forloop.counter }} ({{Altclef|escape}})
+						is an alt reading of staff 
 						<select name="readingOf{{value}}">
 							{% for origClef in clefs %}
 								<option value = {{origClef}}>{{origClef}}</option>
