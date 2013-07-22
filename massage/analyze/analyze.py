@@ -1,7 +1,7 @@
 
 import first_measure_empty
 import orig_clefs_missing
-import staff_info
+import staff_names
 
 from pymei import XmlImport
 
@@ -10,10 +10,10 @@ PATH = 'massage/massage/media/'
 class AnalyzeData:
 	def __init__(self,
 	             first_measure_empty,
-	             staff_info,
+	             staff_names,
 	             orig_clefs_missing):
 		self.first_measure_empty = first_measure_empty
-		self.staff_info = staff_info
+		self.staff_names = staff_names
 		self.orig_clefs_missing = orig_clefs_missing
 
 def analyze(MEI_filename):
@@ -21,9 +21,9 @@ def analyze(MEI_filename):
 	MEI_tree = MEI_doc.getRootElement()
 	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_tree)
 	orig_clefs_missing_ = orig_clefs_missing.orig_clefs_missing(MEI_tree)
-	staff_info_ = staff_info.staff_info(MEI_tree)
+	staff_names_ = staff_names.staff_names(MEI_tree)
 	return AnalyzeData(first_measure_empty,
-	                   staff_info_,
+	                   staff_names_,
 	                   orig_clefs_missing_)
 
 if __name__ == "__main__":
