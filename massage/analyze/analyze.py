@@ -19,9 +19,9 @@ class AnalyzeData:
 def analyze(MEI_filename):
 	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
 	MEI_tree = MEI_doc.getRootElement()
-	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_doc)
-	orig_clefs_missing_ = orig_clefs_missing(MEI_doc)
-	staff_info_ = staff_info(MEI_doc)
+	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_tree)
+	orig_clefs_missing_ = orig_clefs_missing.orig_clefs_missing(MEI_tree)
+	staff_info_ = staff_info.staff_info(MEI_tree)
 	return AnalyzeData(first_measure_empty,
 	                   staff_info_,
 	                   orig_clefs_missing_)
