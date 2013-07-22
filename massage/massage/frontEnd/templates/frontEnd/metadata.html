@@ -15,12 +15,13 @@
 
 				{% if clefs %}
 					{% for Altclef in clefs %}
-						{% value|add:"1" %}
+						{{ value|add:"1" }}
 
 						Staff {{Altclef|escape}} is an alt reading of staff 
 						<select name="readingOf{{value}}">
 							{% for origClef in clefs %}
 								<option value = {{origClef}}>{{origClef}}</option>
+							{% endfor %}
 						</select>
 						from source SOMEWHERE<br>
 					{% endfor %}
