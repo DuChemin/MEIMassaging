@@ -10,7 +10,7 @@
 			{{ document.docfile.name|escape }}
 
 			<p>	
-			<form action ="{ url "select" %}" method="post" enctype="multipart/form-data">
+			<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 
 				{% if clefs %}
