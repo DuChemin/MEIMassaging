@@ -47,9 +47,9 @@ def selectTransform(request):
 	if request.method == 'POST':
 		MEI_filename = request.POST.get('MEI_filename')
 		arranger_to_editor = request.POST.get('arranger_to_editor')
-		# obliterate_incipit = request.POST.get('')
+		obliterate_incipit = request.POST.get('obliterate_incipit')
 		# orig_clefs = request.POST.get('')
-		# replace_longa = request.POST.get('')
+		replace_longa = request.POST.get('replace_longa')
 		MEI_instructions = TransformData()
 		make_transformation(MEI_filename, MEI_instructions)
 
@@ -62,6 +62,7 @@ def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
 		MEI_filename = request.POST.get('selection')
+		# str() converts from unicode to str
 		analysis = make_analysis(str(MEI_filename))
 		# "variant" or "reconstruction"
 		processType = request.POST.get('processType')
