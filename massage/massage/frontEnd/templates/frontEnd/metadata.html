@@ -13,27 +13,34 @@
 			<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 
-				{% if clefs %}
-					{% for Altclef in clefs %}
+				{% if staves %}
+					{% for altStaff in staves %}
 						
-						Staff {{ value|add:forloop.counter }} ({{Altclef|escape}})
+						Staff {{ forloop.counter }} ({{altStaff|escape}})
 						is an alt reading of staff 
-						<select name="readingOf{{value}}">
-							{% for origClef in clefs %}
-								<option value = {{origClef}}>{{origClef}}</option>
+						<select name="readingOf{{forloop.counter}}">
+							{% for origStaff in staves %}
+								<option value = {{origStaff}}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
 						from source SOMEWHERE<br>
 					{% endfor %}
 
 				{% else %}
-					<p>No clefs were detected! What a Cagian piece!</p>
+					<p>No staves were detected! What a Cagian piece!</p>
 				{% endif %}
 				<input type="radio" name="processType" value="variant">Variant
 				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
 
-				<input type="checkbox" name="arranger_to_editor"
-				{% if arranger_to_editor %} checked="checked" {% else %}{% endif %}>
+				<input type="checkbox" name="replace_longa" checked="checked">
+				Make final note longa?<br>
+
+				<input type="checkbox" name="obliterate_incipit"
+				{% if first_measure_empty %} checked="checked" {% else %}{% endif %}>
+				Obliterate first measure? (Leave checked if first measure is incipit.)<br>
+
+				<input type="checkbox" name="arranger_to_editor">
+				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br>
 
 				<p><input type="submit" value="Process" /></p>
 
@@ -43,7 +50,7 @@
 			<p>No document selected.</p>
 		{% endif %}
 
-		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
+		<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<input type="submit" value="Go back"/>
 		</form>

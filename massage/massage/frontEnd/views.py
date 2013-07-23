@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
-sys.path.insert(0, '../../../analyze')
 
 from analyze.analyze import analyze as make_analysis
+from transform.transform import TransformData
+from transform.transform import transform as make_transformation
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -41,6 +42,22 @@ def select(request):
 	                          context_instance=RequestContext(request)
 	                         )
 
+def selectTransform(request):
+	documents = Document.objects.all()
+	if request.method == 'POST':
+		MEI_filename = request.POST.get('filename')
+		arranger_to_editor = request.POST.get('arranger_to_editor')
+		obliterate_incipit = request.POST.get('')
+		orig_clefs = request.POST.get('')
+		replace_longa = request.POST.get('')
+		MEI_instructions = TransformData()
+		make_transformation(MEI_filename, MEI_instructions)
+
+	return render_to_response('frontEnd/select.html',
+	                          {'documents': documents},
+	                          context_instance=RequestContext(request)
+	                         )
+
 def metadata(request):
 	html = "<html><body>"
 	if request.method == 'POST':
@@ -48,17 +65,14 @@ def metadata(request):
 		analysis = make_analysis(str(MEI_filename))
 		# "variant" or "reconstruction"
 		processType = request.POST.get('processType')
-		# should be boolean
-		arranger_editor = request.POST.get('arranger_to_editor')
 	else:
 		html = "<html><body>No file selected</body></html>"
 		return HttpResponse(html)
 
 	return render_to_response('frontEnd/metadata.html',
 	                          {'document': MEI_filename,
-	                           'clefs': analysis.staff_names,
-	                           'value': 0,
-	                           'arranger_to_editor': arranger_editor
+	                           'first_measure_empty': analysis.first_measure_empty,
+	                           'staves': analysis.staff_names
 	                          },
 	                           context_instance=RequestContext(request)
 	                         )

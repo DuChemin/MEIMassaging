@@ -9,26 +9,29 @@ from longa import longa
 from constants import *
 from pymei import XmlImport, XmlExport
 
+PATH = 'massage/massage/media/'
+
 class TransformData:
 	def __init__(self,
-	             arranger_editor=False,
+	             arranger_to_editor=False,
 	             obliterate_incipit=False,
-	             orig_clefs=EMPTY_CLEFS,
-	             replace_longa=False):
-		self.arranger_editor = arranger_editor
+	             replace_longa=False,
+	             orig_clefs=EMPTY_CLEFS):
+		self.arranger_to_editor = arranger_to_editor
 		self.orig_clefs = orig_clefs
 		self.replace_longa = replace_longa
 
 def TEST_SET_UP(data):
 	"""Mutates data to test specific transformations"""
-	data.arranger_editor = True
+	data.arranger_to_editor = True
 	data.replace_longa = True
 
-def transform(MEI_doc, data=TransformData()):
+def transform(MEI_filename, data=TransformData()):
+	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
 	MEI_tree = MEI_doc.getRootElement()
 	if True:
 		clefs(MEI_tree, data.orig_clefs)
-	if data.arranger_editor:
+	if data.arranger_to_editor:
 		arranger(MEI_tree)
 	if data.obliterate_incipit:
 		obliterate_incipit(MEI_tree)
