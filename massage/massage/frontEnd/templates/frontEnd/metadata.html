@@ -20,7 +20,7 @@
 						is an alt reading of staff 
 						<select name="readingOf{{forloop.counter}}">
 							{% for origStaff in staves %}
-								<option value = {{origStaff}}>{{origStaff}}</option>
+								<option value = {{origStaff}} {% if origStaff=altStaff%} selected = "selected"{% else %}{% endif%}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
 						from source SOMEWHERE<br>
