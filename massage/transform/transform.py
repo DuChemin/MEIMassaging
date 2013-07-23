@@ -27,7 +27,7 @@ def TEST_SET_UP(data):
 	data.replace_longa = True
 
 def transform(MEI_filename, data=TransformData()):
-	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
+	MEI_doc = XmlImport.documentFromFile(PATH + 'MEI_filename')
 	MEI_tree = MEI_doc.getRootElement()
 	if True:
 		clefs(MEI_tree, data.orig_clefs)

@@ -45,11 +45,11 @@ def select(request):
 def selectTransform(request):
 	documents = Document.objects.all()
 	if request.method == 'POST':
-		MEI_filename = request.POST.get('filename')
+		MEI_filename = request.POST.get('MEI_filename')
 		arranger_to_editor = request.POST.get('arranger_to_editor')
-		obliterate_incipit = request.POST.get('')
-		orig_clefs = request.POST.get('')
-		replace_longa = request.POST.get('')
+		# obliterate_incipit = request.POST.get('')
+		# orig_clefs = request.POST.get('')
+		# replace_longa = request.POST.get('')
 		MEI_instructions = TransformData()
 		make_transformation(MEI_filename, MEI_instructions)
 
@@ -70,7 +70,7 @@ def metadata(request):
 		return HttpResponse(html)
 
 	return render_to_response('frontEnd/metadata.html',
-	                          {'document': MEI_filename,
+	                          {'MEI_filename': MEI_filename,
 	                           'first_measure_empty': analysis.first_measure_empty,
 	                           'staves': analysis.staff_names
 	                          },

@@ -5,13 +5,14 @@
 		<title>Processing</title>   
 	</head>
 	<body>
-		{% if document %}
-			Processing:
-			{{ document.docfile.name|escape }}
+		{% if MEI_filename %}
+			<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
+				{% csrf_token %}
 
-			<p>	
-			<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
-					{% csrf_token %}
+				Processing:
+				{% autoescape off %}
+				<span name="MEI_filename" value={{MEI_filename}}>{{ MEI_filename }}</span><br><br>
+				{% endautoescape %}
 
 				{% if staves %}
 					{% for altStaff in staves %}
@@ -20,7 +21,7 @@
 						is an alt reading of staff 
 						<select name="readingOf{{forloop.counter}}">
 							{% for origStaff in staves %}
-								<option value = {{origStaff}} {% if origStaff=altStaff%} selected = "selected"{% else %}{% endif%}>{{origStaff}}</option>
+								<option value = {{origStaff}} {% ifequal origStaff altStaff%} selected = "selected"{% else %}{% endifequal%}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
 						from source SOMEWHERE<br>
@@ -29,7 +30,7 @@
 				{% else %}
 					<p>No staves were detected! What a Cagian piece!</p>
 				{% endif %}
-				<input type="radio" name="processType" value="variant">Variant
+				<input type="radio" name="processType" value="variant" checked="checked">Variant
 				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
 
 				<input type="checkbox" name="replace_longa" checked="checked">
@@ -50,7 +51,7 @@
 			<p>No document selected.</p>
 		{% endif %}
 
-		<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
+		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<input type="submit" value="Go back"/>
 		</form>
