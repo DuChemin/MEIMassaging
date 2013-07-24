@@ -18,8 +18,9 @@ class TransformData:
 	             replace_longa=False,
 	             orig_clefs=EMPTY_CLEFS):
 		self.arranger_to_editor = arranger_to_editor
-		self.orig_clefs = orig_clefs
+		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
+		self.orig_clefs = orig_clefs
 
 def TEST_SET_UP(data):
 	"""Mutates data to test specific transformations"""
@@ -27,7 +28,7 @@ def TEST_SET_UP(data):
 	data.replace_longa = True
 
 def transform(MEI_filename, data=TransformData()):
-	MEI_doc = XmlImport.documentFromFile(PATH + 'MEI_filename')
+	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
 	MEI_tree = MEI_doc.getRootElement()
 	if True:
 		clefs(MEI_tree, data.orig_clefs)

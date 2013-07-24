@@ -9,39 +9,44 @@
 			<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 
+				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
 				Processing:
 				{% autoescape off %}
-				<span name="MEI_filename" value={{MEI_filename}}>{{ MEI_filename }}</span><br><br>
+				{{ MEI_filename }}<br /><br />
 				{% endautoescape %}
+
+				(Leave original staves untouched, as &lsquo;variants&rsquo; of themselves)<br /><br />
 
 				{% if staves %}
 					{% for altStaff in staves %}
-						
 						Staff {{ forloop.counter }} ({{altStaff|escape}})
-						is an alt reading of staff 
+						is <select name="kindOfReading{{forloop.counter}}">
+							<option value="variant">a variant source</option>
+							<option value="emendation">an emendation</option>
+							<option value="reconstruction">a reconstruction</option>
+						</select> of staff 
 						<select name="readingOf{{forloop.counter}}">
 							{% for origStaff in staves %}
 								<option value = {{origStaff}} {% ifequal origStaff altStaff%} selected = "selected"{% else %}{% endifequal%}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
-						from source SOMEWHERE<br>
+						from source SOMEWHERE<br />
 					{% endfor %}
 
 				{% else %}
 					<p>No staves were detected! What a Cagian piece!</p>
 				{% endif %}
-				<input type="radio" name="processType" value="variant" checked="checked">Variant
-				<input type="radio" name="processType" value="reconstruction">Reconstruction<br><br>
+				<br />
 
-				<input type="checkbox" name="replace_longa" checked="checked">
-				Make final note longa?<br>
+				<input type="checkbox" name="replace_longa" checked="checked" />
+				Make final note longa?<br />
 
 				<input type="checkbox" name="obliterate_incipit"
-				{% if first_measure_empty %} checked="checked" {% else %}{% endif %}>
-				Obliterate first measure? (Leave checked if first measure is incipit.)<br>
+				{% if first_measure_empty %} checked="checked" {% else %}{% endif %} />
+				Obliterate first measure? (Leave checked if first measure is incipit.)<br />
 
-				<input type="checkbox" name="arranger_to_editor">
-				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br>
+				<input type="checkbox" name="arranger_to_editor" />
+				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br />
 
 				<p><input type="submit" value="Process" /></p>
 

@@ -8,6 +8,6 @@ class DocumentForm(forms.Form):
 		help_text='max. 42 megabytes'
 	)
 
-class MEIForm(forms.Form):
-	docfile = forms.FileField()
-	processType = forms.ChoiceField('variant', 'reconstruction')
+# class MEIForm(forms.Form):
+# 	docfile = forms.FileField()
+# 	processType = forms.ChoiceField('variant', 'reconstruction')

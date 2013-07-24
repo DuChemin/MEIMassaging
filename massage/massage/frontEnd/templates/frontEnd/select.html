@@ -10,7 +10,7 @@
 				{% csrf_token %}
 				{% for document in documents %}
 				<input type="radio" name="selection" value={{document.docfile}}>
-				<a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a><br>
+				<a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a><br />
 
 				{% endfor %}
 			<p>	
