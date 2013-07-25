@@ -5,18 +5,33 @@ from arranger import arranger
 from clefs import clefs
 from incipit import obliterate_incipit
 from longa import longa
+from variants import variants
+from emendations import emendations
+from reconstructions import reconstructions
 
 from constants import *
+from utilities import add_export_suffix
 from pymei import XmlImport, XmlExport
-
-PATH = 'massage/massage/media/'
 
 class TransformData:
 	def __init__(self,
+	             alternates_list=[],
 	             arranger_to_editor=False,
 	             obliterate_incipit=False,
 	             replace_longa=False,
 	             orig_clefs=EMPTY_CLEFS):
+		# The alternates_list field contains information about variants,
+		# emendations and reconstructions. It is a list of 4-tuples.
+		# A basic file with only four staves will look like this:
+		#     [('1', VARIANT, '1', ''), ('2', VARIANT, '2', ''),
+		#      ('3', VARIANT, '3', ''), ('4', VARIANT, '4', '')]
+		# The first element represents the number of the derivative staff
+		# under consideration. Other possible values for the middle element
+		# are EMENDATION and RECONSTRUCTION. The third element represents
+		# the number of the parent staff. The tuple ('5', RECONSTRUCTIOn, '2', '')
+		# can be read as "staff 5 is a reconstruction of staff 2".
+		# The last element represents source or responsibility.
+		self.alternates_list = alternates_list
 		self.arranger_to_editor = arranger_to_editor
 		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
@@ -27,11 +42,13 @@ def TEST_SET_UP(data):
 	data.arranger_to_editor = True
 	data.replace_longa = True
 
-def transform(MEI_filename, data=TransformData()):
-	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
+def transform(MEI_doc, data=TransformData()):
 	MEI_tree = MEI_doc.getRootElement()
 	if True:
 		clefs(MEI_tree, data.orig_clefs)
+		variants(MEI_tree, data.alternates_list)
+		emendations(MEI_tree, data.alternates_list)
+		reconstructions(MEI_tree, data.alternates_list)
 	if data.arranger_to_editor:
 		arranger(MEI_tree)
 	if data.obliterate_incipit:
@@ -40,13 +57,19 @@ def transform(MEI_filename, data=TransformData()):
 		longa(MEI_tree)
 	return MEI_doc
 
-def ui():
+def make_transformation(old_filename, data=TransformData()):
+	new_filename = add_export_suffix(old_filename)
+	old_MEI_doc = XmlImport.documentFromFile(PATH + old_filename)
+	new_MEI_doc = transform(old_MEI_doc, data)
+	XmlExport.meiDocumentToFile(new_MEI_doc, PATH + new_filename)
+
+def test_ui():
 	old_filename = raw_input("Filename to transform: ")
 	if '.mei' not in old_filename or old_filename[-4:] != '.mei':
 		old_filename += '.mei'
-	old_MEI_doc = XmlImport.documentFromFile(old_filename)
 	data = TransformData() # Will be filled in
 	TEST_SET_UP(data) # For testing purposes
+	old_MEI_doc = XmlImport.documentFromFile(old_filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
 	new_filename = old_filename[:-4] + '_.mei'
 	status = XmlExport.meiDocumentToFile(new_MEI_doc, new_filename)
@@ -56,7 +79,7 @@ def ui():
 		print("Transformation failed")
 
 if __name__ == "__main__":
-	ui()
+	test_ui()
 
 #                                 ,_-=(!7(7/zs_.
 #                              .='  ' .`/,/!(=)Zm.

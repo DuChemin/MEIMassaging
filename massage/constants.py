@@ -1,4 +1,7 @@
 
+# File path for all media
+PATH = 'massage/massage/media/'
+
 # Clef constants
 EMPTY_CLEFS = ('', '', '', '')
 CLEF_SHAPES = ['G', 'C', 'F']
@@ -10,3 +13,8 @@ REG = 'reg'
 
 # Duration constants
 LONGA = 'long'
+
+# For alernate reading data
+VARIANT = 'variant'
+EMENDATION = 'emendation'
+RECONSTRUCTION = 'reconstruction'

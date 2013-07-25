@@ -15,7 +15,10 @@
 				{{ MEI_filename }}<br /><br />
 				{% endautoescape %}
 
-				(Leave original staves untouched, as &lsquo;variants&rsquo; of themselves)<br /><br />
+				Leave original staves untouched, as &lsquo;variants&rsquo; of themselves.
+				These staves should be at the top of the list.<br />
+				Warning: Marking staff X as a reconstruction of staff Y
+				will eliminate staff Y information.<br /><br />
 
 				{% if staves %}
 					{% for altStaff in staves %}
@@ -27,10 +30,10 @@
 						</select> of staff 
 						<select name="readingOf{{forloop.counter}}">
 							{% for origStaff in staves %}
-								<option value = {{origStaff}} {% ifequal origStaff altStaff%} selected = "selected"{% else %}{% endifequal%}>{{origStaff}}</option>
+								<option value="{{forloop.counter}}"{% ifequal origStaff altStaff %} selected="selected"{% else %}{% endifequal %}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
-						from source SOMEWHERE<br />
+						from source <input name="source{{forloop.counter}}" /><br />
 					{% endfor %}
 
 				{% else %}

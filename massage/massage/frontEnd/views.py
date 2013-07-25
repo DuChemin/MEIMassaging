@@ -3,7 +3,7 @@ import sys
 
 from analyze.analyze import analyze as make_analysis
 from transform.transform import TransformData
-from transform.transform import transform as make_transformation
+from transform.transform import make_transformation
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
@@ -52,8 +52,6 @@ def selectTransform(request):
 		replace_longa = request.POST.get('replace_longa')
 		MEI_instructions = TransformData()
 		new_MEI_file = make_transformation(str(MEI_filename), MEI_instructions)
-		# file_to_save = Document(docfile = request.FILES['docfile'])
-		# file_to_save.save()
 
 	return render_to_response('frontEnd/select.html',
 	                          {'documents': documents},
