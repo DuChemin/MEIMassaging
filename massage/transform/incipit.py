@@ -15,4 +15,4 @@ def renumber_measures(MEI_tree):
 		attr_measure_number = measure.getAttribute('n')
 		val_measure_number = attr_measure_number.getValue()
 		# Reduce number by one
-		attr_measure_number.setValue(val_measure_number - 1)
+		attr_measure_number.setValue(str(eval(val_measure_number) - 1))
