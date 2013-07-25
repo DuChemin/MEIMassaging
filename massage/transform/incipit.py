@@ -4,8 +4,9 @@ from constants import *
 
 def obliterate_incipit(MEI_tree):
 	all_measures = MEI_tree.getDescendantsByName('measure')
-	first_measure = all_measures[0]
-	first_measure.getParent().removeChild(first_measure)
+	for measure in all_measures:
+		if measure.getAttribute('n').getValue() == '1':
+			measure.getParent().removeChild(measure)
 
 def renumber_measures(MEI_tree):
 	all_measures = MEI_tree.getDescendantsByName('measure')
