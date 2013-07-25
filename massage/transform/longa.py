@@ -9,6 +9,9 @@ def longa(MEI_tree):
 	last_staves = last_measure.getChildren()
 	for staff in last_staves:
 		all_last_notes = staff.getDescendantsByName('note')
-		last_note_of_staff = all_last_notes[-1]
-		# The following line *replaces* the existing @dur.
-		last_note_of_staff.addAttribute('dur', LONGA)
+		try:
+			last_note_of_staff = all_last_notes[-1]
+			# The following line *replaces* the existing @dur.
+			last_note_of_staff.addAttribute('dur', LONGA)
+		except IndexError:
+			pass
