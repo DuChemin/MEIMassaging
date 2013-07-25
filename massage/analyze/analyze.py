@@ -22,7 +22,7 @@ def analyze(MEI_filename):
 	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_tree)
 	orig_clefs_missing_ = orig_clefs_missing.orig_clefs_missing(MEI_tree)
 	staff_names_ = staff_names.staff_names(MEI_tree)
-	return AnalyzeData(first_measure_empty,
+	return AnalyzeData(first_measure_empty_,
 	                   staff_names_,
 	                   orig_clefs_missing_)
 
