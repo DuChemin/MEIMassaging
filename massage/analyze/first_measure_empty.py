@@ -11,9 +11,15 @@ def first_measure_empty(MEI_tree):
 	# If all of those are empty, return True;
 	# if one is not empty, return False.
 	for staff in first_staves:
-		if staff.getChildren() != []:
+		if has_children(staff) and not has_measure_rest(staff):
 			return False
 	return True
+
+def has_children(MEI_tree):
+	return MEI_tree.getChildren() != []
+
+def has_measure_rest(MEI_tree):
+	return MEI_tree.getDescendantsByName('mRest') != []
 
 if __name__ == "__main__":
 	pass
