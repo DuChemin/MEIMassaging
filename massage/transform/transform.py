@@ -63,10 +63,10 @@ def transform(MEI_doc, data=TransformData()):
 		longa(MEI_tree)
 	return MEI_doc
 
-def make_transformation(old_filename, data=TransformData()):
-	old_MEI_doc = XmlImport.documentFromFile(MEDIA + UPLOADS + old_filename)
+def make_transformation(filename, data=TransformData()):
+	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
-	XmlExport.meiDocumentToFile(new_MEI_doc, MEDIA + TRANSFORMED + new_filename)
+	XmlExport.meiDocumentToFile(new_MEI_doc, MEDIA + filename.replace(UPLOADS, PROCESSED))
 
 def test_ui():
 	old_filename = raw_input("Filename to transform: ")
