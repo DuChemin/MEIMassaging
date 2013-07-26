@@ -12,3 +12,5 @@ massage/massage/settings.pyc
 massage/massage/urls.pyc
 massage/massage/wsgi.pyc
 massage/transform/minimal_.mei
+massage/transform/shr.mei
+massage/transform/shr_.mei
