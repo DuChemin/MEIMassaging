@@ -41,6 +41,13 @@ def TEST_SET_UP(data):
 	"""Mutates data to test specific transformations"""
 	data.arranger_to_editor = True
 	data.replace_longa = True
+	data.obliterate_incipit = True
+	data.alternates_list = [('1', 'variant', '1'),
+	                        ('2', 'variant', '2'),
+	                        ('3', 'variant', '3'),
+	                        ('4', 'variant', '4'),
+	                        ('5', 'reconstruction', '2'),
+	                        ('6', 'reconstruction', '4')]
 
 def transform(MEI_doc, data=TransformData()):
 	MEI_tree = MEI_doc.getRootElement()
