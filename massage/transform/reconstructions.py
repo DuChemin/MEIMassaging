@@ -63,6 +63,8 @@ def reconstructions(MEI_tree, alternates_list):
 							new_rdg = MeiElement('rdg')
 							# Number <rdg> with old staff number
 							new_rdg.addAttribute('n', i[0])
+							# Add responsibility to new reading element
+							new_rdg.addAttribute('resp', '#' + i[3])
 							# Renumber staff with parent staff number,
 							# which will be the same as the <app> number
 							staff.addAttribute('n', i[2])
