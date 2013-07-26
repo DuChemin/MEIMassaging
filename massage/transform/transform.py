@@ -63,7 +63,7 @@ def transform(MEI_doc, data=TransformData()):
 		longa(MEI_tree)
 	return MEI_doc
 
-def make_transformation(filename, data=TransformData()):
+def write_transformation(filename, data=TransformData()):
 	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
 	XmlExport.meiDocumentToFile(new_MEI_doc, MEDIA + filename.replace(UPLOADS, PROCESSED))

@@ -51,7 +51,7 @@ def selectTransform(request):
 		# orig_clefs = request.POST.get('')
 		replace_longa = request.POST.get('replace_longa')
 		MEI_instructions = TransformData()
-		new_MEI_file = make_transformation(str(MEI_filename), MEI_instructions)
+		write_transformation(str(MEI_filename), MEI_instructions)
 
 	return render_to_response('frontEnd/select.html',
 	                          {'documents': documents},
