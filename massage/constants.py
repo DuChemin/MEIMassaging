@@ -1,6 +1,8 @@
 
 # File path for all media
-PATH = 'massage/massage/media/'
+MEDIA = 'massage/massage/media/'
+UPLOADS = 'uploads/'
+PROCESSED = 'processed/'
 
 # Clef constants
 EMPTY_CLEFS = ('', '', '', '')

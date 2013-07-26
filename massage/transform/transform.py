@@ -10,7 +10,6 @@ from emendations import emendations
 from reconstructions import reconstructions
 
 from constants import *
-from utilities import add_export_suffix
 from pymei import XmlImport, XmlExport
 
 class TransformData:
@@ -65,10 +64,9 @@ def transform(MEI_doc, data=TransformData()):
 	return MEI_doc
 
 def make_transformation(old_filename, data=TransformData()):
-	new_filename = add_export_suffix(old_filename)
-	old_MEI_doc = XmlImport.documentFromFile(PATH + old_filename)
+	old_MEI_doc = XmlImport.documentFromFile(MEDIA + UPLOADS + old_filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
-	XmlExport.meiDocumentToFile(new_MEI_doc, PATH + new_filename)
+	XmlExport.meiDocumentToFile(new_MEI_doc, MEDIA + TRANSFORMED + new_filename)
 
 def test_ui():
 	old_filename = raw_input("Filename to transform: ")
