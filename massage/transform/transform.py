@@ -4,6 +4,7 @@ sys.path.insert(0, '..')
 from arranger import arranger
 from clefs import clefs
 from incipit import obliterate_incipit
+from incipit import renumber_measures
 from longa import longa
 from variants import variants
 from emendations import emendations
@@ -59,6 +60,7 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.obliterate_incipit:
 		obliterate_incipit(MEI_tree)
+		renumber_measures(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
 	return MEI_doc
