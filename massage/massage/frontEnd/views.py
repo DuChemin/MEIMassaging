@@ -3,7 +3,7 @@ import sys
 
 from analyze.analyze import analyze as make_analysis
 from transform.transform import TransformData
-from transform.transform import make_transformation
+from transform.transform import write_transformation
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
