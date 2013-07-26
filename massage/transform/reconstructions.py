@@ -9,22 +9,43 @@ def reconstructions(MEI_tree, alternates_list):
 	"""
 	# See transform.py for documentation for the alternates_list object.
 	all_staves = MEI_tree.getDescendantsByName('staff')
-	# First, find out which staves will need to be replaced by <app>
-	staves_needing_app = []
+	# Find out which staves will need to be replaced by <app>.
+	# Also collect list of ALL staves that will be kept;
+	# should be just the top four, but doesn't hurt to check.
+	all_keeper_staves_NUM = []
+	staves_needing_app_NUM = []
 	for i in alternates_list:
-		if i[2] not in staves_needing_app and i[1] == RECONSTRUCTION:
-			i.append(i[2])
-	# Go through, looking for original (blank) staves and replacing
-	# them with <app> elements
-	for k in staves_needing_app:
-		for staff in all_staves:
-			if staff.getAttribute('n').getValue() == k:
-				new_app = MeiElement('app')
-				new_app.addAttribute('n', k)
-				# Add <app> where <staff> was, and delete the latter
-				parent_measure = staff.getParent()
-				parent_measure.addChild(new_app)
-				parent_measure.removeChild(staff)
+		if i[2] not in all_keeper_staves_NUM:
+			all_keeper_staves_NUM.append(i[2])
+		if i[2] not in staves_needing_app_NUM and i[1] == RECONSTRUCTION:
+				staves_needing_app_NUM.append(i[2])
+	# Now make corresponding lists that have the actual staff elements,
+	# not just the numbers.
+	staves_needing_app = []
+	all_keeper_staves = []
+	for staff in all_staves:
+		if staff.getAttribute('n').getValue() in all_keeper_staves_NUM:
+			all_keeper_staves.append(staff)
+		if staff.getAttribute('n').getValue() in staves_needing_app_NUM:
+			staves_needing_app.append(staff)
+
+	# Go through list of keeper staves. If it's one that needs to be
+	# turned into an <app> (should be blank), then do so.
+	for staff in all_keeper_staves:
+		parent_measure = staff.getParent()
+		old_staff_number = staff.getAttribute('n').getValue()
+		if staff in staves_needing_app:
+			new_app = MeiElement('app')
+			new_app.addAttribute('n', old_staff_number)
+			new_app.addAttribute('type', RECONSTRUCTION)
+			# Add <app> where <staff> was, and delete the latter
+			parent_measure.removeChild(staff)
+			parent_measure.addChild(new_app)
+		# Otherwise, remove it and add it again, so that it will
+		# be in its proper (numerical-order) place.
+		else:
+			parent_measure.removeChild(staff)
+			parent_measure.addChild(staff)
 	# Go through one more time, this time looking for the reconstructed staves
 	for i in alternates_list:
 		if i[0] != i[2] and i[1] == RECONSTRUCTION:
@@ -40,7 +61,21 @@ def reconstructions(MEI_tree, alternates_list):
 						# for this reconstruction
 						if app.getAttribute('n').getValue() == i[2]:
 							new_rdg = MeiElement('rdg')
+							# Number <rdg> with old staff number
 							new_rdg.addAttribute('n', i[0])
+							# Renumber staff with parent staff number,
+							# which will be the same as the <app> number
+							staff.addAttribute('n', i[2])
 							app.addChild(new_rdg)
 							new_rdg.addChild(staff)
 							parent_measure.removeChild(staff)
+
+	# Finally, adjust the <staffGrp> definition by removing definitions
+	# for staves not in the list of keepers.
+	all_staff_def = MEI_tree.getDescendantsByName('staffDef')
+	for staff_def in all_staff_def:
+		if staff_def.getAttribute('n').getValue() not in all_keeper_staves_NUM:
+			staff_def.getParent().removeChild(staff_def)
+
+# END
+
