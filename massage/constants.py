@@ -22,4 +22,4 @@ EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
 
 # Color data
-BLACK = '000000'
+BLACK = '#000000'

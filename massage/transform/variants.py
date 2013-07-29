@@ -2,16 +2,16 @@
 from constants import *
 # from pymei import MeiElement
 
-def semibreves_before(note_list, color_we_want=BLACK, smb_so_far=0):
+def color_matches(this_note_color, color_we_want):
+	if color_we_want == BLACK:
+		return this_note_color != BLACK
+	else:
+		return this_note_color == color_we_want
+
+def semibreves_before(notelist, color_we_want=BLACK):
 	"""Gives the number of semibreves before the first occurrence
 	either of the given color, or of any color if none is given.
 	"""
-
-	def color_matches(this_note_color, color_we_want):
-		if color_we_want == BLACK:
-			return this_note_color != BLACK
-		else:
-			return this_note_color == color_we_want
 
 	def get_color(note):
 		# If there is a note color attribute, save it;
@@ -20,33 +20,42 @@ def semibreves_before(note_list, color_we_want=BLACK, smb_so_far=0):
 			this_note_color = BLACK
 		else:
 			this_note_color = note.getAttribute('color').getValue()
-		# Take away leading hash symbol from color attribute
-		this_note_color.replace('#', '')
 		return this_note_color
 
-	if note_list == []:
-		return smb_so_far
+	if notelist == []:
+		return 0
 	else:
-		smb_current = 1.0 / eval(note_list[0].getAttribute('dur').getValue())
-		this_note_color = get_color(note_list[0])
+		this_note = notelist[0]
+		this_duration = 1.0 / eval(this_note.getAttribute('dur').getValue())
+		this_note_color = get_color(this_note)
 		if color_matches(this_note_color, color_we_want)
-			return smb_so_far
+			return 0
 		else:
-			return semibreves_before(note_list[1:], color_we_want,
-					smb_so_far + smb_current)
+			return (this_duration +
+					semibreves_before(notelist[1:], color_we_want))
 
-def duration_of_color(layer, color=BLACK):
+def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
 	"""Gives the duration of the notes in the current layer
 	with the given color, or any color if none is given.
 	Only the first set of contiguous notes will be included.
-	Currently, the color must be explicitly mentioned in an attr;
-	implicitly black notes will not be found by this function.
+	The color black (#000000) cannot be searched for; instead,
+	the function will return the duration of the first non-black
+	sequence of notes.
 	"""
-	semibreve_count = 0
-	notes = layer.getChildrenByName('note')
-	for note in notes:
-
-	if color == BLACK:
+	if notelist == []:
+		return 0
+	else:
+		this_note = notelist[0]
+		this_duration = 1.0 / eval(this_note.getAttribute('dur').getValue())
+		this_note_color = this_note.getAttribute('color').getValue()
+		if not color_matches(this_note_color, color_we_want):
+			if begun_color:
+				return 0
+			else:
+				return duration_of_color(notelist[1:], color)
+		else:
+			return (this_duration +
+					duration_of_color(notelist[1:], color_we_want, True))
 
 
 def previous_measure_last_color(staff):
@@ -89,8 +98,8 @@ def previous_measure_last_color(staff):
 	# Also return default if no color attr to last note of measure
 	elif not notes[-1].hasAttribute('color'):
 		return BLACK
-	else: # Otherwise, get the color from the attr (but remove '#' sign)
-		return (last_note.getAttribute('color').getValue().replace('#', ''))
+	else:
+		return last_note.getAttribute('color').getValue()
 
 def create_variant_app(lemma_layer, location, source=None, id=None):
 	"""Creates an <app> element in the layer given, which will contain
@@ -100,6 +109,11 @@ def create_variant_app(lemma_layer, location, source=None, id=None):
 	in the lemma corresponding to the skip and dur given will be
 	moved to the <app> element.
 	"""
+	def calc_app_placement(notelist, skip, duration):
+		if notelist == [] or duration == 0:
+			return notelist
+		else:
+			pass
 	pass
 
 def variants(MEI_tree, alternates_list):
