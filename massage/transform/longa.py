@@ -13,5 +13,6 @@ def longa(MEI_tree):
 			last_note_of_staff = all_last_notes[-1]
 			# The following line *replaces* the existing @dur.
 			last_note_of_staff.addAttribute('dur', LONGA)
+			last_note_of_staff.addAttribute('dur.ges', '4096p')
 		except IndexError:
 			pass
