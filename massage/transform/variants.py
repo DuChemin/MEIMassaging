@@ -28,7 +28,7 @@ def semibreves_before(notelist, color_we_want=BLACK):
 		this_note = notelist[0]
 		this_duration = 1.0 / eval(this_note.getAttribute('dur').getValue())
 		this_note_color = get_color(this_note)
-		if color_matches(this_note_color, color_we_want)
+		if color_matches(this_note_color, color_we_want):
 			return 0
 		else:
 			return (this_duration +
@@ -101,20 +101,59 @@ def previous_measure_last_color(staff):
 	else:
 		return last_note.getAttribute('color').getValue()
 
-def create_variant_app(lemma_layer, location, source=None, id=None):
-	"""Creates an <app> element in the layer given, which will contain
-	variants. The location parameter is a tuple of (skip, dur) --
-	the number of semibreves before the first note of the variant,
-	and the duration of all notes in the variant. The notes
-	in the lemma corresponding to the skip and dur given will be
-	moved to the <app> element.
+def add_app_to_staff(staff, skip, duration):
+	"""Modifies the <staff> element given by replacing its <layer>
+	child element. The new layer will contain the same <note> elements
+	as the original, but some of these notes will be nested inside an
+	<app> element as the lemma; variants from other staves will also
+	be added to this <app> as variant readings. The parameters skip
+	and duration refer to the length in semibreves of the notes
+	occurring before the <app> element is to begin, and the length
+	in semibreves of the <app> element. We assume that there is
+	only one layer in the staff given.
 	"""
-	def calc_app_placement(notelist, skip, duration):
-		if notelist == [] or duration == 0:
-			return notelist
+	old_layer = staff.getChildrenByName('layer')[0]
+	notelist = old_layer.getChildrenByName('note')
+	new_layer = MeiElement('layer')
+	
+	# Add notes before the variant into the new layer
+	while skip > 0 and notelist != []:
+		dur_of_next_note = 1.0 / eval(
+				notelist[0].getAttribute('dur').getValue())
+		# Bad case where the variant doesn't line up with the lemma:
+		# in this case, include the part of the lemma's note that
+		# hangs outside its proper area.
+		if dur_of_next_note > skip:
+			# Add the difference to the duration of the <app>
+			duration += dur_of_next_note - skip
+			skip = 0
+		# But in good cases, just add the next note
 		else:
-			pass
-	pass
+			new_layer.addChild(notelist[0])
+			skip -= dur_of_next_note
+			del notelist[0]
+
+	# Now add the <app> to the layer; add the notes that belong in
+	# the <app> to the lemma.
+	app = MeiElement('app')
+	lemma = MeiElement('lem')
+	app.addChild(lemma)
+	new_layer.addChild(app)
+	while duration > 0 and notelist != []:
+		dur_of_next_note = 1.0 / eval(
+				notelist[0].getAttribute('dur').getValue())
+		duration -= dur_of_next_note
+		lemma.addChild(notelist[0])
+		del notelist[0]
+
+	# Add remaining notes, if any.
+	while notelist != []:
+		new_layer.addChild(notelist[0])
+		del notelist[0]
+
+	# Finally, add new layer as a child of staff and remove the old one.
+	staff.removeChild(old_layer)
+	staff.addChild(new_layer)
 
 def variants(MEI_tree, alternates_list):
 	"""Uses the list of alternate readings to find the variants,
@@ -124,4 +163,9 @@ def variants(MEI_tree, alternates_list):
 	# See transform.py for documentation for the alternates_list object.
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
 	for i in alternates_list:
-		pass
+		if i[0] != i[2] and i[1] == VARIANT:
+			pass
+	# source, id
+
+# END OF FILE
+

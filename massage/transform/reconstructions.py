@@ -79,5 +79,5 @@ def reconstructions(MEI_tree, alternates_list):
 		if staff_def.getAttribute('n').getValue() not in all_keeper_staves_NUM:
 			staff_def.getParent().removeChild(staff_def)
 
-# END
+# END OF FILE
 
