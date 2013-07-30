@@ -10,6 +10,7 @@
 				{% csrf_token %}
 
 				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
+				<input type="hidden" name="staves" value={{staves}} />
 				Processing:
 				{% autoescape off %}
 				{{ MEI_filename }}<br /><br />
@@ -17,7 +18,7 @@
 
 				Leave original staves untouched, as &lsquo;variants&rsquo; of themselves.
 				These staves should be at the top of the list.<br />
-				Warning: Marking staff X as a reconstruction of staff Y
+				<b>Warning:</b> Marking staff X as a reconstruction of staff Y
 				will eliminate staff Y information.<br /><br />
 
 				{% if staves %}
@@ -33,7 +34,7 @@
 								<option value="{{forloop.counter}}"{% ifequal origStaff altStaff %} selected="selected"{% else %}{% endifequal %}>{{origStaff}}</option>
 							{% endfor %}
 						</select>
-						from source <input name="source{{forloop.counter}}" /><br />
+						from source <input type="text" name="source{{forloop.counter}}" /><br />
 					{% endfor %}
 
 				{% else %}
@@ -49,7 +50,16 @@
 				Obliterate first measure? (Leave checked if first measure is incipit.)<br />
 
 				<input type="checkbox" name="arranger_to_editor" />
-				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br />
+				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br /><br />
+				Original clefs (e.g. &lsquo;C3&rsquo;):<br />
+				{% if staves %}
+					{% for altStaff in staves %}
+						{{altStaff|escape}}
+						<input type="text" name="clef{{forloop.counter}}" size="2em" maxlength="2" />
+					{% endfor %}
+				{% else %}
+				{% endif %}
+
 
 				<p><input type="submit" value="Process" /></p>
 
