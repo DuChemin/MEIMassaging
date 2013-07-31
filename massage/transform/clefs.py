@@ -66,10 +66,10 @@ def orig_clefs_choice(staffGrp_reg, orig_clefs):
 	Compare reg_clefs_choice.
 	"""
 	# Create new MEI elements
-	choice = pymei.createInstance('choice')
-	orig = pymei.createInstance('orig')
-	reg = pymei.createInstance('reg')
-	staffGrp_orig = pymei.createInstance('staffGrp')
+	choice = MeiElement('choice')
+	orig = MeiElement('orig')
+	reg = MeiElement('reg')
+	staffGrp_orig = MeiElement('staffGrp')
 	# Give orig staffGrp all the attributes of the reg one
 	for attr in staffGrp_reg.getAttributes():
 		staffGrp_orig.addAttribute(attr.getName(), attr.getValue())
@@ -79,18 +79,19 @@ def orig_clefs_choice(staffGrp_reg, orig_clefs):
 	reg.addChild(staffGrp_reg)
 	orig.addChild(staffGrp_orig)
 	for staffDef in staffGrp_reg.getChildren():
-		staffGrp_orig.addChild()
+		staffGrp_orig.addChild(staffDef)
 	return choice
 
 def normalize(clef_group):
 	"""Makes sure clefs are in correct format, such as 'C3'."""
 	try:
-		assert len(clef_group) == 4
 		if clef_group == EMPTY_CLEFS:
 			return clef_group
 		for i in range(len(clef_group)):
 			clef_group[i] = clef_group[i].replace(' ', '')
-			assert len(clef_group[i] == 2)
+			if len(clef_group[i]) != 2:
+				clef_group[i] = ''
+				break
 			assert (clef_group[i][0] in CLEF_SHAPES or
 			        clef_group[i][1] in CLEF_SHAPES)
 			# Swap if the order of line and shape are reversed (e.g. '3C')

@@ -9,7 +9,9 @@ def arranger(MEI_tree):
 		parent = arranger.getParent()
 		editor = MeiElement('editor')
 		arranger_children = arranger.getChildren()
+		arranger_value = arranger.getValue()
 		for child in arranger_children:
 			editor.addChild(child)
+		editor.setValue(arranger_value)
 		parent.addChild(editor)
 		parent.removeChild(arranger)
