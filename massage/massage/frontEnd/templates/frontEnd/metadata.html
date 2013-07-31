@@ -10,7 +10,7 @@
 				{% csrf_token %}
 
 				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
-				<input type="hidden" name="staves" value={{staves}} />
+				<input type="hidden" name="staff_list" value={{staff_list}} />
 				Processing:
 				{% autoescape off %}
 				{{ MEI_filename }}<br /><br />
@@ -21,17 +21,13 @@
 				<b>Warning:</b> Marking staff X as a reconstruction of staff Y
 				will eliminate staff Y information.<br /><br />
 
-				{% if staves %}
-					{% for altStaff in staves %}
-						Staff {{ forloop.counter }} ({{altStaff|escape}})
-						is <select name="kindOfReading{{forloop.counter}}">
-							<option value="variant">a variant source</option>
-							<option value="emendation">an emendation</option>
-							<option value="reconstruction">a reconstruction</option>
-						</select> of staff 
+				{% if staff_list %}
+					{% for altStaff in staff_list %}
+						Staff {{ forloop.counter }} ({{altStaff.0|escape}})
+						is {{altStaff.1}} of staff 
 						<select name="readingOf{{forloop.counter}}">
-							{% for origStaff in staves %}
-								<option value="{{forloop.counter}}"{% ifequal origStaff altStaff %} selected="selected"{% else %}{% endifequal %}>{{origStaff}}</option>
+							{% for origStaff in staff_list %}
+								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.0 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
 							{% endfor %}
 						</select>
 						from source <input type="text" name="source{{forloop.counter}}" /><br />

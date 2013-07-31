@@ -105,6 +105,6 @@ def metadata(request):
 					'has_editor_element': analysis.has_editor_element,
 					'has_arranger_element': analysis.has_arranger_element,
 					'editor_name': analysis.editor_name,
-					'staves': analysis.staff_names
+					'staff_list': analysis.staff_list
 			},
 			context_instance=RequestContext(request))

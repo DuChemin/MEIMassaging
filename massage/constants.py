@@ -17,9 +17,9 @@ REG = 'reg'
 LONGA = 'long'
 
 # For alernate reading data
-VARIANT = 'variant'
-EMENDATION = 'emendation'
-RECONSTRUCTION = 'reconstruction'
+VARIANT = 'a variant'
+EMENDATION = 'an emendation'
+RECONSTRUCTION = 'a reconstruction'
 
 # Color data
 BLACK = '#000000'
