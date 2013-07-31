@@ -12,6 +12,8 @@ from django.core.urlresolvers import reverse
 from massage.frontEnd.models import Document
 from massage.frontEnd.forms import DocumentForm
 
+# from constants import *
+
 def list(request):
 	# Handle file upload
 	if request.method == 'POST':
@@ -52,26 +54,32 @@ def selectTransform(request):
 		replace_longa = request.POST.get('replace_longa')
 
 		alternates_list = []
-		staves = request.POST.get('staves')
-		for j in range(1, len(staves)+1): # 1-indexed
+		# staves = request.POST.get('staves')
+
+		# To calculate number of staves
+		sn = 0
+		while (str(request.POST.get('kindOfReading' + str(sn+1)))
+				not in ['None', '']):
+			sn += 1
+
+		for j in range(1, sn + 1): # 1-indexed
 			kind_of_reading = request.POST.get('kindOfReading' + str(j))
 			reading_of = request.POST.get('readingOf' + str(j))
 			source = request.POST.get('source' + str(j))
-			this_staff_alternates = (j, kind_of_reading,
-					eval(reading_of), source)
+			this_staff_alternates = (j, str(kind_of_reading),
+					eval(str(reading_of)), source)
 			alternates_list.append(this_staff_alternates)
 
 		orig_clefs = []
-		for j in range(1, len(staves) + 1): # 1-indexed
+		for j in range(1, sn + 1): # 1-indexed
 			this_staff_orig_clef = request.POST.get('clef' + str(j))
-			orig_clefs.append(this_staff_orig_clef)
+			orig_clefs.append(str(this_staff_orig_clef))
 
 		MEI_instructions = TransformData(
 				arranger_to_editor=arranger_to_editor,
 				obliterate_incipit=obliterate_incipit,
 				replace_longa=replace_longa,
-				alternates_list=alternates_list,
-				orig_clefs=orig_clefs)
+				alternates_list=alternates_list)
 		write_transformation(str(MEI_filename), MEI_instructions)
 
 	return render_to_response('frontEnd/select.html',
@@ -94,6 +102,8 @@ def metadata(request):
 	return render_to_response('frontEnd/metadata.html',
 			{'MEI_filename': MEI_filename,
 					'first_measure_empty': analysis.first_measure_empty,
+					'has_editor_element': has_editor_element,
+					'editor_name': analysis.editor_name,
 					'staves': analysis.staff_names
 			},
 			context_instance=RequestContext(request))
