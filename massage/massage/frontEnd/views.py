@@ -102,7 +102,8 @@ def metadata(request):
 	return render_to_response('frontEnd/metadata.html',
 			{'MEI_filename': MEI_filename,
 					'first_measure_empty': analysis.first_measure_empty,
-					'has_editor_element': has_editor_element,
+					'has_editor_element': analysis.has_editor_element,
+					'has_arranger_element': analysis.has_arranger_element,
 					'editor_name': analysis.editor_name,
 					'staves': analysis.staff_names
 			},

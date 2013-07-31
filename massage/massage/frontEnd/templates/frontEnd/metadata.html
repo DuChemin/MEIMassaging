@@ -47,18 +47,21 @@
 
 				<input type="checkbox" name="obliterate_incipit"
 				{% if first_measure_empty %} checked="checked" {% else %}{% endif %} />
-				Obliterate first measure? (Leave checked if first measure is incipit.)<br />
+				Obliterate first measure? (Leave checked if first measure is incipit.)<br /><br />
 
-				<input type="checkbox" name="arranger_to_editor" />
-				Change &lt;arranger&gt; tag to &lt;editor&gt;?<br /><br />
-				Original clefs (e.g. &lsquo;C3&rsquo;):<br />
-				{% if staves %}
-					{% for altStaff in staves %}
-						{{altStaff|escape}}
-						<input type="text" name="clef{{forloop.counter}}" size="2em" maxlength="2" />
-					{% endfor %}
+				{% if has_editor_element %}
+				<input type="hidden" name="arranger_to_editor" value="false" />
+				Editor listed as &lsquo;{{editor_name}}&rsquo;.<br />
 				{% else %}
+				{% if has_arranger_element %}
+				<input type="checkbox" name="arranger_to_editor" checked="checked" />
+				Mark &lsquo;{{editor_name}}&rsquo; as editor (instead of arranger)?<br />
+				{% else %}
+				<input type="hidden" name="arranger_to_editor" value="false" />
 				{% endif %}
+				{% endif %}
+				
+				Responsibility for editorial accidentals: <input type="text" name="responsibility" />
 
 
 				<p><input type="submit" value="Process" /></p>

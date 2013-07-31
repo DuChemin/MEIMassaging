@@ -12,10 +12,12 @@ class AnalyzeData:
 	def __init__(self,
 			first_measure_empty,
 			has_editor_element,
+			has_arranger_element,
 			editor_name,
 			staff_names):
 		self.first_measure_empty = first_measure_empty
 		self.has_editor_element = has_editor_element
+		self.has_arranger_element = has_arranger_element
 		self.editor_name = editor_name
 		self.staff_names = staff_names
 		# self.orig_clefs_missing = orig_clefs_missing
@@ -25,11 +27,13 @@ def analyze(MEI_filename):
 	MEI_tree = MEI_doc.getRootElement()
 	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_tree)
 	has_editor_element_ = editorial.has_editor_element(MEI_tree)
+	has_arranger_element_ = editorial.has_arranger_element(MEI_tree)
 	editor_name_ = editorial.editor_name(MEI_tree)
 	# orig_clefs_missing_ = orig_clefs_missing.orig_clefs_missing(MEI_tree)
 	staff_names_ = staff_names.staff_names(MEI_tree)
 	return AnalyzeData(first_measure_empty_,
 			has_editor_element_,
+			has_arranger_element_,
 			editor_name_,
 			staff_names_)
 
