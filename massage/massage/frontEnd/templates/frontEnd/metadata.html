@@ -10,7 +10,6 @@
 				{% csrf_token %}
 
 				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
-				<input type="hidden" name="staff_list" value={{staff_list}} />
 				Processing:
 				{% autoescape off %}
 				{{ MEI_filename }}<br /><br />
@@ -24,6 +23,8 @@
 				{% if staff_list %}
 					{% for altStaff in staff_list %}
 						Staff {{ forloop.counter }} ({{altStaff.0|escape}})
+						<input type="hidden" name="staff{{forloop.counter}}" value={{altStaff.0}} />
+						<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.1}} />
 						is {{altStaff.1}} of staff 
 						<select name="readingOf{{forloop.counter}}">
 							{% for origStaff in staff_list %}
@@ -57,7 +58,7 @@
 				{% endif %}
 				{% endif %}
 				
-				Responsibility for editorial accidentals: <input type="text" name="responsibility" />
+				Responsibility for editorial accidentals: <input type="text" name="editorial_resp" />
 
 
 				<p><input type="submit" value="Process" /></p>

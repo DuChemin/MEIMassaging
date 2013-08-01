@@ -52,14 +52,14 @@ def selectTransform(request):
 		arranger_to_editor = request.POST.get('arranger_to_editor')
 		obliterate_incipit = request.POST.get('obliterate_incipit')
 		replace_longa = request.POST.get('replace_longa')
+		editorial_resp = request.POST.get('editorial_resp')
 
 		alternates_list = []
 		# staves = request.POST.get('staves')
 
 		# To calculate number of staves
 		sn = 0
-		while (str(request.POST.get('kindOfReading' + str(sn+1)))
-				not in ['None', '']):
+		while request.POST.get('kindOfReading' + str(sn + 1)):
 			sn += 1
 
 		for j in range(1, sn + 1): # 1-indexed
@@ -67,18 +67,19 @@ def selectTransform(request):
 			reading_of = request.POST.get('readingOf' + str(j))
 			source = request.POST.get('source' + str(j))
 			this_staff_alternates = (j, str(kind_of_reading),
-					eval(str(reading_of)), source)
+					eval(str(reading_of)), str(source))
 			alternates_list.append(this_staff_alternates)
 
-		orig_clefs = []
-		for j in range(1, sn + 1): # 1-indexed
-			this_staff_orig_clef = request.POST.get('clef' + str(j))
-			orig_clefs.append(str(this_staff_orig_clef))
+		# orig_clefs = []
+		# for j in range(1, sn + 1): # 1-indexed
+		# 	this_staff_orig_clef = request.POST.get('clef' + str(j))
+		# 	orig_clefs.append(str(this_staff_orig_clef))
 
 		MEI_instructions = TransformData(
 				arranger_to_editor=arranger_to_editor,
 				obliterate_incipit=obliterate_incipit,
 				replace_longa=replace_longa,
+				editorial_resp=editorial_resp,
 				alternates_list=alternates_list)
 		write_transformation(str(MEI_filename), MEI_instructions)
 

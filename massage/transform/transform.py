@@ -14,7 +14,7 @@ from constants import *
 from pymei import XmlImport, XmlExport
 
 import logging
-# logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
+logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
 
 class TransformData:
 	def __init__(self,
@@ -31,7 +31,7 @@ class TransformData:
 		# The first element represents the number of the derivative staff
 		# under consideration. Other possible values for the middle element
 		# are EMENDATION and RECONSTRUCTION. The third element represents
-		# the number of the parent staff. The tuple ('5', RECONSTRUCTIOn, '2', '')
+		# the number of the parent staff. The tuple ('5', RECONSTRUCTION, '2', '')
 		# can be read as "staff 5 is a reconstruction of staff 2".
 		# The last element represents source or responsibility.
 		self.alternates_list = alternates_list
@@ -55,6 +55,11 @@ def TEST_SET_UP(data):
 			('6', RECONSTRUCTION, '4', 'MJW')]
 
 def transform(MEI_doc, data=TransformData()):
+	logging.info('alternates_list: ' + str(data.alternates_list))
+	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
+	logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
+	logging.info('replace_longa: ' + str(data.replace_longa))
+	logging.info('editorial_resp: ' + str(data.editorial_resp))
 	MEI_tree = MEI_doc.getRootElement()
 	# Measure renumbering needs to be done first!
 	if data.obliterate_incipit:
@@ -71,11 +76,6 @@ def transform(MEI_doc, data=TransformData()):
 	return MEI_doc
 
 def write_transformation(filename, data=TransformData()):
-	logging.info('alternates_list: ' + str(data.alternates_list))
-	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
-	logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
-	logging.info('replace_longa: ' + str(data.replace_longa))
-	logging.info('editorial_resp: ' + str(data.editorial_resp))
 	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
 	XmlExport.meiDocumentToFile(new_MEI_doc,
