@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-from clefs import clefs
+# from clefs import clefs
 from incipit import obliterate_incipit
 from incipit import renumber_measures
 from longa import longa
@@ -13,13 +13,16 @@ from reconstructions import reconstructions
 from constants import *
 from pymei import XmlImport, XmlExport
 
+import logging
+# logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
+
 class TransformData:
 	def __init__(self,
-	             alternates_list=[],
-	             arranger_to_editor=False,
-	             obliterate_incipit=False,
-	             replace_longa=False,
-	             orig_clefs=EMPTY_CLEFS):
+			alternates_list=[],
+			arranger_to_editor=False,
+			obliterate_incipit=False,
+			editorial_resp='',
+			replace_longa=False):
 		# The alternates_list field contains information about variants,
 		# emendations and reconstructions. It is a list of 4-tuples.
 		# A basic file with only four staves will look like this:
@@ -35,40 +38,48 @@ class TransformData:
 		self.arranger_to_editor = arranger_to_editor
 		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
-		self.orig_clefs = orig_clefs
+		self.editorial_resp = editorial_resp
 
 def TEST_SET_UP(data):
 	"""Mutates data to test specific transformations"""
 	data.arranger_to_editor = True
 	data.replace_longa = True
 	data.obliterate_incipit = True
-	data.alternates_list = [('1', 'variant', '1', ''),
-	                        ('2', 'variant', '2', ''),
-	                        ('3', 'variant', '3', ''),
-	                        ('4', 'variant', '4', ''),
-	                        ('5', 'reconstruction', '2', 'MJW'),
-	                        ('6', 'reconstruction', '4', 'MJW')]
+	data.editorial_resp = 'mjw'
+	data.alternates_list = [
+			('1', VARIANT, '1', ''),
+			('2', VARIANT, '2', ''),
+			('3', VARIANT, '3', ''),
+			('4', VARIANT, '4', ''),
+			('5', RECONSTRUCTION, '2', 'MJW'),
+			('6', RECONSTRUCTION, '4', 'MJW')]
 
 def transform(MEI_doc, data=TransformData()):
 	MEI_tree = MEI_doc.getRootElement()
-	if True:
-		clefs(MEI_tree, data.orig_clefs)
-		variants(MEI_tree, data.alternates_list)
-		emendations(MEI_tree, data.alternates_list)
-		reconstructions(MEI_tree, data.alternates_list)
-	if data.arranger_to_editor:
-		arranger(MEI_tree)
+	# Measure renumbering needs to be done first!
 	if data.obliterate_incipit:
 		obliterate_incipit(MEI_tree)
 		renumber_measures(MEI_tree)
+	if data.arranger_to_editor:
+		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
+	# Only now should we do the tricky stuff.
+	variants(MEI_tree, data.alternates_list)
+	emendations(MEI_tree, data.alternates_list)
+	reconstructions(MEI_tree, data.alternates_list)
 	return MEI_doc
 
 def write_transformation(filename, data=TransformData()):
+	logging.info('alternates_list: ' + str(data.alternates_list))
+	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
+	logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
+	logging.info('replace_longa: ' + str(data.replace_longa))
+	logging.info('editorial_resp: ' + str(data.editorial_resp))
 	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
-	XmlExport.meiDocumentToFile(new_MEI_doc, MEDIA + filename.replace(UPLOADS, PROCESSED))
+	XmlExport.meiDocumentToFile(new_MEI_doc,
+			MEDIA + filename.replace(UPLOADS, PROCESSED))
 
 def test_ui():
 	old_filename = raw_input("Filename to transform: ")
