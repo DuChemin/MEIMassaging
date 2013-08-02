@@ -20,6 +20,7 @@ LONGA = 'long'
 VARIANT = 'variant'
 EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
+IGNORED = '0'
 
 # Color data
 BLACK = '#000000'

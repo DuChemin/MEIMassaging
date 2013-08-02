@@ -27,6 +27,7 @@
 						<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.1}} />
 						is {{altStaff.1}} of staff 
 						<select name="readingOf{{forloop.counter}}">
+							<option value="0">(Ignore this staff)</option>
 							{% for origStaff in staff_list %}
 								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.0 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
 							{% endfor %}

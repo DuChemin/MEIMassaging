@@ -1,9 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
-
-def get_all_staves(MEI_tree):
-	return MEI_tree.getDescendantsByName('staff')
+from utilities import get_all_staves
 
 def get_original_staves(MEI_tree, alternates_list):
 	"""Returns a list of all staff objects of which other staff objects
@@ -105,13 +103,10 @@ def move_recon_staves(recon_staves, al):
 				new_rdg.addChild(staff)
 				parent_measure.removeChild(staff)
 
-def adjust_staff_group(MEI_tree, recon_staves_NUM, alternates_list):
+def adjust_staff_group(MEI_tree, recon_staves_NUM):
 	"""Adjusts <staffGrp> definitions by removing definitions
 	for reconstructed staves.
 	"""
-	all_staves = get_all_staves(MEI_tree)
-	recon_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
-
 	all_staff_def = MEI_tree.getDescendantsByName('staffDef')
 	for staff_def in all_staff_def:
 		if staff_def.getAttribute('n').getValue() in recon_staves_NUM:
@@ -124,7 +119,7 @@ def reconstructions(MEI_tree, alternates_list):
 
 	make_orig_app(MEI_tree, original_staves)
 	move_recon_staves(recon_staves, alternates_list)
-	adjust_staff_group(MEI_tree, recon_staves_NUM, alternates_list)
+	adjust_staff_group(MEI_tree, recon_staves_NUM)
 	
 
 	

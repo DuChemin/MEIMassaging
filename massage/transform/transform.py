@@ -9,6 +9,7 @@ from longa import longa
 from variants import variants
 from emendations import emendations
 from reconstructions import reconstructions
+from ignored import ignored
 
 from constants import *
 from pymei import XmlImport, XmlExport
@@ -74,6 +75,7 @@ def transform(MEI_doc, data=TransformData()):
 	variants(MEI_tree, data.alternates_list)
 	emendations(MEI_tree, data.alternates_list)
 	reconstructions(MEI_tree, data.alternates_list)
+	ignored(MEI_tree, data.alternates_list)
 	return MEI_doc
 
 def write_transformation(filename, data=TransformData()):
