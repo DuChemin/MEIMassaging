@@ -2,9 +2,9 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-# from clefs import clefs
 from incipit import obliterate_incipit
 from incipit import renumber_measures
+from responsibility import responsibility
 from longa import longa
 from variants import variants
 from emendations import emendations
@@ -69,6 +69,7 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
+	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	variants(MEI_tree, data.alternates_list)
 	emendations(MEI_tree, data.alternates_list)

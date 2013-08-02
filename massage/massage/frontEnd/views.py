@@ -52,7 +52,7 @@ def selectTransform(request):
 		arranger_to_editor = request.POST.get('arranger_to_editor')
 		obliterate_incipit = request.POST.get('obliterate_incipit')
 		replace_longa = request.POST.get('replace_longa')
-		editorial_resp = request.POST.get('editorial_resp')
+		editorial_resp = str(request.POST.get('editorial_resp'))
 
 		alternates_list = []
 		# staves = request.POST.get('staves')
@@ -84,9 +84,8 @@ def selectTransform(request):
 		write_transformation(str(MEI_filename), MEI_instructions)
 
 	return render_to_response('frontEnd/select.html',
-	                          {'documents': documents},
-	                          context_instance=RequestContext(request)
-	                         )
+			{'documents': documents},
+			context_instance=RequestContext(request))
 
 def metadata(request):
 	html = "<html><body>"
