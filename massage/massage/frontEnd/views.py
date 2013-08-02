@@ -66,8 +66,8 @@ def selectTransform(request):
 			kind_of_reading = request.POST.get('kindOfReading' + str(j))
 			reading_of = request.POST.get('readingOf' + str(j))
 			source = request.POST.get('source' + str(j))
-			this_staff_alternates = (j, str(kind_of_reading),
-					eval(str(reading_of)), str(source))
+			this_staff_alternates = (str(j), str(kind_of_reading),
+					str(reading_of), str(source))
 			alternates_list.append(this_staff_alternates)
 
 		# orig_clefs = []

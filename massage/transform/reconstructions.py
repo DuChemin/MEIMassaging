@@ -19,7 +19,7 @@ def get_original_staves(MEI_tree, alternates_list):
 	all_staves = get_all_staves(MEI_tree)
 	original_staves = []
 	for staff in all_staves:
-		if eval(staff.getAttribute('n').getValue()) in original_staves_NUM:
+		if staff.getAttribute('n').getValue() in original_staves_NUM:
 			original_staves.append(staff)
 	return original_staves
 
@@ -40,7 +40,7 @@ def get_recon_staves(MEI_tree, alternates_list):
 	all_staves = get_all_staves(MEI_tree)
 	recon_staves = []
 	for staff in all_staves:
-		if eval(staff.getAttribute('n').getValue()) in recon_staves_NUM:
+		if staff.getAttribute('n').getValue() in recon_staves_NUM:
 			recon_staves.append(staff)
 	return recon_staves
 
@@ -75,13 +75,17 @@ def move_recon_staves(recon_staves, al):
 		"""Return the number of staff that the given staff
 		is a reconstruction of.
 		"""
+		print(alternates_list)
 		for i in alternates_list:
 			if i[0] == staff_n:
+				print(i[2])
 				return i[2]
 
 	def resp(staff_n, alternates_list):
+		print(alternates_list)
 		for i in alternates_list:
 			if i[0] == staff_n:
+				print(i[3])
 				return i[3]
 
 	for staff in recon_staves:
@@ -111,12 +115,10 @@ def adjust_staff_group(MEI_tree, recon_staves_NUM, alternates_list):
 	"""
 	all_staves = get_all_staves(MEI_tree)
 	recon_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
-	print(recon_staves_NUM)
 
 	all_staff_def = MEI_tree.getDescendantsByName('staffDef')
 	for staff_def in all_staff_def:
-		if eval(staff_def.getAttribute('n').getValue()) in recon_staves_NUM:
-			print("Removed child!")
+		if staff_def.getAttribute('n').getValue() in recon_staves_NUM:
 			staff_def.getParent().removeChild(staff_def)
 
 def reconstructions(MEI_tree, alternates_list):
