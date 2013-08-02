@@ -19,30 +19,30 @@ def get_original_staves(MEI_tree, alternates_list):
 	all_staves = get_all_staves(MEI_tree)
 	original_staves = []
 	for staff in all_staves:
-		if staff.getAttribute('n').getValue() in original_staves_NUM:
+		if eval(staff.getAttribute('n').getValue()) in original_staves_NUM:
 			original_staves.append(staff)
 	return original_staves
 
 def get_recon_staves_NUM(MEI_tree, alternates_list):
 	"""Get numbers of all reconstructed staevs."""
-	reconstruction_staves_NUM = []
+	recon_staves_NUM = []
 	for i in alternates_list:
-		if i[0] not in reconstruction_staves_NUM and i[1] == RECONSTRUCTION:
-			reconstruction_staves_NUM.append(i[0])
-	return reconstruction_staves_NUM
+		if i[0] not in recon_staves_NUM and i[1] == RECONSTRUCTION:
+			recon_staves_NUM.append(i[0])
+	return recon_staves_NUM
 
 def get_recon_staves(MEI_tree, alternates_list):
 	"""Returns a list of all staff objects that are reconstructions of
 	other staves, and should be moved inside the <app> of those staves.
 	"""
-	reconstruction_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
+	recon_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
 	# Now get list of actuall staff objects
 	all_staves = get_all_staves(MEI_tree)
-	reconstruction_staves = []
+	recon_staves = []
 	for staff in all_staves:
-		if staff.getAttribute('n').getValue() in reconstruction_staves_NUM:
-			reconstruction_staves.append(staff)
-	return reconstruction_staves
+		if eval(staff.getAttribute('n').getValue()) in recon_staves_NUM:
+			recon_staves.append(staff)
+	return recon_staves
 
 def make_orig_app(MEI_tree, original_staves):
 	"""Based on the list of original staves, change their contents
@@ -52,11 +52,11 @@ def make_orig_app(MEI_tree, original_staves):
 	# Go through all staves to maintain original order
 	for staff in all_staves:
 		parent_measure = staff.getParent()
-		old_staff_number = staff.getAttribute('n').getValue()
+		old_staff_n = staff.getAttribute('n').getValue()
 		# For original staves, which should be replaced with <app>:
 		if staff in original_staves:
 			new_app = MeiElement('app')
-			new_app.addAttribute('n', old_staff_number)
+			new_app.addAttribute('n', old_staff_n)
 			new_app.addAttribute('type', RECONSTRUCTION)
 			# Add <app> where <staff> was, and delete the latter
 			parent_measure.removeChild(staff)
@@ -67,7 +67,7 @@ def make_orig_app(MEI_tree, original_staves):
 			parent_measure.removeChild(staff)
 			parent_measure.addChild(staff)
 
-def move_reconstruction_staves(reconstruction_staves, al):
+def move_recon_staves(recon_staves, al):
 	"""Move reconstructed staves to their proper place within
 	the <app> element created under the original staff.
 	"""
@@ -84,7 +84,7 @@ def move_reconstruction_staves(reconstruction_staves, al):
 			if i[0] == staff_n:
 				return i[3]
 
-	for staff in reconstruction_staves:
+	for staff in recon_staves:
 		staff_n = staff.getAttribute('n').getValue()
 		parent_measure = staff.getParent()
 		sibling_apps = parent_measure.getChildrenByName('app')
@@ -105,26 +105,28 @@ def move_reconstruction_staves(reconstruction_staves, al):
 				new_rdg.addChild(staff)
 				parent_measure.removeChild(staff)
 
-def adjust_staff_group(MEI_tree, reconstruction_staves_NUM, alternates_list):
+def adjust_staff_group(MEI_tree, recon_staves_NUM, alternates_list):
 	"""Adjusts <staffGrp> definitions by removing definitions
 	for reconstructed staves.
 	"""
 	all_staves = get_all_staves(MEI_tree)
-	reconstruction_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
+	recon_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
+	print(recon_staves_NUM)
 
 	all_staff_def = MEI_tree.getDescendantsByName('staffDef')
 	for staff_def in all_staff_def:
-		if staff_def.getAttribute('n').getValue() in reconstruction_staves_NUM:
+		if eval(staff_def.getAttribute('n').getValue()) in recon_staves_NUM:
+			print("Removed child!")
 			staff_def.getParent().removeChild(staff_def)
 
 def reconstructions(MEI_tree, alternates_list):
 	original_staves = get_original_staves(MEI_tree, alternates_list)
-	reconstruction_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
-	reconstruction_staves = get_recon_staves(MEI_tree, alternates_list)
+	recon_staves_NUM = get_recon_staves_NUM(MEI_tree, alternates_list)
+	recon_staves = get_recon_staves(MEI_tree, alternates_list)
 
 	make_orig_app(MEI_tree, original_staves)
-	move_reconstruction_staves(reconstruction_staves, alternates_list)
-	adjust_staff_group(MEI_tree, reconstruction_staves_NUM, alternates_list)
+	move_recon_staves(recon_staves, alternates_list)
+	adjust_staff_group(MEI_tree, recon_staves_NUM, alternates_list)
 	
 
 	
