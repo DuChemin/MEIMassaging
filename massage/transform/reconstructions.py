@@ -75,17 +75,13 @@ def move_recon_staves(recon_staves, al):
 		"""Return the number of staff that the given staff
 		is a reconstruction of.
 		"""
-		print(alternates_list)
 		for i in alternates_list:
 			if i[0] == staff_n:
-				print(i[2])
 				return i[2]
 
 	def resp(staff_n, alternates_list):
-		print(alternates_list)
 		for i in alternates_list:
 			if i[0] == staff_n:
-				print(i[3])
 				return i[3]
 
 	for staff in recon_staves:
