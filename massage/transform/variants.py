@@ -2,6 +2,20 @@
 from constants import *
 # from pymei import MeiElement
 
+def get_notes(measure, staff_n):
+	"""Return of all list of notes in a given measure and staff."""
+	for staff in measure:
+		if staff.getAttribute('n').getValue():
+			return staff.getDescendantsByName('note')
+
+def colors_in_measure(notelist):
+	colors = []
+	for note in notelist:
+		if (note.hasAttribute('color') and
+				note.getAttribute('color').getValue() not in colors):
+			colors.append(note.getAttribute('color').getValue())
+	return colors
+
 def color_matches(this_note_color, color_we_want):
 	if color_we_want == BLACK:
 		return this_note_color != BLACK
@@ -56,7 +70,6 @@ def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
 		else:
 			return (this_duration +
 					duration_of_color(notelist[1:], color_we_want, True))
-
 
 def previous_measure_last_color(staff):
 	"""Returns the color of the last note in the previous measure,
@@ -154,6 +167,16 @@ def add_app_to_staff(staff, skip, duration):
 	# Finally, add new layer as a child of staff and remove the old one.
 	staff.removeChild(old_layer)
 	staff.addChild(new_layer)
+
+def incorporate_variant(MEI_tree, var_staff_n, orig_staff_n, color=BLACK):
+	"""Given an MEI tree and two staff names, incorporate the variant
+	into the original at each measure.
+	"""
+	measures = MEI_tree.getDescendantsByName('measure')
+	for measure in measures:
+		var_notelist = get_notes(measure, var_staff_n)
+		skip = semibreves_before(var_notelist, color)
+		duration = duration_of_color(var_notelist, color)
 
 def variants(MEI_tree, alternates_list):
 	"""Uses the list of alternate readings to find the variants,

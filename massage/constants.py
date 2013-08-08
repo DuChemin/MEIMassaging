@@ -1,19 +1,14 @@
 
-# File path for all media
+# File paths and names
 MEDIA = 'massage/massage/media/'
 UPLOADS = 'uploads'
 PROCESSED = 'processed'
+EXT = ['.xml', '.mei']
+EXT_LENGTH = 4
 
-# Clef constants
-EMPTY_CLEFS = ('', '', '', '')
-CLEF_SHAPES = ['G', 'C', 'F']
-POSSIBLE_LINES = ['1', '2', '3', '4', '5']
-
-# For original and regular readings, enclosed under <choice>.
+# MEI element names
 ORIG = 'orig'
 REG = 'reg'
-
-# Duration constants
 LONGA = 'long'
 
 # For alernate reading data
@@ -24,3 +19,8 @@ IGNORED = '0'
 
 # Color data
 BLACK = '#000000'
+
+# Clef constants
+EMPTY_CLEFS = ('', '', '', '')
+CLEF_SHAPES = ['G', 'C', 'F']
+POSSIBLE_LINES = ['1', '2', '3', '4', '5']

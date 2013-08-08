@@ -86,13 +86,16 @@ def write_transformation(filename, data=TransformData()):
 
 def test_ui():
 	old_filename = raw_input("Filename to transform: ")
-	if '.mei' not in old_filename or old_filename[-4:] != '.mei':
-		old_filename += '.mei'
+	if (len(old_filename) < EXT_LENGTH or
+			old_filename[-EXT_LENGTH:] not in EXT):
+		print("No file extension provided; " + EXT[0] + " used.")
+		old_filename += EXT[0]
 	data = TransformData() # Will be filled in
 	TEST_SET_UP(data) # For testing purposes
 	old_MEI_doc = XmlImport.documentFromFile(old_filename)
 	new_MEI_doc = transform(old_MEI_doc, data)
-	new_filename = old_filename[:-4] + '_.mei'
+	new_filename = (old_filename[:-EXT_LENGTH] + '_' +
+			old_filename[-EXT_LENGTH:])
 	status = XmlExport.meiDocumentToFile(new_MEI_doc, new_filename)
 	if status:
 		print("Transformed file saved as " + new_filename)
