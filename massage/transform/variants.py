@@ -1,6 +1,6 @@
 
 from constants import *
-# from pymei import MeiElement
+from pymei import MeiElement
 
 def get_notes(measure, staff_n):
 	"""Return of all list of notes in a given measure and staff."""
@@ -8,26 +8,7 @@ def get_notes(measure, staff_n):
 		if staff.getAttribute('n').getValue():
 			return staff.getDescendantsByName('note')
 
-def colors_in_measure(notelist):
-	colors = []
-	for note in notelist:
-		if (note.hasAttribute('color') and
-				note.getAttribute('color').getValue() not in colors):
-			colors.append(note.getAttribute('color').getValue())
-	return colors
-
-def color_matches(this_note_color, color_we_want):
-	if color_we_want == BLACK:
-		return this_note_color != BLACK
-	else:
-		return this_note_color == color_we_want
-
-def semibreves_before(notelist, color_we_want=BLACK):
-	"""Gives the number of semibreves before the first occurrence
-	either of the given color, or of any color if none is given.
-	"""
-
-	def get_color(note):
+def get_color(note):
 		# If there is a note color attribute, save it;
 		# default to black if the attribute doesn't exist
 		if not note.hasAttribute('color'):
@@ -36,11 +17,98 @@ def semibreves_before(notelist, color_we_want=BLACK):
 			this_note_color = note.getAttribute('color').getValue()
 		return this_note_color
 
+def get_staff(measure, staff_n):
+	for staff in measure.getDescendantsByName('staff'):
+		if staff.getAttribute('n').getValue() == staff_n:
+			return staff
+	# If it doesn't exist, we return a null...
+	return None
+
+def colors_in_notelist(notelist):
+	"""Returns a list of all non-black colors used in a given
+	staff in a given measure (based on a list of notes).
+
+	>>> note_black = MeiElement('note')
+	>>> note_red = MeiElement('note')
+	>>> note_red.addAttribute('color', RED)
+	>>> note_blue = MeiElement('note')
+	>>> note_blue.addAttribute('color', BLUE)
+	>>> notelist = [note_black, note_red, note_blue]
+	>>> colors_in_notelist(notelist)
+	['#ff0000', '#0000ff']
+
+	"""
+	colors = []
+	for note in notelist:
+		color = get_color(note)
+		if color not in colors and color != BLACK:
+			colors.append(note.getAttribute('color').getValue())
+	return colors
+
+def color_matches(this_note_color, color_we_want):
+	"""Does a given color match with the color we want?
+	Exception: if BLACK is the "color we want", then
+	return True for any *non-black* color.
+
+	>>> color_matches('#0033ff', BLACK)
+	True
+
+	>>> color_matches(BLACK, BLACK)
+	False
+
+	>>> color_matches('#0033ff', '#0033ff')
+	True
+
+	>>> color_matches('#336699', '#0033ff')
+	False
+	"""
+	if color_we_want == BLACK:
+		return this_note_color != BLACK
+	else:
+		return this_note_color == color_we_want
+
+def convert_to_semibreves(dur_attr):
+	"""Converts an MEI @dur value to its equivalent
+	in number of semibreves.
+	"""
+	if dur_attr == 'breve':
+		return 2.0
+	elif dur_attr == 'long':
+		return 4.0
+	else:
+		return 1.0 / eval(dur_attr)
+
+def semibreves_before(notelist, color_we_want=BLACK):
+	"""Gives the number of semibreves before the first occurrence
+	either of the given color, or of any color if none is given.
+
+	>>> semibreve_black = MeiElement('note')
+	>>> semibreve_black.addAttribute('dur', '1')
+	>>> minim_black = MeiElement('note')
+	>>> minim_black.addAttribute('dur', '2')
+	>>> minim_red = MeiElement('note')
+	>>> minim_red.addAttribute('dur', '2')
+	>>> minim_red.addAttribute('color', RED)
+	>>> breve_blue = MeiElement('note')
+	>>> breve_blue.addAttribute('dur', 'breve')
+	>>> breve_blue.addAttribute('color', BLUE)
+	>>> notelist = [semibreve_black, minim_black, minim_red, breve_blue]
+	>>> semibreves_before(notelist)
+	1.5
+
+	>>> semibreves_before(notelist, RED)
+	1.5
+
+	>>> semibreves_before(notelist, BLUE)
+	2.0
+
+	"""
 	if notelist == []:
 		return 0
 	else:
 		this_note = notelist[0]
-		this_duration = 1.0 / eval(this_note.getAttribute('dur').getValue())
+		dur_attr = this_note.getAttribute('dur').getValue()
+		this_duration = convert_to_semibreves(dur_attr)
 		this_note_color = get_color(this_note)
 		if color_matches(this_note_color, color_we_want):
 			return 0
@@ -55,18 +123,41 @@ def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
 	The color black (#000000) cannot be searched for; instead,
 	the function will return the duration of the first non-black
 	sequence of notes.
+
+	>>> semibreve_black = MeiElement('note')
+	>>> semibreve_black.addAttribute('dur', '1')
+	>>> minim_black = MeiElement('note')
+	>>> minim_black.addAttribute('dur', '2')
+	>>> minim_red = MeiElement('note')
+	>>> minim_red.addAttribute('dur', '2')
+	>>> minim_red.addAttribute('color', RED)
+	>>> breve_blue = MeiElement('note')
+	>>> breve_blue.addAttribute('dur', 'breve')
+	>>> breve_blue.addAttribute('color', BLUE)
+	>>> notelist = [semibreve_black, minim_black, minim_red, breve_blue]
+	>>> duration_of_color(notelist)
+	0.5
+
+	>>> duration_of_color(notelist, RED)
+	0.5
+
+	>>> duration_of_color(notelist, BLUE)
+	2.0
+
 	"""
 	if notelist == []:
 		return 0
 	else:
 		this_note = notelist[0]
-		this_duration = 1.0 / eval(this_note.getAttribute('dur').getValue())
-		this_note_color = this_note.getAttribute('color').getValue()
+		# Find duration of this note
+		dur_attr = this_note.getAttribute('dur').getValue()
+		this_duration = convert_to_semibreves(dur_attr)
+		this_note_color = get_color(this_note)
 		if not color_matches(this_note_color, color_we_want):
 			if begun_color:
 				return 0
 			else:
-				return duration_of_color(notelist[1:], color)
+				return duration_of_color(notelist[1:], color_we_want)
 		else:
 			return (this_duration +
 					duration_of_color(notelist[1:], color_we_want, True))
@@ -85,13 +176,6 @@ def previous_measure_last_color(staff):
 		# Otherwise, we had the first measure already...
 		return None
 
-	def get_staff_by_number(measure, staff_n):
-		for staff in measure.getChildrenByName('staff'):
-			if staff.getAttribute('n').getValue() == staff_n:
-				return staff
-		# If it doesn't exist, we return a null...
-		return None
-
 	staff_n = staff.getAttribute('n')
 	current_measure = staff.getParent()
 	previous_measure = get_previous_measure(current_measure)
@@ -99,7 +183,7 @@ def previous_measure_last_color(staff):
 	if not previous_measure:
 		return BLACK
 	else:
-		prev_measure_staff_n = get_staff_by_number(previous_measure)
+		prev_measure_staff_n = get_staff(previous_measure)
 		# Case which shouldn't happen: staff doesn't exist in previous measure
 		if not prev_measure_staff_n:
 			return BLACK
@@ -124,59 +208,154 @@ def add_app_to_staff(staff, skip, duration):
 	occurring before the <app> element is to begin, and the length
 	in semibreves of the <app> element. We assume that there is
 	only one layer in the staff given.
+	
+	Warning: relies on predicable ordering of getDescendantsByName().
+	If this turns out not to be correct, this function must be rewritten
+	to take a list of (skip, dur) tuples as a parameter and create all
+	the <app> elements in one pass.
 	"""
 	old_layer = staff.getChildrenByName('layer')[0]
-	notelist = old_layer.getChildrenByName('note')
+	notelist = old_layer.getDescendantsByName('note')
 	new_layer = MeiElement('layer')
-	
-	# Add notes before the variant into the new layer
-	while skip > 0 and notelist != []:
-		dur_of_next_note = 1.0 / eval(
-				notelist[0].getAttribute('dur').getValue())
-		# Bad case where the variant doesn't line up with the lemma:
-		# in this case, include the part of the lemma's note that
-		# hangs outside its proper area.
-		if dur_of_next_note > skip:
-			# Add the difference to the duration of the <app>
-			duration += dur_of_next_note - skip
-			skip = 0
-		# But in good cases, just add the next note
-		else:
-			new_layer.addChild(notelist[0])
-			skip -= dur_of_next_note
-			del notelist[0]
-
-	# Now add the <app> to the layer; add the notes that belong in
-	# the <app> to the lemma.
 	app = MeiElement('app')
 	lemma = MeiElement('lem')
 	app.addChild(lemma)
-	new_layer.addChild(app)
-	while duration > 0 and notelist != []:
-		dur_of_next_note = 1.0 / eval(
-				notelist[0].getAttribute('dur').getValue())
-		duration -= dur_of_next_note
-		lemma.addChild(notelist[0])
-		del notelist[0]
-
-	# Add remaining notes, if any.
-	while notelist != []:
-		new_layer.addChild(notelist[0])
-		del notelist[0]
-
+	
+	for note in notelist:
+		dur_attr = note.getAttribute('dur').getValue()
+		dur_of_next_note = convert_to_semibreves(dur_attr)
+		# We haven't yet exhausted the skip; still adding notes
+		# directly to the layer.
+		if skip > 0 and dur_of_next_note <= skip:
+			new_layer.addChild(note)
+			skip -= dur_of_next_note
+		# If the skip has been exhausted, begin the duration:
+		elif duration > 0:
+			# If this is the first time we're adding a note into the app,
+			# this is the place to add the app element to the layer.
+			if new_layer.getChildrenByName('app') == []:
+				new_layer.addChild(app)
+			# Otherwise, just read duration for this note.
+			# Add the note to the <lemma>, within the <app>.
+			else:
+				duration -= dur_of_next_note
+				lemma.addChild(note)
+		# Skip and duration are both exhausted, and the rest
+		# is just adding notes to the new layer.
+		else:
+			new_layer.addChild(note)
 	# Finally, add new layer as a child of staff and remove the old one.
 	staff.removeChild(old_layer)
 	staff.addChild(new_layer)
 
-def incorporate_variant(MEI_tree, var_staff_n, orig_staff_n, color=BLACK):
-	"""Given an MEI tree and two staff names, incorporate the variant
-	into the original at each measure.
+def app_whole_measure(staff):
+	"""Enclose the entire contents of a staff in a measure
+	inside the <app> element. Will be done if variants overlap
+	in illegal ways.
 	"""
-	measures = MEI_tree.getDescendantsByName('measure')
-	for measure in measures:
-		var_notelist = get_notes(measure, var_staff_n)
-		skip = semibreves_before(var_notelist, color)
-		duration = duration_of_color(var_notelist, color)
+	old_layer = staff.getChildrenByName('layer')[0]
+	notelist = old_layer.getDescendantsByName('note')
+	new_layer = MeiElement('layer')
+	app = MeiElement('app')
+	lemma = MeiElement('lem')
+	for note in notelist:
+		lemma.addChild(note)
+	app.addChild(lemma)
+	new_layer.addChild(app)
+	staff.removeChild(old_layer)
+	staff.addChild(new_layer)
+
+def legal_overlapping(staff, skipdurs):
+	"""Takes a list of (skip, dur) tuples and returns a boolean value:
+	True if the variants either line up or do not overlap,
+	False if the variants overlap in an illegal way.
+	"""
+	def legal_with_lemma(staff, skip, dur):
+		"""Returns whether the given skip and dur work
+		with the given staff.
+		"""
+		old_layer = staff.getChildrenByName('layer')[0]
+		new_layer = MeiElement('layer')
+		notelist = old_layer.getDescendantsByName('note')
+		for note in notelist:
+			dur_attr = note.getAttribute('dur').getValue()
+			dur_of_next_note = convert_to_semibreves(dur_attr)
+			# During the skip
+			if skip > 0:
+				if dur_of_next_note <= skip:
+					new_layer.addChild(note)
+					skip -= dur_of_next_note
+				else:
+					return False
+			else:
+				if dur_of_next_note <= dur:
+					dur -= dur_of_next_note
+				else:
+					return False
+		return True
+
+	def legal_with_each_other(skipA, durA, skipB, durB):
+		"""Returns whether a skip, dur combination is legal with
+		a single other skip, dur combination.
+		"""
+		# Case of non-overlapping
+		if skipA + durA <= skipB or skipB + durB < skipA:
+			return True
+		# Case of complete lining-up
+		elif skipA == skipB and durA == durB:
+			return True
+		# Case when one really has no dur (shouldn't happen?)
+		elif durA == 0 or durB == 0:
+			return True
+		else:
+			return False
+
+	for sdA in skipdurs:
+		if not legal_with_lemma(staff, sdA[0], sdA[1]):
+			return False
+		for sdB in skipdurs:
+			if not legal_with_each_other(sdA[0], sdA[1], sdB[0], sdB[1]):
+				return False
+	return True
+
+def add_all_apps_in_measure(measure, variants_list):
+	def get_staff_skipdurs(notelist):
+		"""Get skip and duration information for a single notelist."""
+		skipdurs = []
+		for color in colors_in_notelist(notelist):
+			skip = semibreves_before(notelist, color)
+			dur = duration_of_color(notelist, color)
+			skipdurs.append((skip, dur))
+		return skipdurs
+
+	def get_lemma_skipdurs(measure, lemma_n, vl):
+		"""Get skip and duration information for each variant of each lemma."""
+		if vl == []:
+			return []
+		else:
+			if vl[0][2] == lemma_n:
+				staff = get_staff(measure, vl[0][0])
+				layer = staff.getChildrenByName('layer')[0]
+				notelist = layer.getDescendantsByName('note')
+				answer = get_staff_skipdurs(notelist)
+			else:
+				answer = []
+			return answer + get_lemma_skipdurs(measure, lemma_n, vl[1:])
+
+	# Determine if each variant group is legally lined up.
+	# Get list of distinct lemma staff @n values:
+	lemmas = []
+	for v in variants_list:
+		if v[2] not in lemmas:
+			lemmas.append(v[2])
+	for L in lemmas:
+		lemma_skipdurs = get_lemma_skipdurs(measure, L, variants_list)
+		if legal_overlapping(get_staff(measure, L), lemma_skipdurs):
+			# remove duplicates with set()
+			for sd in set(lemma_skipdurs):
+				add_app_to_staff(get_staff(measure, L), sd[0], sd[1])
+		else:
+			app_whole_measure(get_staff(measure, L))
 
 def variants(MEI_tree, alternates_list):
 	"""Uses the list of alternate readings to find the variants,
@@ -184,10 +363,10 @@ def variants(MEI_tree, alternates_list):
 	grouped together with the lemma.
 	"""
 	# See transform.py for documentation for the alternates_list object.
-	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
-	for i in alternates_list:
-		if i[0] != i[2] and i[1] == VARIANT:
-			pass
+	variants_list = [i for i in alternates_list
+			if i[1] == VARIANT and i[0] != i[2]]
+	for measure in MEI_tree.getDescendantsByName('measure'):
+		add_all_apps_in_measure(measure, variants_list)
 	# source, id
 
 # END OF FILE

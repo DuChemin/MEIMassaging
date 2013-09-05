@@ -15,7 +15,7 @@ from constants import *
 from pymei import XmlImport, XmlExport
 
 import logging
-logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
+# logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
 
 class TransformData:
 	def __init__(self,
@@ -52,8 +52,8 @@ def TEST_SET_UP(data):
 			('2', VARIANT, '2', ''),
 			('3', VARIANT, '3', ''),
 			('4', VARIANT, '4', ''),
-			('5', RECONSTRUCTION, '2', 'MJW'),
-			('6', RECONSTRUCTION, '4', 'MJW')]
+			('5', VARIANT, '2', 'MJW'),
+			('6', VARIANT, '4', 'MJW')]
 
 def transform(MEI_doc, data=TransformData()):
 	logging.info('alternates_list: ' + str(data.alternates_list))

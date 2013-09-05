@@ -19,6 +19,8 @@ IGNORED = '0'
 
 # Color data
 BLACK = '#000000'
+BLUE = '#0000ff'
+RED = '#ff0000'
 
 # Clef constants
 EMPTY_CLEFS = ('', '', '', '')
