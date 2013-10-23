@@ -209,7 +209,7 @@ def add_app_to_staff(staff, skip, duration):
 	in semibreves of the <app> element. We assume that there is
 	only one layer in the staff given.
 	
-	Warning: relies on predicable ordering of getDescendantsByName().
+	Warning: relies on predictable ordering of getDescendantsByName().
 	If this turns out not to be correct, this function must be rewritten
 	to take a list of (skip, dur) tuples as a parameter and create all
 	the <app> elements in one pass.
@@ -318,8 +318,7 @@ def legal_overlapping(staff, skipdurs):
 				return False
 	return True
 
-def add_all_apps_in_measure(measure, variants_list):
-	def get_staff_skipdurs(notelist):
+def get_staff_skipdurs(notelist):
 		"""Get skip and duration information for a single notelist."""
 		skipdurs = []
 		for color in colors_in_notelist(notelist):
@@ -328,6 +327,7 @@ def add_all_apps_in_measure(measure, variants_list):
 			skipdurs.append((skip, dur))
 		return skipdurs
 
+def add_all_apps_in_measure(measure, variants_list):
 	def get_lemma_skipdurs(measure, lemma_n, vl):
 		"""Get skip and duration information for each variant of each lemma."""
 		if vl == []:
@@ -357,6 +357,18 @@ def add_all_apps_in_measure(measure, variants_list):
 		else:
 			app_whole_measure(get_staff(measure, L))
 
+def add_measure_vars_to_app(measure, variants_list):
+	"""Adds all variants in a measure to the lemma staff's <app>."""
+	
+
+def remove_measure_var_staves(measure, variants_list):
+	"""Removes all extra variant staves, after their information
+	has been added to the parent (lemma) staff.
+	"""
+
+def delete_staff_def(MEI_tree, variants_list):
+	"""Deletes the staff definitions for variant staves."""
+
 def variants(MEI_tree, alternates_list):
 	"""Uses the list of alternate readings to find the variants,
 	and reorganize the MEI file so that the alternate readings are
@@ -367,7 +379,18 @@ def variants(MEI_tree, alternates_list):
 			if i[1] == VARIANT and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
 		add_all_apps_in_measure(measure, variants_list)
-	# source, id
+		add_measure_vars_to_app(measure, variants_list)
+		remove_measure_var_staves(measure, variants_list)
+	delete_staff_def(MEI, variants_list)
+
+"""
+To add in future:
+ * add source information
+ * add id information to <app> elements: this way
+   variants that cross barlines can be kept together
+ * put variants that are identical in multiple sources
+   into the same <rdg> element
+ * preserve brackets, ties and similar annotations
+"""
 
 # END OF FILE
-

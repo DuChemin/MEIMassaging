@@ -6,6 +6,7 @@ from incipit import obliterate_incipit
 from incipit import renumber_measures
 from responsibility import responsibility
 from longa import longa
+from sources import sources
 from variants import variants
 from emendations import emendations
 from reconstructions import reconstructions
@@ -72,10 +73,12 @@ def transform(MEI_doc, data=TransformData()):
 		longa(MEI_tree)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
+	sources(MEI_tree, data.alternates_list)
 	variants(MEI_tree, data.alternates_list)
 	emendations(MEI_tree, data.alternates_list)
 	reconstructions(MEI_tree, data.alternates_list)
 	ignored(MEI_tree, data.alternates_list)
+	# Thing to do: remove ties from removed staves!
 	return MEI_doc
 
 def write_transformation(filename, data=TransformData()):
