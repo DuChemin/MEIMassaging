@@ -381,7 +381,7 @@ def variants(MEI_tree, alternates_list):
 		add_all_apps_in_measure(measure, variants_list)
 		add_measure_vars_to_app(measure, variants_list)
 		remove_measure_var_staves(measure, variants_list)
-	delete_staff_def(MEI, variants_list)
+	delete_staff_def(MEI_tree, variants_list)
 
 """
 To add in future:
