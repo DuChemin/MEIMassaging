@@ -365,9 +365,19 @@ def remove_measure_var_staves(measure, variants_list):
 	"""Removes all extra variant staves, after their information
 	has been added to the parent (lemma) staff.
 	"""
+	staff_list = measure.getDescendantsByName('staff')
+	for variants_list_item in variants_list:
+		for staff in staff_list:
+			if staff.hasAttribute('n') and staff.getAttribute('n').value == variants_list_item[0]:
+				staff.parent.removeChild(staff)
 
 def delete_staff_def(MEI_tree, variants_list):
 	"""Deletes the staff definitions for variant staves."""
+	staffDefs = MEI_tree.getDescendantsByName('staffDef')
+	for variants_list_item in variants_list:
+		for staffDef in staffDefs:
+			if staffDef.hasAttribute('n') and staffDef.getAttribute('n').value == variants_list_item[0]:
+				staffDef.parent.removeChild(staffDef)
 
 def variants(MEI_tree, alternates_list):
 	"""Uses the list of alternate readings to find the variants,
