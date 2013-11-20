@@ -41,21 +41,7 @@ class TransformData:
 		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
 		self.editorial_resp = editorial_resp
-
-def TEST_SET_UP(data):
-	"""Mutates data to test specific transformations"""
-	data.arranger_to_editor = True
-	data.replace_longa = True
-	data.obliterate_incipit = True
-	data.editorial_resp = 'mjw'
-	data.alternates_list = [
-			('1', VARIANT, '1', ''),
-			('2', VARIANT, '2', ''),
-			('3', VARIANT, '3', ''),
-			('4', VARIANT, '4', ''),
-			('5', VARIANT, '2', 'MJW'),
-			('6', VARIANT, '4', 'MJW')]
-
+	
 def transform(MEI_doc, data=TransformData()):
 	logging.info('alternates_list: ' + str(data.alternates_list))
 	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
@@ -86,27 +72,6 @@ def write_transformation(filename, data=TransformData()):
 	new_MEI_doc = transform(old_MEI_doc, data)
 	XmlExport.meiDocumentToFile(new_MEI_doc,
 			MEDIA + filename.replace(UPLOADS, PROCESSED))
-
-def test_ui():
-	old_filename = raw_input("Filename to transform: ")
-	if (len(old_filename) < EXT_LENGTH or
-			old_filename[-EXT_LENGTH:] not in EXT):
-		print("No file extension provided; " + EXT[0] + " used.")
-		old_filename += EXT[0]
-	data = TransformData() # Will be filled in
-	TEST_SET_UP(data) # For testing purposes
-	old_MEI_doc = XmlImport.documentFromFile(old_filename)
-	new_MEI_doc = transform(old_MEI_doc, data)
-	new_filename = (old_filename[:-EXT_LENGTH] + '_' +
-			old_filename[-EXT_LENGTH:])
-	status = XmlExport.meiDocumentToFile(new_MEI_doc, new_filename)
-	if status:
-		print("Transformed file saved as " + new_filename)
-	else:
-		print("Transformation failed")
-
-if __name__ == "__main__":
-	test_ui()
 
 #                                 ,_-=(!7(7/zs_.
 #                              .='  ' .`/,/!(=)Zm.
