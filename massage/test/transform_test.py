@@ -6,10 +6,10 @@ from transform.transform import *
 test_cases = [] 
 
 class TestCase:
-	def __init__(self,name,mei_file,trasform_data):
+	def __init__(self,name,mei_file,transform_data):
 		self.name = name
 		self.mei_file = mei_file
-		self.transform_data = TransformData()
+		self.transform_data = transform_data
 
 	def Run(self):
 		old_filename = self.mei_file
