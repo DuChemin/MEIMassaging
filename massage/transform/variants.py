@@ -237,9 +237,8 @@ def add_app_to_staff(staff, skip, duration):
 				new_layer.addChild(app)
 			# Otherwise, just read duration for this note.
 			# Add the note to the <lemma>, within the <app>.
-			else:
-				duration -= dur_of_next_note
-				lemma.addChild(note)
+			duration -= dur_of_next_note
+			lemma.addChild(note)
 		# Skip and duration are both exhausted, and the rest
 		# is just adding notes to the new layer.
 		else:
