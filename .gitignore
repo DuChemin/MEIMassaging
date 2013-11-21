@@ -16,3 +16,4 @@ massage/transform/shr.mei
 massage/transform/shr_.mei
 
 *.pyc
+massage/test/dat/*_.mei
