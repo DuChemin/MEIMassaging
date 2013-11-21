@@ -18,7 +18,7 @@ class TestCase:
 			print("No file extension provided; " + EXT[0] + " used.")
 			old_filename += EXT[0]
 		old_MEI_doc = XmlImport.documentFromFile(old_filename)
-		print('running test case ' + self.name + '')
+		print('running test case ' + self.name + ' Input: ' + old_filename)
 		#running the test:
 		new_MEI_doc = transform(old_MEI_doc, self.transform_data)
 		new_filename = (old_filename[:-EXT_LENGTH] + '_' +
