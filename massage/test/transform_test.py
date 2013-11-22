@@ -51,7 +51,20 @@ transform_data.alternates_list = [
 		('11', VARIANT, '11', ''),
 		('12', VARIANT, '11', 'ZK'),
 		('13', VARIANT, '11', 'ZK') ]
+#test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'TC_DC0221'
+mei_file = '/Users/zola/d/DuChemin/MEIMassaging/massage/test/dat/TC.Variants.01.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = True
+transform_data.obliterate_incipit = True
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '1', 'ZK'),
+		('3', VARIANT, '1', 'ZK') 
+		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
 for tc in test_cases:
