@@ -290,7 +290,8 @@ def legal_overlapping(staff, skipdurs):
 				if dur_of_next_note <= dur:
 					dur -= dur_of_next_note
 				else:
-					return False
+					if dur > 0:
+						return False
 		return True
 
 	def legal_with_each_other(skipA, durA, skipB, durB):
@@ -298,7 +299,7 @@ def legal_overlapping(staff, skipdurs):
 		a single other skip, dur combination.
 		"""
 		# Case of non-overlapping
-		if skipA + durA <= skipB or skipB + durB < skipA:
+		if skipA + durA <= skipB or skipB + durB <= skipA:
 			return True
 		# Case of complete lining-up
 		elif skipA == skipB and durA == durB:
