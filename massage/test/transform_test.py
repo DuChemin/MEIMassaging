@@ -53,7 +53,7 @@ transform_data.alternates_list = [
 		('13', VARIANT, '11', 'ZK') ]
 #test_cases.append(TestCase(name, mei_file, transform_data))
 
-name = 'TC_DC0221'
+name = 'TC_Variants.01'
 mei_file = '/Users/zola/d/DuChemin/MEIMassaging/massage/test/dat/TC.Variants.01.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
