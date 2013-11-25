@@ -146,7 +146,7 @@ def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
 
 	"""
 	if notelist == []:
-		return 0
+		return (0, [])
 	else:
 		this_note = notelist[0]
 		# Find duration of this note
@@ -155,12 +155,12 @@ def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
 		this_note_color = get_color(this_note)
 		if not color_matches(this_note_color, color_we_want):
 			if begun_color:
-				return 0
+				return (0, [])
 			else:
 				return duration_of_color(notelist[1:], color_we_want)
 		else:
-			return (this_duration +
-					duration_of_color(notelist[1:], color_we_want, True))
+			sub_total = duration_of_color(notelist[1:], color_we_want, True)
+			return (sub_total[0] + this_duration, sub_total[1] + [this_note])
 
 def previous_measure_last_color(staff):
 	"""Returns the color of the last note in the previous measure,
@@ -198,7 +198,13 @@ def previous_measure_last_color(staff):
 	else:
 		return last_note.getAttribute('color').getValue()
 
-def add_app_to_staff(staff, skip, duration):
+def add_app_to_staff(staff, skip, duration, applist):
+	print('add_app_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
+	"""TODO: update description! 
+	in-out parameters: staff, applist
+	in paramteres: skip, duration
+	"""
+	
 	"""Modifies the <staff> element given by replacing its <layer>
 	child element. The new layer will contain the same <note> elements
 	as the original, but some of these notes will be nested inside an
@@ -215,37 +221,67 @@ def add_app_to_staff(staff, skip, duration):
 	the <app> elements in one pass.
 	"""
 	old_layer = staff.getChildrenByName('layer')[0]
-	notelist = old_layer.getDescendantsByName('note')
-	new_layer = MeiElement('layer')
-	app = MeiElement('app')
-	lemma = MeiElement('lem')
-	app.addChild(lemma)
+	# notelist = old_layer.getDescendantsByName('note')
+	# new_layer = MeiElement('layer')
+	# app = MeiElement('app')
+	# lemma = MeiElement('lem')
+	# app.addChild(lemma)
 	
-	for note in notelist:
-		dur_attr = note.getAttribute('dur').getValue()
-		dur_of_next_note = convert_to_semibreves(dur_attr)
-		# We haven't yet exhausted the skip; still adding notes
-		# directly to the layer.
-		if skip > 0 and dur_of_next_note <= skip:
-			new_layer.addChild(note)
-			skip -= dur_of_next_note
-		# If the skip has been exhausted, begin the duration:
-		elif duration > 0:
-			# If this is the first time we're adding a note into the app,
-			# this is the place to add the app element to the layer.
-			if new_layer.getChildrenByName('app') == []:
-				new_layer.addChild(app)
-			# Otherwise, just read duration for this note.
-			# Add the note to the <lemma>, within the <app>.
-			duration -= dur_of_next_note
-			lemma.addChild(note)
-		# Skip and duration are both exhausted, and the rest
-		# is just adding notes to the new layer.
-		else:
-			new_layer.addChild(note)
-	# Finally, add new layer as a child of staff and remove the old one.
-	staff.removeChild(old_layer)
-	staff.addChild(new_layer)
+	layer_notes = old_layer.getDescendantsByName('note')
+	if skip not in applist:
+		app = MeiElement('app')
+		lemma = MeiElement('lem')
+		app.addChild(lemma)
+		skip__ = skip
+		for note in layer_notes:
+			dur_attr = note.getAttribute('dur').getValue()
+			dur_of_next_note = convert_to_semibreves(dur_attr)
+			# We haven't yet exhausted the skip;
+			if skip__ > 0 and dur_of_next_note <= skip__:
+				skip__ -= dur_of_next_note
+			# If the skip has been exhausted, begin the duration:
+			elif duration > 0:
+				if skip not in applist:
+					print('adding new app at SKIP' + str(skip))
+					note.getParent().addChildBefore(note, app)
+					applist[skip] = app
+				note.getParent().removeChild(note)
+				lemma.addChild(note)
+				duration -= dur_of_next_note	
+
+
+def merge_colored_blocks_to_lemma_staff(staff, colored_blocks): 
+	"""
+	for each list of colored blocks (list of (color, skip, dur, notes))
+	merge it to the corresponing lemma staff.
+
+	if the lemma staff doesn't have an <app> at the given location (_skip_)
+	add a new one to wrap the notes on the lemma staff inside the <lem>. 
+	To determine how many notes to wrap inside the <lem> use the _dur_ value
+	of the colored block.
+
+	"""
+def merge_colored_block_to_lemma_staff(staff, applist, colored_block, sourceIDs):
+	"""
+	merge one colored block (color, skip, dur, notes) into the lemma staff.
+	lemma staff must already have an <app> element at the 
+	location specified by _skip_
+	"""
+	skip = colored_block[1]
+	notelist = colored_block[2]
+	# Add rdg content
+	if skip not in applist: 
+		# error/warning
+		print('Warning: cannot merge colored notes to lemma staff')
+	else:
+		app = applist[skip]
+		rdg = MeiElement('rdg')
+		source_attr = MeiAttribute('source', sourceIDs)
+		rdg.addAttribute(source_attr)
+		app.addChild(rdg)
+		# TODO: add the list of notes to the rdg
+		for note in notelist:
+			rdg.addChild(note)
 
 def app_whole_measure(staff):
 	"""Enclose the entire contents of a staff in a measure
@@ -263,6 +299,7 @@ def app_whole_measure(staff):
 	new_layer.addChild(app)
 	staff.removeChild(old_layer)
 	staff.addChild(new_layer)
+	return app
 
 def legal_overlapping(staff, skipdurs):
 	"""Takes a list of (skip, dur) tuples and returns a boolean value:
@@ -273,6 +310,7 @@ def legal_overlapping(staff, skipdurs):
 		"""Returns whether the given skip and dur work
 		with the given staff.
 		"""
+		print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
 		old_layer = staff.getChildrenByName('layer')[0]
 		new_layer = MeiElement('layer')
 		notelist = old_layer.getDescendantsByName('note')
@@ -308,15 +346,119 @@ def legal_overlapping(staff, skipdurs):
 		elif durA == 0 or durB == 0:
 			return True
 		else:
+			print('Not legal with each-other: s' + str(skipA) + 'd' + str(durA) + ', and ' + 's' + str(skipB) + 'd' + str(durB))
 			return False
 
 	for sdA in skipdurs:
-		if not legal_with_lemma(staff, sdA[0], sdA[1]):
+		if not legal_with_lemma(staff, sdA[1], sdA[2]):
+			print('not legal with lemma')
 			return False
 		for sdB in skipdurs:
-			if not legal_with_each_other(sdA[0], sdA[1], sdB[0], sdB[1]):
+			if not legal_with_each_other(sdA[1], sdA[2], sdB[1], sdB[2]):
+				print('not legal with each-other')
 				return False
 	return True
+	
+def get_colored_blocks(measure, lemma_n, vl): # <--> get_lemma_skipdurs
+	"""Gather all colored blocks from all variant staves in the given 
+	measure and a given lemma staff
+	Return a list of (staff, list of (color, skip, dur, notes))
+	"""
+	if vl == []:
+		return []
+	else:
+		if vl[0][2] == lemma_n:
+			staff = get_staff(measure, vl[0][0])
+			layer = staff.getChildrenByName('layer')[0]
+			notelist = layer.getDescendantsByName('note')
+			answer = [(staff, get_colored_blocks_from_notes(notelist))]
+		else:
+			answer = []
+		return answer + get_colored_blocks(measure, lemma_n, vl[1:])
+	
+def get_colored_blocks_from_notes(notelist): # <--> get_staff_skipdurs
+	"""Gather all colored blocks on a given staff
+	Return a list of (color, skip, dur, notes)
+	"""
+	# return [(BLACK, 0, 0, [])]
+	skipdurs = []
+	for color in colors_in_notelist(notelist):
+		skip = semibreves_before(notelist, color)
+		dur_and_notes = duration_of_color(notelist, color)
+		dur = dur_and_notes[0]
+		notelist = dur_and_notes[1]
+		skipdurs.append((color, skip, dur, notelist))
+	return skipdurs
+	
+def add_all_apps_in_measure2(measure, variants_list):
+	"""Same as add_all_apps_in_measure, but using colored_blocks instead of (skip, dur) tuples
+	"""
+	def flatten_all_colored_blockes(list_of_list_of_color_blocks):
+		FL = []
+		for item in list_of_list_of_color_blocks:
+			FL += item[1]
+		return FL
+		
+	# Determine if each variant group is legally lined up.
+	# Get list of distinct lemma staff @n values:
+	print('M' + str(measure.getAttribute('n').value))
+	lemmas = []
+	for v in variants_list:
+		if v[2] not in lemmas:
+			lemmas.append(v[2])
+	for L in lemmas:
+		colored_blocks = get_colored_blocks(measure, L, variants_list)
+		staff = get_staff(measure, L)
+		print('Lemma no. ' + L)
+		print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
+		# TODO: merge sources where they coincide!
+		# TODO: update legal_overlapping so it works for possibly more colored blocks per staff
+		flat_list_of_colored_blocks = flatten_all_colored_blockes(colored_blocks)
+		print('add_all_apps_in_measure2(): flat_list_of_colored_blocks')
+		print(flat_list_of_colored_blocks)
+		if legal_overlapping(staff, flat_list_of_colored_blocks):
+			applist = dict()
+			RDGs_to_fill = []
+			for cbs in colored_blocks:
+				varstaff_n = cbs[0].getAttribute('n').getValue()
+				# TODO: look up source ID from staffDef
+				sourceID = '#source_' + varstaff_n
+				for cb in cbs[1]:
+					print("add_all_apps_in_measure2 {A}: cb=" + str(cb))
+					skip=cb[1]
+					dur=cb[2]
+					notelist=cb[3]
+					add_app_to_staff(staff, skip, dur, applist)
+					app = applist[skip]
+					# add rdg elements with reference to notelist, but do not insert notelist yet.
+					rdg = MeiElement('rdg')
+					rdg.addAttribute('source', sourceID)
+					app.addChild(rdg)
+					RDGs_to_fill.append((rdg, notelist))
+			# fill in rdg elements 
+			for rdgf in RDGs_to_fill:
+				for note in rdgf[1]:
+					print('adding child to rdg:')
+					print(rdgf[0])
+					rdgf[0].addChild(note)
+		else:
+			app = app_whole_measure(staff)
+			# add rdg elements with reference to notelist, but do not insert notelist yet.
+			for cbs in colored_blocks:
+				varstaff_n = cbs[0].getAttribute('n').getValue()
+				# TODO: look up source ID from staffDef
+				sourceID = '#source_' + varstaff_n
+				rdg = MeiElement('rdg')
+				rdg.addAttribute('source', sourceID)
+				app.addChild(rdg)
+				staves_of_measure = measure.getChildrenByName('staff')
+				for staff in staves_of_measure:
+					if staff.getAttribute('n').getValue() == varstaff_n:
+						notelist = staff.getDescendantsByName('note')
+						for note in notelist:
+							rdg.addChild(note)
+			
+			
 
 def get_staff_skipdurs(notelist):
 		"""Get skip and duration information for a single notelist."""
@@ -324,7 +466,7 @@ def get_staff_skipdurs(notelist):
 		for color in colors_in_notelist(notelist):
 			skip = semibreves_before(notelist, color)
 			dur = duration_of_color(notelist, color)
-			skipdurs.append((skip, dur))
+			skipdurs.append((color, skip, dur))
 		return skipdurs
 
 def add_all_apps_in_measure(measure, variants_list):
@@ -344,21 +486,47 @@ def add_all_apps_in_measure(measure, variants_list):
 
 	# Determine if each variant group is legally lined up.
 	# Get list of distinct lemma staff @n values:
+	print('M' + str(measure.getAttribute('n').value))
 	lemmas = []
 	for v in variants_list:
 		if v[2] not in lemmas:
 			lemmas.append(v[2])
 	for L in lemmas:
 		lemma_skipdurs = get_lemma_skipdurs(measure, L, variants_list)
-		if legal_overlapping(get_staff(measure, L), lemma_skipdurs):
+		staff = get_staff(measure, L)
+		print('Lemma no. ' + L)
+		print(lemma_skipdurs)
+		if legal_overlapping(staff, lemma_skipdurs):
 			# remove duplicates with set()
+			applist = dict()
 			for sd in set(lemma_skipdurs):
-				add_app_to_staff(get_staff(measure, L), sd[0], sd[1])
+				add_app_to_staff(staff, sd[0], sd[1], applist)
 		else:
-			app_whole_measure(get_staff(measure, L))
+			app_whole_measure(staff)
 
-def add_measure_vars_to_app(measure, variants_list):
+def merge_identical_colored_blocks(all_colored_blocks):
+	"""
+	Reduce the number of distinct colored blocks by merge together identical blocks.
+	As a result, a new (list of (varstaff, (list of (color, skip, dur, notelist))) is created. In the new set of
+	colored blocks the following is true:
+	  - if A and B two colored blocks AND A.skip==B.skip AND A.color==B.color THEN A.notelist != B.notelist
+	"""
+	# list of (varstaff, colored_blocks_by_skip) where colored_blocks_by_skip[skip][color]
+ 
+def add_measure_vars_to_app(measure, variants_list, all_colored_blocks_and_applist):
 	"""Adds all variants in a measure to the lemma staff's <app>."""
+	merge_identical_colored_blocks(all_colored_blocks_and_applist.colored_blocks)
+	lemmas = []
+	for v in variants_list:
+		if v[2] not in lemmas:
+			lemma_n = v[2]
+			lemmas.append(lemma_n)
+		for CBs_in_varstaff in all_colored_blocks_and_applist.colored_blocks:
+			var_staff = CBs_in_varstaff[0]
+			for cb in CBs_in_varstaff[1]:
+				# lemstaff =  get <staff n="lemma_n"> from _measure_	
+				# TODO: generate @source attribute value!
+				merge_colored_block_to_lemma_staff(lemstaff, all_colored_blocks_and_applist.applist, cb, var_staff)		
 	
 
 def remove_measure_var_staves(measure, variants_list):
@@ -388,8 +556,8 @@ def variants(MEI_tree, alternates_list):
 	variants_list = [i for i in alternates_list
 			if i[1] == VARIANT and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
-		add_all_apps_in_measure(measure, variants_list)
-		add_measure_vars_to_app(measure, variants_list)
+		add_all_apps_in_measure2(measure, variants_list)
+		# add_measure_vars_to_app(measure, variants_list)
 		remove_measure_var_staves(measure, variants_list)
 	delete_staff_def(MEI_tree, variants_list)
 
