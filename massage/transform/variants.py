@@ -242,7 +242,14 @@ def add_app_to_staff(staff, skip, duration, applist):
 			elif duration > 0:
 				if skip not in applist:
 					print('adding new app at SKIP' + str(skip))
+					apps_in_layer = old_layer.getChildrenByName('app')
+					len_apps = len(apps_in_layer)
+					print('number of apps before adding new app: ' + str(len_apps))
+					print(app)
 					note.getParent().addChildBefore(note, app)
+					apps_in_layer = old_layer.getChildrenByName('app')
+					print('number of apps after adding new app: ' + str(len(apps_in_layer)))
+					# assert(len(apps_in_layer) == len_apps+1)
 					applist[skip] = app
 				note.getParent().removeChild(note)
 				lemma.addChild(note)

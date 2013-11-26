@@ -63,7 +63,8 @@ transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
 		('2', VARIANT, '1', 'ZK'),
-		('3', VARIANT, '1', 'ZK') 
+		('3', VARIANT, '1', 'ZK'),
+		('4', VARIANT, '1', 'ZK'), 
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
@@ -79,7 +80,7 @@ transform_data.alternates_list = [
 		('2', VARIANT, '1', 'ZK'),
 		('3', VARIANT, '1', 'ZK') 
 		]
-test_cases.append(TestCase(name, mei_file, transform_data))
+# test_cases.append(TestCase(name, mei_file, transform_data))
 
 
 for tc in test_cases:
