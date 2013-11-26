@@ -200,33 +200,32 @@ def previous_measure_last_color(staff):
 
 def add_app_to_staff(staff, skip, duration, applist):
 	print('add_app_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
-	"""TODO: update description! 
-	in-out parameters: staff, applist
-	in paramteres: skip, duration
 	"""
-	
-	"""Modifies the <staff> element given by replacing its <layer>
-	child element. The new layer will contain the same <note> elements
-	as the original, but some of these notes will be nested inside an
-	<app> element as the lemma; variants from other staves will also
-	be added to this <app> as variant readings. The parameters skip
+	Modifies the <staff> element by wrapping the specified section of notes 
+	into an <app><lem/></app> construct. The location of the <app> element
+	is specified by the skip paramter, and the length of the <app> element is 
+	defined by the dur parameter. The parameters skip
 	and duration refer to the length in semibreves of the notes
 	occurring before the <app> element is to begin, and the length
 	in semibreves of the <app> element. We assume that there is
 	only one layer in the staff given.
+	
+	The applist paramter is an in/out parameter. The created <app> object 
+	is stored in applist. The applist paramter is a dictionary, and it is 
+	indexed by the location of the app elements within the measure. There 
+	can only be one <app> element at a given location. If there's already 
+	an <app> element defined at the given location, the method returns 
+	without making any modification to the staff.
+	
+	in-out parameters: staff, applist
+	in paramteres: skip, duration
 	
 	Warning: relies on predictable ordering of getDescendantsByName().
 	If this turns out not to be correct, this function must be rewritten
 	to take a list of (skip, dur) tuples as a parameter and create all
 	the <app> elements in one pass.
 	"""
-	old_layer = staff.getChildrenByName('layer')[0]
-	# notelist = old_layer.getDescendantsByName('note')
-	# new_layer = MeiElement('layer')
-	# app = MeiElement('app')
-	# lemma = MeiElement('lem')
-	# app.addChild(lemma)
-	
+	old_layer = staff.getChildrenByName('layer')[0]	
 	layer_notes = old_layer.getDescendantsByName('note')
 	if skip not in applist:
 		app = MeiElement('app')
@@ -248,40 +247,9 @@ def add_app_to_staff(staff, skip, duration, applist):
 				note.getParent().removeChild(note)
 				lemma.addChild(note)
 				duration -= dur_of_next_note	
-
-
-def merge_colored_blocks_to_lemma_staff(staff, colored_blocks): 
-	"""
-	for each list of colored blocks (list of (color, skip, dur, notes))
-	merge it to the corresponing lemma staff.
-
-	if the lemma staff doesn't have an <app> at the given location (_skip_)
-	add a new one to wrap the notes on the lemma staff inside the <lem>. 
-	To determine how many notes to wrap inside the <lem> use the _dur_ value
-	of the colored block.
-
-	"""
-def merge_colored_block_to_lemma_staff(staff, applist, colored_block, sourceIDs):
-	"""
-	merge one colored block (color, skip, dur, notes) into the lemma staff.
-	lemma staff must already have an <app> element at the 
-	location specified by _skip_
-	"""
-	skip = colored_block[1]
-	notelist = colored_block[2]
-	# Add rdg content
-	if skip not in applist: 
-		# error/warning
-		print('Warning: cannot merge colored notes to lemma staff')
-	else:
-		app = applist[skip]
-		rdg = MeiElement('rdg')
-		source_attr = MeiAttribute('source', sourceIDs)
-		rdg.addAttribute(source_attr)
-		app.addChild(rdg)
-		# TODO: add the list of notes to the rdg
-		for note in notelist:
-			rdg.addChild(note)
+	print('len(applist): ' + str(len(applist)))
+	# for s in applist:
+		# print(applist[s].getParent().getParent().getAttribute('n').getValue())
 
 def app_whole_measure(staff):
 	"""Enclose the entire contents of a staff in a measure
@@ -411,8 +379,8 @@ def add_all_apps_in_measure2(measure, variants_list):
 		staff = get_staff(measure, L)
 		print('Lemma no. ' + L)
 		print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
-		# TODO: merge sources where they coincide!
-		# TODO: update legal_overlapping so it works for possibly more colored blocks per staff
+		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
+		#       Possibly do both at the same time...
 		flat_list_of_colored_blocks = flatten_all_colored_blockes(colored_blocks)
 		print('add_all_apps_in_measure2(): flat_list_of_colored_blocks')
 		print(flat_list_of_colored_blocks)
@@ -457,8 +425,6 @@ def add_all_apps_in_measure2(measure, variants_list):
 						notelist = staff.getDescendantsByName('note')
 						for note in notelist:
 							rdg.addChild(note)
-			
-			
 
 def get_staff_skipdurs(notelist):
 		"""Get skip and duration information for a single notelist."""
@@ -512,22 +478,6 @@ def merge_identical_colored_blocks(all_colored_blocks):
 	  - if A and B two colored blocks AND A.skip==B.skip AND A.color==B.color THEN A.notelist != B.notelist
 	"""
 	# list of (varstaff, colored_blocks_by_skip) where colored_blocks_by_skip[skip][color]
- 
-def add_measure_vars_to_app(measure, variants_list, all_colored_blocks_and_applist):
-	"""Adds all variants in a measure to the lemma staff's <app>."""
-	merge_identical_colored_blocks(all_colored_blocks_and_applist.colored_blocks)
-	lemmas = []
-	for v in variants_list:
-		if v[2] not in lemmas:
-			lemma_n = v[2]
-			lemmas.append(lemma_n)
-		for CBs_in_varstaff in all_colored_blocks_and_applist.colored_blocks:
-			var_staff = CBs_in_varstaff[0]
-			for cb in CBs_in_varstaff[1]:
-				# lemstaff =  get <staff n="lemma_n"> from _measure_	
-				# TODO: generate @source attribute value!
-				merge_colored_block_to_lemma_staff(lemstaff, all_colored_blocks_and_applist.applist, cb, var_staff)		
-	
 
 def remove_measure_var_staves(measure, variants_list):
 	"""Removes all extra variant staves, after their information
@@ -557,7 +507,6 @@ def variants(MEI_tree, alternates_list):
 			if i[1] == VARIANT and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
 		add_all_apps_in_measure2(measure, variants_list)
-		# add_measure_vars_to_app(measure, variants_list)
 		remove_measure_var_staves(measure, variants_list)
 	delete_staff_def(MEI_tree, variants_list)
 
