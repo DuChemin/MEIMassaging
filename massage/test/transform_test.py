@@ -30,6 +30,44 @@ class TestCase:
 			print("Transformation failed")
 
 
+name = 'TC_Reconstructions.DC1209'
+mei_file = 'dat/DC1209_Synoptic_Reconstruction-normalized.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = True
+transform_data.obliterate_incipit = False
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '2', 'ZK'),
+		('4', RECONSTRUCTION, '2', 'ZK'),
+		('5', VARIANT, '5', 'ZK'), 
+		('6', VARIANT, '6', 'ZK'), 
+		('7', RECONSTRUCTION, '6', 'ZK'),
+		('8', RECONSTRUCTION, '6', 'ZK'),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+name = 'TC_Reconstructions.DC1313'
+mei_file = 'dat/DC1313_Synoptic_Reconstruction-normalized.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = True
+transform_data.obliterate_incipit = True
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '2', 'ZK'),
+		('4', RECONSTRUCTION, '2', 'ZK'),
+		('5', VARIANT, '5', 'ZK'), 
+		('6', VARIANT, '6', 'ZK'), 
+		('7', RECONSTRUCTION, '6', 'ZK'),
+		('8', RECONSTRUCTION, '6', 'ZK'),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
 name = 'TC_DC0221'
 mei_file = 'dat/DC0221_Synoptic_Variants.Voice_Type_Source.mei'
 transform_data = TransformData()
@@ -66,7 +104,7 @@ transform_data.alternates_list = [
 		('3', VARIANT, '1', 'ZK'),
 		('4', VARIANT, '1', 'ZK'), 
 		]
-test_cases.append(TestCase(name, mei_file, transform_data))
+# test_cases.append(TestCase(name, mei_file, transform_data))
 
 name = 'TC_Variants.02 - Whole-Measure <app>'
 mei_file = 'dat/TC.Variants.02.WholeMeasure.mei'
