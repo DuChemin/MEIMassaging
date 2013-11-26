@@ -24,23 +24,6 @@
 						<measure n="1">
 							<staff n="1">
 								<layer n="1">
-									<mRest/>
-								</layer>
-							</staff>
-							<staff n="2">
-								<layer n="1">
-									<mRest/>
-								</layer>
-							</staff>
-							<staff n="3">
-								<layer n="1">
-									<mRest/>
-								</layer>
-							</staff>
-						</measure>
-						<measure n="2">
-							<staff n="1">
-								<layer n="1">
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
@@ -64,7 +47,7 @@
 								</layer>
 							</staff>
 						</measure>
-						<measure n="3">
+						<measure n="2">
 							<staff n="1">
 								<layer n="1">
 									<note dur="long" oct="4" pname="f"/>

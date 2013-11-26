@@ -58,7 +58,7 @@ mei_file = 'dat/TC.Variants.01.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
 transform_data.replace_longa = True
-transform_data.obliterate_incipit = True
+transform_data.obliterate_incipit = False
 transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
@@ -72,7 +72,7 @@ mei_file = 'dat/TC.Variants.02.WholeMeasure.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
 transform_data.replace_longa = True
-transform_data.obliterate_incipit = True
+transform_data.obliterate_incipit = False
 transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
