@@ -198,7 +198,7 @@ def previous_measure_last_color(staff):
 	else:
 		return last_note.getAttribute('color').getValue()
 
-def add_app_to_staff(staff, skip, duration, applist):
+def add_app_to_staff(staff, skip, duration, applist, TRANSTYPE):
 	print('add_app_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
 	"""
 	Modifies the <staff> element by wrapping the specified section of notes 
@@ -225,11 +225,17 @@ def add_app_to_staff(staff, skip, duration, applist):
 	to take a list of (skip, dur) tuples as a parameter and create all
 	the <app> elements in one pass.
 	"""
+	element_app_name = 'app'	
+	element_lem_name = 'lem'
+	if TRANSTYPE == EMENDATION:
+		element_app_name = 'choice'	
+		element_lem_name = 'sic'
+
 	old_layer = staff.getChildrenByName('layer')[0]	
 	layer_notes = old_layer.getDescendantsByName('note')
 	if skip not in applist:
-		app = MeiElement('app')
-		lemma = MeiElement('lem')
+		app = MeiElement(element_app_name)
+		lemma = MeiElement(element_lem_name)
 		app.addChild(lemma)
 		skip__ = skip
 		for note in layer_notes:
@@ -242,12 +248,12 @@ def add_app_to_staff(staff, skip, duration, applist):
 			elif duration > 0:
 				if skip not in applist:
 					print('adding new app at SKIP' + str(skip))
-					apps_in_layer = old_layer.getChildrenByName('app')
+					apps_in_layer = old_layer.getChildrenByName(element_app_name)
 					len_apps = len(apps_in_layer)
 					print('number of apps before adding new app: ' + str(len_apps))
 					print(app)
 					note.getParent().addChildBefore(note, app)
-					apps_in_layer = old_layer.getChildrenByName('app')
+					apps_in_layer = old_layer.getChildrenByName(element_app_name)
 					print('number of apps after adding new app: ' + str(len(apps_in_layer)))
 					# assert(len(apps_in_layer) == len_apps+1)
 					applist[skip] = app
@@ -258,16 +264,21 @@ def add_app_to_staff(staff, skip, duration, applist):
 	# for s in applist:
 		# print(applist[s].getParent().getParent().getAttribute('n').getValue())
 
-def app_whole_measure(staff):
+def app_whole_measure(staff, TRANSTYPE):
 	"""Enclose the entire contents of a staff in a measure
 	inside the <app> element. Will be done if variants overlap
 	in illegal ways.
 	"""
+	element_app_name = 'app'	
+	element_lem_name = 'lem'
+	if TRANSTYPE == EMENDATION:
+		element_app_name = 'choice'	
+		element_lem_name = 'sic'
 	old_layer = staff.getChildrenByName('layer')[0]
 	notelist = old_layer.getDescendantsByName('note')
 	new_layer = MeiElement('layer')
-	app = MeiElement('app')
-	lemma = MeiElement('lem')
+	app = MeiElement(element_app_name)
+	lemma = MeiElement(element_lem_name)
 	for note in notelist:
 		lemma.addChild(note)
 	app.addChild(lemma)
@@ -365,7 +376,7 @@ def get_colored_blocks_from_notes(notelist): # <--> get_staff_skipdurs
 		skipdurs.append((color, skip, dur, notelist))
 	return skipdurs
 	
-def add_all_apps_in_measure2(measure, variants_list):
+def add_all_apps_in_measure2(measure, variants_list, TRANSTYPE):
 	"""Same as add_all_apps_in_measure, but using colored_blocks instead of (skip, dur) tuples
 	"""
 	def flatten_all_colored_blockes(list_of_list_of_color_blocks):
@@ -373,6 +384,12 @@ def add_all_apps_in_measure2(measure, variants_list):
 		for item in list_of_list_of_color_blocks:
 			FL += item[1]
 		return FL
+	
+	element_rdg_name = 'rdg'
+	attribute_source_name = 'source'
+	if TRANSTYPE == EMENDATION:
+		element_rdg_name = 'corr'
+		attribute_source_name = 'resp'
 		
 	# Determine if each variant group is legally lined up.
 	# Get list of distinct lemma staff @n values:
@@ -403,11 +420,11 @@ def add_all_apps_in_measure2(measure, variants_list):
 					skip=cb[1]
 					dur=cb[2]
 					notelist=cb[3]
-					add_app_to_staff(staff, skip, dur, applist)
+					add_app_to_staff(staff, skip, dur, applist, TRANSTYPE)
 					app = applist[skip]
 					# add rdg elements with reference to notelist, but do not insert notelist yet.
-					rdg = MeiElement('rdg')
-					rdg.addAttribute('source', sourceID)
+					rdg = MeiElement(element_rdg_name)
+					rdg.addAttribute(attribute_source_name, sourceID)
 					app.addChild(rdg)
 					RDGs_to_fill.append((rdg, notelist))
 			# fill in rdg elements 
@@ -417,14 +434,14 @@ def add_all_apps_in_measure2(measure, variants_list):
 					print(rdgf[0])
 					rdgf[0].addChild(note)
 		else:
-			app = app_whole_measure(staff)
+			app = app_whole_measure(staff, TRANSTYPE)
 			# add rdg elements with reference to notelist, but do not insert notelist yet.
 			for cbs in colored_blocks:
 				varstaff_n = cbs[0].getAttribute('n').getValue()
 				# TODO: look up source ID from staffDef
 				sourceID = '#source_' + varstaff_n
-				rdg = MeiElement('rdg')
-				rdg.addAttribute('source', sourceID)
+				rdg = MeiElement(element_rdg_name)
+				rdg.addAttribute(attribute_source_name, sourceID)
 				app.addChild(rdg)
 				staves_of_measure = measure.getChildrenByName('staff')
 				for staff in staves_of_measure:
@@ -442,41 +459,6 @@ def get_staff_skipdurs(notelist):
 			skipdurs.append((color, skip, dur))
 		return skipdurs
 
-def add_all_apps_in_measure(measure, variants_list):
-	def get_lemma_skipdurs(measure, lemma_n, vl):
-		"""Get skip and duration information for each variant of each lemma."""
-		if vl == []:
-			return []
-		else:
-			if vl[0][2] == lemma_n:
-				staff = get_staff(measure, vl[0][0])
-				layer = staff.getChildrenByName('layer')[0]
-				notelist = layer.getDescendantsByName('note')
-				answer = get_staff_skipdurs(notelist)
-			else:
-				answer = []
-			return answer + get_lemma_skipdurs(measure, lemma_n, vl[1:])
-
-	# Determine if each variant group is legally lined up.
-	# Get list of distinct lemma staff @n values:
-	print('M' + str(measure.getAttribute('n').value))
-	lemmas = []
-	for v in variants_list:
-		if v[2] not in lemmas:
-			lemmas.append(v[2])
-	for L in lemmas:
-		lemma_skipdurs = get_lemma_skipdurs(measure, L, variants_list)
-		staff = get_staff(measure, L)
-		print('Lemma no. ' + L)
-		print(lemma_skipdurs)
-		if legal_overlapping(staff, lemma_skipdurs):
-			# remove duplicates with set()
-			applist = dict()
-			for sd in set(lemma_skipdurs):
-				add_app_to_staff(staff, sd[0], sd[1], applist)
-		else:
-			app_whole_measure(staff)
-
 def merge_identical_colored_blocks(all_colored_blocks):
 	"""
 	Reduce the number of distinct colored blocks by merge together identical blocks.
@@ -486,14 +468,13 @@ def merge_identical_colored_blocks(all_colored_blocks):
 	"""
 	# list of (varstaff, colored_blocks_by_skip) where colored_blocks_by_skip[skip][color]
 
-def remove_measure_var_staves(measure, variants_list):
-	"""Removes all extra variant staves, after their information
-	has been added to the parent (lemma) staff.
+def remove_measure_staves(measure, alternate_list):
+	"""Removes all extra staves listed in alternate_list;
 	"""
 	staff_list = measure.getDescendantsByName('staff')
-	for variants_list_item in variants_list:
+	for list_item in alternate_list:
 		for staff in staff_list:
-			if staff.hasAttribute('n') and staff.getAttribute('n').value == variants_list_item[0]:
+			if staff.hasAttribute('n') and staff.getAttribute('n').value == list_item[0]:
 				staff.parent.removeChild(staff)
 
 def delete_staff_def(MEI_tree, variants_list):
@@ -504,19 +485,20 @@ def delete_staff_def(MEI_tree, variants_list):
 			if staffDef.hasAttribute('n') and staffDef.getAttribute('n').value == variants_list_item[0]:
 				staffDef.parent.removeChild(staffDef)
 
-def variants(MEI_tree, alternates_list):
+def variants(MEI_tree, alternates_list, TRANSTYPE):
 	"""Uses the list of alternate readings to find the variants,
 	and reorganize the MEI file so that the alternate readings are
 	grouped together with the lemma.
 	"""
+	print('Transforming ' + TRANSTYPE)
 	# See transform.py for documentation for the alternates_list object.
 	variants_list = [i for i in alternates_list
-			if i[1] == VARIANT and i[0] != i[2]]
+			if i[1] == TRANSTYPE and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
-		add_all_apps_in_measure2(measure, variants_list)
-		remove_measure_var_staves(measure, variants_list)
+		add_all_apps_in_measure2(measure, variants_list, TRANSTYPE)
+		remove_measure_staves(measure, variants_list)
 	delete_staff_def(MEI_tree, variants_list)
-
+	
 """
 To add in future:
  * add source information

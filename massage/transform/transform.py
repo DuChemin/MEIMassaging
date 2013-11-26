@@ -60,8 +60,9 @@ def transform(MEI_doc, data=TransformData()):
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources(MEI_tree, data.alternates_list)
-	variants(MEI_tree, data.alternates_list)
-	emendations(MEI_tree, data.alternates_list)
+	variants(MEI_tree, data.alternates_list, VARIANT)
+	variants(MEI_tree, data.alternates_list, EMENDATION)
+	# emendations(MEI_tree, data.alternates_list)
 	reconstructions(MEI_tree, data.alternates_list)
 	ignored(MEI_tree, data.alternates_list)
 	# Thing to do: remove ties from removed staves!
