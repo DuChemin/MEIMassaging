@@ -61,6 +61,20 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'TC_Variants.03 - Multiple colored blocks'
+mei_file = 'dat/TC.Variants.03.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = False
+transform_data.obliterate_incipit = False
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '1', 'ZK'),
+		('3', VARIANT, '1', 'ZK') 
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
 
 """ =========================================="""
 """ ========== DU CHEMIN TEST FILES ========== """
