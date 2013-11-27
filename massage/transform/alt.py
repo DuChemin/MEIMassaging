@@ -47,22 +47,25 @@ def colors_in_notelist(notelist):
 
 def color_matches(this_note_color, color_we_want):
 	"""Does a given color match with the color we want?
-	Exception: if BLACK is the "color we want", then
-	return True for any *non-black* color.
-
-	>>> color_matches('#0033ff', BLACK)
-	True
-
-	>>> color_matches(BLACK, BLACK)
-	False
+	ANYCOLOR matches anything but BLACK
 
 	>>> color_matches('#0033ff', '#0033ff')
 	True
 
+	>>> color_matches(BLACK, BLACK)
+	True
+
 	>>> color_matches('#336699', '#0033ff')
 	False
+
+	>>> color_matches(BLACK, ANYCOLOR)
+	False
+
+	>>> color_matches('#0033ff', ANYCOLOR)
+	True
+
 	"""
-	if color_we_want == BLACK:
+	if color_we_want == ANYCOLOR:
 		return this_note_color != BLACK
 	else:
 		return this_note_color == color_we_want
@@ -116,13 +119,10 @@ def semibreves_before(notelist, color_we_want=BLACK):
 			return (this_duration +
 					semibreves_before(notelist[1:], color_we_want))
 
-def duration_of_color(notelist, color_we_want=BLACK, begun_color=False):
+def duration_of_color(notelist, color_we_want=ANYCOLOR, begun_color=False):
 	"""Gives the duration of the notes in the current layer
 	with the given color, or any color if none is given.
 	Only the first set of contiguous notes will be included.
-	The color black (#000000) cannot be searched for; instead,
-	the function will return the duration of the first non-black
-	sequence of notes.
 
 	>>> semibreve_black = MeiElement('note')
 	>>> semibreve_black.addAttribute('dur', '1')
