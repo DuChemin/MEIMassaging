@@ -81,7 +81,7 @@ def convert_to_semibreves(dur_attr):
 	else:
 		return 1.0 / eval(dur_attr)
 
-def semibreves_before(notelist, color_we_want=BLACK):
+def semibreves_before(notelist, color_we_want=ANYCOLOR):
 	"""Gives the number of semibreves before the first occurrence
 	either of the given color, or of any color if none is given.
 
@@ -441,15 +441,6 @@ def add_rich_elems(measure, alternates_list, ALT_TYPE):
 						notelist = staff.getDescendantsByName('note')
 						for note in notelist:
 							rdg.addChild(note)
-
-def get_staff_skipdurs(notelist):
-		"""Get skip and duration information for a single notelist."""
-		skipdurs = []
-		for color in colors_in_notelist(notelist):
-			skip = semibreves_before(notelist, color)
-			dur = duration_of_color(notelist, color)
-			skipdurs.append((color, skip, dur))
-		return skipdurs
 
 def merge_identical_colored_blocks(all_colored_blocks):
 	"""
