@@ -76,6 +76,24 @@ transform_data.alternates_list = [
 test_cases.append(TestCase(name, mei_file, transform_data))
 
 
+name = 'All-in-One.01'
+mei_file = 'dat/TC.all-in-one.01.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = True
+transform_data.obliterate_incipit = False
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '2', 'Komives'),
+		('4', VARIANT, '4', ''),
+		('5', EMENDATION, '4', 'Komives'), 
+		('6', VARIANT, '6', ''),
+		('7', VARIANT, '6', 'Source-A'), 
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
 """ =========================================="""
 """ ========== DU CHEMIN TEST FILES ========== """
 
@@ -157,6 +175,8 @@ transform_data.alternates_list = [
 		('12', VARIANT, '11', 'ZK'),
 		('13', VARIANT, '11', 'ZK') ]
 #test_cases.append(TestCase(name, mei_file, transform_data))
+
+
 
 
 
