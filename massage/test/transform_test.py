@@ -75,9 +75,8 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
-
-name = 'All-in-One.01'
-mei_file = 'dat/TC.all-in-one.01.mei'
+name = 'MasterPlainMEI.01 - All-in-one'
+mei_file = 'dat/TC.MasterPlainMEI.01.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
 transform_data.replace_longa = False
@@ -91,6 +90,22 @@ transform_data.alternates_list = [
 		('5', EMENDATION, '4', 'Komives'), 
 		('6', VARIANT, '6', ''),
 		('7', VARIANT, '6', 'Source-A'), 
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+name = 'MasterPlainMEI.02 - Colors Specified'
+mei_file = 'dat/TC.MasterPlainMEI.02.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = False
+transform_data.obliterate_incipit = False
+transform_data.editorial_resp = 'ZK'
+transform_data.color_for_variants = BLUE
+transform_data.color_for_emendations = GREEN
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '1', 'ZK'),
+		('3', EMENDATION, '1', 'ZK') 
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
@@ -112,7 +127,7 @@ transform_data.alternates_list = [
 		('5', VARIANT, '5', ''), 
 		('6', EMENDATION, '5', 'Freedman'), 
 		]
-test_cases.append(TestCase(name, mei_file, transform_data))
+# test_cases.append(TestCase(name, mei_file, transform_data))
 
 
 name = 'TC_Reconstructions.DC1209'
