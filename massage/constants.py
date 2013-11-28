@@ -1,6 +1,6 @@
 
 # File paths and names
-MEDIA = 'massage/massage/media/'
+MEDIA = ''
 UPLOADS = 'uploads'
 PROCESSED = 'processed'
 EXT = ['.xml', '.mei']
@@ -20,8 +20,9 @@ IGNORED = '0'
 # Color data
 ANYCOLOR = 'ANYCOLOR'
 BLACK = '#000000'
-BLUE = '#0000ff'
-RED = '#ff0000'
+BLUE = 'rgba(0,0,255,1)'
+GREEN = 'rgba(0,255,0,1)'
+RED = 'rgba(255,0,0,1)'
 
 # Clef constants
 EMPTY_CLEFS = ('', '', '', '')

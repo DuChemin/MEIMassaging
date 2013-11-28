@@ -24,7 +24,9 @@ class TransformData:
 			arranger_to_editor=False,
 			obliterate_incipit=False,
 			editorial_resp='',
-			replace_longa=False):
+			replace_longa=False,
+			color_for_variants=ANYCOLOR,
+			color_for_emendations=ANYCOLOR):
 		# The alternates_list field contains information about variants,
 		# emendations and reconstructions. It is a list of 4-tuples.
 		# A basic file with only four staves will look like this:
@@ -41,6 +43,8 @@ class TransformData:
 		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
 		self.editorial_resp = editorial_resp
+		self.color_for_variants = color_for_variants
+		self.color_for_emendations = color_for_emendations
 	
 def transform(MEI_doc, data=TransformData()):
 	logging.info('alternates_list: ' + str(data.alternates_list))
@@ -48,6 +52,8 @@ def transform(MEI_doc, data=TransformData()):
 	logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
 	logging.info('replace_longa: ' + str(data.replace_longa))
 	logging.info('editorial_resp: ' + str(data.editorial_resp))
+	logging.info('color_for_variants: ' + str(data.color_for_variants))
+	logging.info('color_for_emendations: ' + str(data.color_for_emendations))
 	MEI_tree = MEI_doc.getRootElement()
 	# Measure renumbering needs to be done first!
 	if data.obliterate_incipit:
@@ -60,8 +66,8 @@ def transform(MEI_doc, data=TransformData()):
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources(MEI_tree, data.alternates_list)
-	variants(MEI_tree, data.alternates_list)
-	emendations(MEI_tree, data.alternates_list)
+	variants(MEI_tree, data.alternates_list, data.color_for_variants)
+	emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
 	reconstructions(MEI_tree, data.alternates_list)
 	ignored(MEI_tree, data.alternates_list)
 	# Thing to do: remove ties from removed staves!

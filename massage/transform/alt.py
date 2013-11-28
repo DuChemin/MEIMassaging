@@ -338,7 +338,7 @@ def legal_overlapping(staff, skipdurs):
 				return False
 	return True
 	
-def get_colored_blocks(measure, lemma_n, vl): 
+def get_colored_blocks(measure, lemma_n, vl, color_we_want): 
 	"""Gather all colored blocks from all variant staves in the given 
 	measure and a given lemma staff
 	Return a list of (staff, list of (color, skip, dur, notes))
@@ -350,10 +350,10 @@ def get_colored_blocks(measure, lemma_n, vl):
 			staff = get_staff(measure, vl[0][0])
 			layer = staff.getChildrenByName('layer')[0]
 			notelist = layer.getDescendantsByName('note')
-			answer = [(staff, get_colored_blocks_from_notes(notelist))]
+			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
-		return answer + get_colored_blocks(measure, lemma_n, vl[1:])
+		return answer + get_colored_blocks(measure, lemma_n, vl[1:], color_we_want)
 	
 def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR): 
 	"""Gather all colored blocks on a given staff
@@ -384,7 +384,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 	print(skipdurs)
 	return skipdurs	
 
-def add_rich_elems(measure, alternates_list, ALT_TYPE):
+def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 	"""Same as add_all_apps_in_measure, but using colored_blocks instead of (skip, dur) tuples
 	"""
 	def flatten_all_colored_blocks(list_of_list_of_color_blocks):
@@ -407,7 +407,7 @@ def add_rich_elems(measure, alternates_list, ALT_TYPE):
 		if v[2] not in lemmas:
 			lemmas.append(v[2])
 	for L in lemmas:
-		colored_blocks = get_colored_blocks(measure, L, alternates_list)
+		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
 		staff = get_staff(measure, L)
 		# print('Lemma no. ' + L)
 		# print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
@@ -482,7 +482,7 @@ def delete_staff_def(MEI_tree, variants_list):
 			if staffDef.hasAttribute('n') and staffDef.getAttribute('n').value == variants_list_item[0]:
 				staffDef.parent.removeChild(staffDef)
 
-def local_alternatives(MEI_tree, alternates_list, ALT_TYPE):
+def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 	"""Uses the list of alternate readings to find the variants,
 	and reorganize the MEI file so that the alternate readings are
 	grouped together with the lemma.
@@ -492,7 +492,7 @@ def local_alternatives(MEI_tree, alternates_list, ALT_TYPE):
 	filtered_alternates_list = [i for i in alternates_list
 			if i[1] == ALT_TYPE and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
-		add_rich_elems(measure, filtered_alternates_list, ALT_TYPE)
+		add_rich_elems(measure, filtered_alternates_list, color_we_want, ALT_TYPE)
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)
 	
