@@ -355,21 +355,35 @@ def get_colored_blocks(measure, lemma_n, vl):
 			answer = []
 		return answer + get_colored_blocks(measure, lemma_n, vl[1:])
 	
-def get_colored_blocks_from_notes(notelist): 
+def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR): 
 	"""Gather all colored blocks on a given staff
 	Return a list of (color, skip, dur, notes)
 	TODO: find colored blocks even if they are of the same color!
 	"""
-	# return [(BLACK, 0, 0, [])]
 	skipdurs = []
-	for color in colors_in_notelist(notelist):
-		skip = semibreves_before(notelist, color)
-		dur_and_notes = duration_of_color(notelist, color)
-		dur = dur_and_notes[0]
-		notelist = dur_and_notes[1]
-		skipdurs.append((color, skip, dur, notelist))
-	return skipdurs
 	
+	skip = 0
+	dur = 0
+	colored_notes = []
+	for note in notelist:
+		note_dur = convert_to_semibreves(note.getAttribute('dur').getValue())
+		note_color = get_color(note)
+		if color_matches(note_color, color_we_want):
+			curr_color = note_color
+			dur += note_dur
+			colored_notes.append(note)
+		else:
+			if dur>0:
+				skipdurs.append((curr_color, skip, dur, colored_notes))
+				skip = 0
+				dur = 0
+				colored_notes = []
+			skip += note_dur
+	if dur>0:
+		skipdurs.append((curr_color, skip, dur, colored_notes))
+	print(skipdurs)
+	return skipdurs	
+
 def add_rich_elems(measure, alternates_list, ALT_TYPE):
 	"""Same as add_all_apps_in_measure, but using colored_blocks instead of (skip, dur) tuples
 	"""
