@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from constants import *
+from re import split
 
 def staff_list(MEI_tree):
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
@@ -14,7 +15,16 @@ def staff_list(MEI_tree):
 		staffGrp = all_staffGrp[0]
 		for staffDef in staffGrp.getDescendantsByName('staffDef'):
 			staff_name = staffDef.getAttribute('label').getValue()
-			staff_list.append((staff_name, staff_role(staff_name)))
+			staff_name_split = split('_', staff_name)
+
+			staff_voice = staff_name_split[0]
+			staff_type = VARIANT
+			staff_source = ''
+			if len(staff_name_split)>1:
+				staff_type = staff_role(staff_name_split[1])
+				if len(staff_name_split)>2:
+					staff_source = staff_name_split[2]
+			staff_list.append((staff_name, staff_voice, staff_type, staff_source))
 	return staff_list
 
 def staff_role(s):
@@ -22,8 +32,10 @@ def staff_role(s):
 		return RECONSTRUCTION
 	elif 'emend' in s.lower() or 'amend' in s.lower():
 		return EMENDATION
-	else:
+	elif 'variant' == s.lower():
 		return VARIANT
+	else:
+		return 'UNKNOWN'
 
 if __name__ == "__main__":
 	pass

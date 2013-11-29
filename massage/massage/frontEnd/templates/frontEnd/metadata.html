@@ -24,12 +24,12 @@
 					{% for altStaff in staff_list %}
 						Staff {{ forloop.counter }} ({{altStaff.0|escape}})
 						<input type="hidden" name="staff{{forloop.counter}}" value={{altStaff.0}} />
-						<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.1}} />
-						is {{altStaff.1}} of staff 
+						<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.2}} />
+						is {{altStaff.2}} of staff 
 						<select name="readingOf{{forloop.counter}}">
 							<option value="0">(Ignore this staff)</option>
 							{% for origStaff in staff_list %}
-								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.0 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
+								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.1 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
 							{% endfor %}
 						</select>
 						from source <input type="text" name="source{{forloop.counter}}" /><br />
