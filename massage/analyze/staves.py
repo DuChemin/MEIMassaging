@@ -20,7 +20,7 @@ def staff_list(MEI_tree):
 def staff_role(s):
 	if 'recon' in s.lower():
 		return RECONSTRUCTION
-	elif 'emend' in s or 'amend' in s.lower():
+	elif 'emend' in s.lower() or 'amend' in s.lower():
 		return EMENDATION
 	else:
 		return VARIANT
