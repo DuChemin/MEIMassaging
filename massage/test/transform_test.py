@@ -85,11 +85,12 @@ transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
 		('2', VARIANT, '2', ''),
-		('3', RECONSTRUCTION, '2', 'Komives'),
-		('4', VARIANT, '4', ''),
-		('5', EMENDATION, '4', 'Komives'), 
-		('6', VARIANT, '6', ''),
-		('7', VARIANT, '6', 'Source-A'), 
+		('3', RECONSTRUCTION, '2', 'Contributor-A'),
+		('4', RECONSTRUCTION, '2', 'Contributor-B'), 
+		('5', VARIANT, '5', ''),
+		('6', EMENDATION, '5', 'Komives'), 
+		('7', VARIANT, '7', ''),
+		('8', VARIANT, '7', 'Source-A'), 
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
