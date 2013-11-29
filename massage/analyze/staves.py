@@ -12,7 +12,7 @@ def staff_list(MEI_tree):
 		if len(all_staffGrp) > 1:
 			print("Warning: more than one <staffGrp>; using first occurrence.")
 		staffGrp = all_staffGrp[0]
-		for staffDef in staffGrp.getChildren():
+		for staffDef in staffGrp.getDescendantsByName('staffDef'):
 			staff_name = staffDef.getAttribute('label').getValue()
 			staff_list.append((staff_name, staff_role(staff_name)))
 	return staff_list
