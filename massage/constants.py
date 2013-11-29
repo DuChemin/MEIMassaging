@@ -1,6 +1,6 @@
 
 # File paths and names
-MEDIA = ''
+MEDIA = 'massage/massage/media/'
 UPLOADS = 'uploads'
 PROCESSED = 'processed'
 EXT = ['.xml', '.mei']
