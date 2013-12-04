@@ -450,7 +450,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 			for cbs in colored_blocks:
 				varstaff_n = cbs[0].getAttribute('n').getValue()
 				# TODO: look up source ID from staffDef
-				sourceID = '#' + source_of_variant(varstaff_n, variant_list)
+				sourceID = '#' + source_of_variant(varstaff_n, alternates_list)
 				rdg = MeiElement(rich_item_name)
 				rdg.addAttribute(rich_item_attr_name, sourceID)
 				rich_wrapper.addChild(rdg)
