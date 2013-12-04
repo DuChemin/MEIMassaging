@@ -2,30 +2,37 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>MEI Massaging - File Upload</title>   
+		<title>MEI Massaging - Manage uploaded documents</title>
 	</head>
 	<body>
 	<!-- List of uploaded documents -->
-	{% if documents %}
+	{% if items %}
 		<ul>
-		{% for document in documents %}
-			<li><a href="{{ document.docfile.url }}">{{ document.docfile.name }}</a></li>
+		{% for item in items %}
+			<li>
+				<form action="{% url "list" %}" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<a href="{{ item.docfile.url }}">{{ item.docfile.name }}</a>
+					<input type="hidden" name="selection" value={{item.docfile}}>
+					<input type="submit" name="action" value="Delete"/>
+				</form>
+			</li>
 		{% endfor %}
 		</ul>
 	{% else %}
-		<p>No documents.</p>
+		<p>No items.</p>
 	{% endif %}
 
 		<!-- Upload form. Note enctype attribute! -->
-		<form action="{% url "list" %}" method="post" enctype="multipart/form-data">
+		<form action="{% url "metadata" %}" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<p>{{ form.non_field_errors }}</p>
-			<p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+			<p>{{ form.plainmei.label_tag }} {{ form.plainmei.help_text }}</p>
 			<p>
-				{{ form.docfile.errors }}
-				{{ form.docfile }}
+				{{ form.plainmei.errors }}
+				{{ form.plainmei }}
 			</p>
-			<p><input type="submit" value="Upload" /></p>
+			<p><input type="submit" name="action" value="Upload" /></p>
 		</form>
 	</body>
-</html> 
+</html>

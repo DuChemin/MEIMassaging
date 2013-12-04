@@ -13,10 +13,9 @@ from reconstructions import reconstructions
 from ignored import ignored
 
 from constants import *
-from pymei import XmlImport, XmlExport
 
 import logging
-# logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
+logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
 
 class TransformData:
 	def __init__(self,
@@ -72,12 +71,6 @@ def transform(MEI_doc, data=TransformData()):
 	ignored(MEI_tree, data.alternates_list)
 	# Thing to do: remove ties from removed staves!
 	return MEI_doc
-
-def write_transformation(filename, data=TransformData()):
-	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
-	new_MEI_doc = transform(old_MEI_doc, data)
-	XmlExport.meiDocumentToFile(new_MEI_doc,
-			MEDIA + filename.replace(UPLOADS, PROCESSED))
 
 #                                 ,_-=(!7(7/zs_.
 #                              .='  ' .`/,/!(=)Zm.

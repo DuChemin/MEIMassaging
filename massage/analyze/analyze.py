@@ -23,7 +23,7 @@ class AnalyzeData:
 		# self.orig_clefs_missing = orig_clefs_missing
 
 def analyze(MEI_filename):
-	MEI_doc = XmlImport.documentFromFile(PATH + MEI_filename)
+	MEI_doc = XmlImport.documentFromFile(MEI_filename)
 	MEI_tree = MEI_doc.getRootElement()
 	first_measure_empty_ = first_measure_empty.first_measure_empty(MEI_tree)
 	has_editor_element_ = editorial.has_editor_element(MEI_tree)

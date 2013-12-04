@@ -6,7 +6,7 @@
 	</head>
 	<body>
 		{% if MEI_filename %}
-			<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
+			<form action ="{% url "list" %}" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 
 				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
@@ -32,7 +32,7 @@
 								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.1 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
 							{% endfor %}
 						</select>
-						from source <input type="text" name="source{{forloop.counter}}" /><br />
+						from source <input type="text" name="source{{forloop.counter}}" value="{{altStaff.3}}" /><br />
 					{% endfor %}
 
 				{% else %}
@@ -62,7 +62,7 @@
 				Responsibility for editorial accidentals: <input type="text" name="editorial_resp" />
 
 
-				<p><input type="submit" value="Process" /></p>
+				<p><input type="submit" name="action" value="Process" /></p>
 
 			</form>
 
@@ -70,7 +70,7 @@
 			<p>No document selected.</p>
 		{% endif %}
 
-		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
+		<form action ="{% url "list" %}" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			<input type="submit" value="Go back"/>
 		</form>
