@@ -32,7 +32,7 @@ def staff_role(s):
 		return RECONSTRUCTION
 	elif 'emend' in s.lower() or 'amend' in s.lower():
 		return EMENDATION
-	elif 'variant' == s.lower():
+	elif 'variant' in s.lower():
 		return VARIANT
 	else:
 		return 'UNKNOWN'
