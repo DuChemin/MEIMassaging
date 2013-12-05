@@ -96,21 +96,9 @@ def move_recon_staves(recon_staves, al):
 				new_rdg.addAttribute('n', staff_n)
 				# Add responsibility to new reading element
 				new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
-				# Renumber staff with parent staff number,
-				# which will be the same as the <app> number
-				staff.addAttribute('n', orig(staff_n, al))
 				app.addChild(new_rdg)
 				new_rdg.addChild(staff)
 				parent_measure.removeChild(staff)
-
-def adjust_staff_group(MEI_tree, recon_staves_NUM):
-	"""Adjusts <staffGrp> definitions by removing definitions
-	for reconstructed staves.
-	"""
-	all_staff_def = MEI_tree.getDescendantsByName('staffDef')
-	for staff_def in all_staff_def:
-		if staff_def.getAttribute('n').getValue() in recon_staves_NUM:
-			staff_def.getParent().removeChild(staff_def)
 
 def reconstructions(MEI_tree, alternates_list):
 	original_staves = get_original_staves(MEI_tree, alternates_list)
@@ -119,7 +107,6 @@ def reconstructions(MEI_tree, alternates_list):
 
 	make_orig_app(MEI_tree, original_staves)
 	move_recon_staves(recon_staves, alternates_list)
-	adjust_staff_group(MEI_tree, recon_staves_NUM)
 	
 
 	
