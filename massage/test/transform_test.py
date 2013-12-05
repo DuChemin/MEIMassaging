@@ -7,10 +7,11 @@ from pymei import XmlImport, XmlExport
 test_cases = [] 
 
 class TestCase:
-	def __init__(self,name,mei_file,transform_data):
+	def __init__(self,name,mei_file,transform_data,outsuffix='_'):
 		self.name = name
 		self.mei_file = mei_file
 		self.transform_data = transform_data
+		self.outsuffix = outsuffix
 
 	def Run(self):
 		old_filename = self.mei_file
@@ -22,7 +23,7 @@ class TestCase:
 		print('running test case ' + self.name + ' Input: ' + old_filename)
 		#running the test:
 		new_MEI_doc = transform(old_MEI_doc, self.transform_data)
-		new_filename = (old_filename[:-EXT_LENGTH] + '_' +
+		new_filename = (old_filename[:-EXT_LENGTH] + self.outsuffix + '_' +
 				old_filename[-EXT_LENGTH:])
 		status = XmlExport.meiDocumentToFile(new_MEI_doc, new_filename)
 		if status:
@@ -193,10 +194,12 @@ transform_data.alternates_list = [
 		('13', VARIANT, '11', 'ZK') ]
 #test_cases.append(TestCase(name, mei_file, transform_data))
 
-
-
-
+to_run = []
+to_run.append('TC_Incipit.01 - No incipit measure')
+to_run.append('TC_Incipit.02 - Simple MEI with incipit')
+to_run.append('TC_Incipit.03 - MEI with extra staves and incipit')
 
 for tc in test_cases:
-	tc.Run()
+	if tc.name in to_run:
+		tc.Run()
 
