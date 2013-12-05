@@ -1,7 +1,6 @@
 
 import first_measure_empty
 import editorial
-# import orig_clefs_missing
 import staves
 
 from pymei import XmlImport
@@ -20,7 +19,6 @@ class AnalyzeData:
 		self.has_arranger_element = has_arranger_element
 		self.editor_name = editor_name
 		self.staff_list = staff_list
-		# self.orig_clefs_missing = orig_clefs_missing
 
 def analyze(MEI_filename):
 	MEI_doc = XmlImport.documentFromFile(MEI_filename)
@@ -29,7 +27,6 @@ def analyze(MEI_filename):
 	has_editor_element_ = editorial.has_editor_element(MEI_tree)
 	has_arranger_element_ = editorial.has_arranger_element(MEI_tree)
 	editor_name_ = editorial.editor_name(MEI_tree)
-	# orig_clefs_missing_ = orig_clefs_missing.orig_clefs_missing(MEI_tree)
 	staff_list_ = staves.staff_list(MEI_tree)
 	return AnalyzeData(first_measure_empty_,
 			has_editor_element_,
