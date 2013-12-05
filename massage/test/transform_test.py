@@ -167,7 +167,7 @@ transform_data.alternates_list = [
 		('5', VARIANT, '5', ''), 
 		('6', EMENDATION, '5', 'Freedman'), 
 		]
-# test_cases.append(TestCase(name, mei_file, transform_data))
+test_cases.append(TestCase(name, mei_file, transform_data))
 
 
 name = 'TC_Reconstructions.DC1209'
@@ -187,7 +187,7 @@ transform_data.alternates_list = [
 		('7', RECONSTRUCTION, '6', 'ZK'),
 		('8', RECONSTRUCTION, '6', 'ZK'),
 		]
-# test_cases.append(TestCase(name, mei_file, transform_data))
+test_cases.append(TestCase(name, mei_file, transform_data))
 
 name = 'TC_Reconstructions.DC1313'
 mei_file = 'dat/DC1313_Synoptic_Reconstruction-normalized.mei'
@@ -206,7 +206,7 @@ transform_data.alternates_list = [
 		('7', RECONSTRUCTION, '6', 'ZK'),
 		('8', RECONSTRUCTION, '6', 'ZK'),
 		]
-# test_cases.append(TestCase(name, mei_file, transform_data))
+test_cases.append(TestCase(name, mei_file, transform_data))
 
 name = 'TC_DC0221'
 mei_file = 'dat/DC0221_Synoptic_Variants.Voice_Type_Source.mei'
@@ -229,12 +229,13 @@ transform_data.alternates_list = [
 		('11', VARIANT, '11', ''),
 		('12', VARIANT, '11', 'ZK'),
 		('13', VARIANT, '11', 'ZK') ]
-#test_cases.append(TestCase(name, mei_file, transform_data))
+test_cases.append(TestCase(name, mei_file, transform_data))
 
 to_run = []
 to_run.append('TC_Incipit.01 - No incipit measure')
 to_run.append('TC_Incipit.02 - Simple MEI with incipit')
 to_run.append('TC_Incipit.03 - MEI with extra staves and incipit')
+to_run.append('TC_Reconstructions.DC1313')
 
 for tc in test_cases:
 	if tc.name in to_run:
