@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from transform.transform import *
+from pymei import XmlImport, XmlExport
 
 test_cases = [] 
 
