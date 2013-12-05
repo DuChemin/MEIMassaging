@@ -34,6 +34,41 @@ class TestCase:
 """ =========================================="""
 """ ========== SIMPLE TEST CASES ============= """
 
+name = 'TC_Incipit.01 - No incipit measure'
+mei_file = 'dat/TC.Incip.None.mei'
+transform_data = TransformData()
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', VARIANT, '3', ''),
+		('4', VARIANT, '4', ''),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+name = 'TC_Incipit.02 - Simple MEI with incipit'
+mei_file = 'dat/TC.Incip.Simple.mei'
+transform_data = TransformData()
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', VARIANT, '3', ''),
+		('4', VARIANT, '4', ''),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+name = 'TC_Incipit.03 - MEI with extra staves and incipit'
+mei_file = 'dat/TC.Incip.ExtraStaves.mei'
+transform_data = TransformData()
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '4', ''),
+		('4', VARIANT, '4', ''),
+		('5', VARIANT, '5', ''),
+		('6', EMENDATION, '5', ''),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
 name = 'TC_Variants.01'
 mei_file = 'dat/TC.Variants.01.mei'
 transform_data = TransformData()
