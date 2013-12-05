@@ -2,8 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-from incipit import obliterate_incipit
-from incipit import renumber_measures
+from incipit import obliterate_incipit, renumber_measures, orig_clefs
 from responsibility import responsibility
 from longa import longa
 from sources import sources
@@ -15,7 +14,7 @@ from ignored import ignored
 from constants import *
 
 import logging
-logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
+# logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
 
 class TransformData:
 	def __init__(self,
@@ -62,6 +61,7 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
+	orig_clefs(MEI_tree, data.alternates_list)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources(MEI_tree, data.alternates_list)
