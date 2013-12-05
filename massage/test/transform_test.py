@@ -7,7 +7,7 @@ from pymei import XmlImport, XmlExport
 test_cases = [] 
 
 class TestCase:
-	def __init__(self,name,mei_file,transform_data,outsuffix='_'):
+	def __init__(self,name,mei_file,transform_data,outsuffix=''):
 		self.name = name
 		self.mei_file = mei_file
 		self.transform_data = transform_data
