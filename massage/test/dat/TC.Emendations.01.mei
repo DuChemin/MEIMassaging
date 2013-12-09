@@ -4,9 +4,6 @@
 		<fileDesc>
 			<titleStmt>
 				<title>Test Case for MEIMassaging - Variants</title>
-				<respStmt>
-					<persName/>
-				</respStmt>
 			</titleStmt>
 			<pubStmt>
 				<availability>
@@ -33,7 +30,7 @@
 						<measure n="1">
 							<staff n="1">
 								<layer n="1">
-									<note dur="2" oct="4" pname="f"/>
+									<rest dur="2"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
@@ -41,7 +38,7 @@
 							</staff>
 							<staff n="2">
 								<layer n="1">
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
@@ -70,7 +67,7 @@
 							<staff n="2">
 								<layer n="1">
 									<note dur="2" oct="4" pname="f"/>
-									<note dur="1" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<rest dur="1" color="rgba(255,0,0,1)"/>
 									<note dur="2" oct="4" pname="f"/>
 								</layer>
 							</staff>

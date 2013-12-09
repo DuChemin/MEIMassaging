@@ -114,6 +114,19 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'TC_Emendations.01'
+mei_file = 'dat/TC.Emendations.01.mei'
+transform_data = TransformData()
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', EMENDATION, '1', 'ZK'),
+		('3', EMENDATION, '1', 'ZK'),
+		('4', EMENDATION, '1', 'ZK'), 
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+
 name = 'MasterPlainMEI.01 - All-in-one'
 mei_file = 'dat/TC.MasterPlainMEI.01.mei'
 transform_data = TransformData()
@@ -232,18 +245,19 @@ transform_data.alternates_list = [
 test_cases.append(TestCase(name, mei_file, transform_data))
 
 to_run = []
-to_run.append('TC_Incipit.01 - No incipit measure')
-to_run.append('TC_Incipit.02 - Simple MEI with incipit')
-to_run.append('TC_Incipit.03 - MEI with extra staves and incipit')
-to_run.append('TC_Variants.01')
-to_run.append('TC_Variants.02 - Whole-Measure <app>')
-to_run.append('TC_Variants.03 - Multiple colored blocks')
-to_run.append('MasterPlainMEI.01 - All-in-one')
-to_run.append('MasterPlainMEI.02 - Colors Specified')
-to_run.append('TC_Emendations.DC0113')
-to_run.append('TC_Reconstructions.DC1209')
-to_run.append('TC_Reconstructions.DC1313')
-to_run.append('TC_DC0221')
+# to_run.append('TC_Incipit.01 - No incipit measure')
+# to_run.append('TC_Incipit.02 - Simple MEI with incipit')
+# to_run.append('TC_Incipit.03 - MEI with extra staves and incipit')
+# to_run.append('TC_Variants.01')
+# to_run.append('TC_Variants.02 - Whole-Measure <app>')
+# to_run.append('TC_Variants.03 - Multiple colored blocks')
+to_run.append('TC_Emendations.01')
+# to_run.append('MasterPlainMEI.01 - All-in-one')
+# to_run.append('MasterPlainMEI.02 - Colors Specified')
+# to_run.append('TC_Emendations.DC0113')
+# to_run.append('TC_Reconstructions.DC1209')
+# to_run.append('TC_Reconstructions.DC1313')
+# to_run.append('TC_DC0221')
 
 for tc in test_cases:
 	if tc.name in to_run:
