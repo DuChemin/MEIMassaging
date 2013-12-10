@@ -1,6 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
+from utilities import chain_elems
 
 def obliterate_incipit(MEI_tree):
 	all_measures = MEI_tree.getDescendantsByName('measure')
@@ -30,19 +31,6 @@ def orig_clefs(MEI_tree, alternates_list):
 		for a in alternates_list:
 			if a[0] == staff_n:
 				return a[1]
-
-	def getOrAddChild(mei_elem, child_name):
-		children = mei_elem.getChildrenByName(child_name)
-		if len(children) > 0:
-			return children
-		mei_elem.addChild(MeiElement(child_name))
-		return mei_elem.getChildrenByName(child_name)
-
-	def chain_elems(start_elem, elems):
-		if elems == []:
-			return start_elem
-		children = getOrAddChild(start_elem, elems[0])
-		return chain_elems(children[0], elems[1:])
 				
 	# copy initial scoreDef to meiHead/workDesc/work/incip/score/
 	scoreDefs = MEI_tree.getDescendantsByName('scoreDef')
