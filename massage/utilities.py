@@ -10,6 +10,22 @@ def has_C_clef(staffGrp):
 def get_all_staves(MEI_tree):
 	return MEI_tree.getDescendantsByName('staff')
 
+def get_descendants_with_attribute_value(MEI_tree, names, attr, value):
+	res = []
+	descendants = MEI_tree.getDescendantsByName(names)
+	for elem in descendants:
+		if elem.hasAttribute(attr) and elem.getAttribute(attr).getValue() == value:
+			res.append(elem)
+	return res
+
+def get_children_with_attribute_value(MEI_tree, names, attr, value):
+	res = []
+	children = MEI_tree.getChildrenByName(names)
+	for elem in children:
+		if elem.hasAttribute(attr) and elem.getAttribute(attr).getValue() == value:
+			res.append(elem)
+	return res
+	
 def chain_elems(start_elem, elems):
 	def getOrAddChild(mei_elem, child_name):
 		children = mei_elem.getChildrenByName(child_name)
