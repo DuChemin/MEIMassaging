@@ -5,7 +5,7 @@ from arranger import arranger
 from incipit import obliterate_incipit, renumber_measures, orig_clefs
 from responsibility import responsibility
 from longa import longa
-from sources import sources
+from sources import sources_and_editors
 from variants import variants
 from emendations import emendations
 from reconstructions import reconstructions
@@ -64,7 +64,7 @@ def transform(MEI_doc, data=TransformData()):
 	orig_clefs(MEI_tree, data.alternates_list)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
-	sources(MEI_tree, data.alternates_list)
+	sources_and_editors(MEI_tree, data.alternates_list)
 	variants(MEI_tree, data.alternates_list, data.color_for_variants)
 	emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
 	reconstructions(MEI_tree, data.alternates_list)
