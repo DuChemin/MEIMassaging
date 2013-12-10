@@ -43,8 +43,9 @@ def get_recon_staves(MEI_tree, alternates_list):
 	return recon_staves
 
 def make_orig_app(MEI_tree, original_staves):
-	"""Based on the list of original staves, change their contents
-	into empty <app> elements.
+	"""Based on the list of original staves, replace them
+	with empty <app> elements. and remove the placeholder 
+	staff elements.
 	"""
 	all_staves = get_all_staves(MEI_tree)
 	# Go through all staves to maintain original order
@@ -67,7 +68,7 @@ def make_orig_app(MEI_tree, original_staves):
 
 def move_recon_staves(recon_staves, al):
 	"""Move reconstructed staves to their proper place within
-	the <app> element created under the original staff.
+	the <app> element created inplace of the original (placeholder) staff.
 	"""
 	def orig(staff_n, alternates_list):
 		"""Return the number of staff that the given staff
