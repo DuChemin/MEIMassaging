@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mei meiversion="2013" xmlns="http://www.music-encoding.org/ns/mei" xmlns:xlink="http://www.w3.org/1999/xlink">
+<meiHead>
+	<fileDesc>
+		<titleStmt>
+			<title/>
+			<respStmt>
+				<persName/>
+			</respStmt>
+		</titleStmt>
+		<pubStmt>
+			<availability>
+				<useRestrict>Copyright © </useRestrict>
+			</availability>
+		</pubStmt>
+	</fileDesc>
+	<encodingDesc>
+		<appInfo>
+			<application version="7" xml:id="sibelius7">
+				<name>Sibelius</name>
+			</application>
+		</appInfo>
+	</encodingDesc>
+	<workDesc>
+		<work>
+			<titleStmt>
+				<title/>
+				<respStmt/>
+			</titleStmt>
+		</work>
+	</workDesc>
+</meiHead>
+<music>
+	<body>
+		<mdiv>
+			<score>
+				<scoreDef meter.count="4" meter.unit="2" ppq="256">
+					<staffGrp>
+						<staffGrp n="1" symbol="bracket">
+							<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius" lines="5" n="1" xml:id="sd1"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Contratenor" lines="5" n="2" xml:id="sd2"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Contratenor_EditorX" lines="5" n="3" xml:id="sd3"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Contratenor_EditorY" lines="5" n="4" xml:id="sd4"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Tenor" lines="5" n="5" xml:id="sd5"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Tenor_Reconstruction_EditorX" lines="5" n="6" xml:id="sd6"/>
+							<staffDef clef.dis="8" clef.dis.place="below" clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Tenor_Reconstruction_EditorY" lines="5" n="7" xml:id="sd7"/>
+							<staffDef clef.line="4" clef.shape="F" key.mode="major" key.sig="0" label="Bassus" lines="5" n="8" xml:id="sd8"/>
+						</staffGrp>
+					</staffGrp>
+				</scoreDef>
+				<section>
+					<pb n="1"/>
+					<measure label="1" n="1" right="end">
+						<staff n="1">
+							<layer n="1">
+								<note dur="2" dur.ges="512p" oct="5" pname="c" xml:id="p1ccd5n0v1b1s1"/>
+								<note dur="2" dur.ges="512p" oct="5" pname="c" xml:id="p1ccd5n512v1b1s1"/>
+								<note dur="2" dur.ges="512p" oct="5" pname="c" xml:id="p1ccd5n1024v1b1s1"/>
+								<note dur="2" dur.ges="512p" oct="5" pname="c" xml:id="p1ccd5n1536v1b1s1"/>
+							</layer>
+						</staff>
+						<staff n="2">
+							<layer n="1">
+								<mRest/>
+							</layer>
+						</staff>
+						<staff n="3">
+							<layer n="1">
+								<note dur="2" dur.ges="512p" oct="4" pname="g" xml:id="p1ced4n0v1b1s3"/>
+								<note dur="2" dur.ges="512p" oct="4" pname="g" xml:id="p1ced4n512v1b1s3"/>
+								<note dur="2" dur.ges="512p" oct="4" pname="g" xml:id="p1ced4n1024v1b1s3"/>
+								<note dur="2" dur.ges="512p" oct="4" pname="g" xml:id="p1ced4n1536v1b1s3"/>
+							</layer>
+						</staff>
+						<staff n="4">
+							<layer n="1">
+								<note dur="2" dur.ges="256p" oct="4" pname="g" xml:id="p1ced4n0v1b1s4"/>
+								<note dur="2" dur.ges="256p" oct="4" pname="e" xml:id="p1cgd4n256v1b1s4"/>
+								<note dur="2" dur.ges="256p" oct="4" pname="g" xml:id="p1ced4n512v1b1s4"/>
+								<note dur="2" dur.ges="256p" oct="4" pname="e" xml:id="p1cgd4n768v1b1s4"/>
+							</layer>
+						</staff>
+						<staff n="5">
+							<layer n="1">
+								<mRest/>
+							</layer>
+						</staff>
+						<staff n="6">
+							<layer n="1">
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ced3n0v1b1s6"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ced3n512v1b1s6"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ced3n1024v1b1s6"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ced3n1536v1b1s6"/>
+							</layer>
+						</staff>
+						<staff n="7">
+							<layer n="1">
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ccd3n0v1b1s7"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="g" xml:id="p1ccd3n512v1b1s7"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="e" xml:id="p1ccd3n1024v1b1s7"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="g" xml:id="p1ccd3n1536v1b1s7"/>
+							</layer>
+						</staff>
+						<staff n="8">
+							<layer n="1">
+								<note dur="2" dur.ges="512p" oct="3" pname="c" xml:id="p1ccd3n0v1b1s8"/>
+								<note dur="2" dur.ges="512p" oct="3" pname="c" xml:id="p1ccd3n512v1b1s8"/>
+								<note dur="2" dur.ges="512p" oct="4" pname="c" xml:id="p1ccd4n1024v1b1s8"/>
+								<note dur="2" dur.ges="512p" oct="4" pname="c" xml:id="p1ccd4n1536v1b1s8"/>
+							</layer>
+						</staff>
+					</measure>
+				</section>
+			</score>
+		</mdiv>
+	</body>
+</music>
+</mei>

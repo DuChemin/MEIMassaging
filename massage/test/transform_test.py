@@ -126,6 +126,21 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'TC_Reconstructions.01 - Two reconstructed voices'
+mei_file = 'dat/TC.Reconstructions.01.mei'
+transform_data = TransformData()
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '2', 'EditorX'),
+		('4', RECONSTRUCTION, '2', 'EditorY'), 
+		('5', VARIANT, '5', ''),
+		('6', RECONSTRUCTION, '5', 'EditorX'), 
+		('7', RECONSTRUCTION, '5', 'EditorY'),
+		('8', VARIANT, '8', '')
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
 
 name = 'MasterPlainMEI.01 - All-in-one'
 mei_file = 'dat/TC.MasterPlainMEI.01.mei'
@@ -254,6 +269,7 @@ to_run = []
 to_run.append('TC_Emendations.01')
 # to_run.append('MasterPlainMEI.01 - All-in-one')
 # to_run.append('MasterPlainMEI.02 - Colors Specified')
+to_run.append('TC_Reconstructions.01 - Two reconstructed voices')
 # to_run.append('TC_Emendations.DC0113')
 # to_run.append('TC_Reconstructions.DC1209')
 # to_run.append('TC_Reconstructions.DC1313')
