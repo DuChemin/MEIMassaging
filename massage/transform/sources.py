@@ -8,17 +8,17 @@ def sources_and_editors(MEI_tree, alternates_data):
 	the editor elements to the mei header
 	"""	
 	def add_source(sourceDesc, adi):
-		existing = get_children_with_attribute_value(sourceDesc, 'source', 'xml:id', adi[3])
-		if len(existing) == 0:
+		existing = sourceDesc.getDocument().getElementById(adi[3])
+		if not existing:
 			source = MeiElement('source')
-			source.addAttribute('xml:id', adi[3])
+			source.id = adi[3]
 			sourceDesc.addChild(source)
 
 	def add_editor(titleStmt, ali):
-		existing = get_children_with_attribute_value(titleStmt, 'editor', 'xml:id', adi[3])
-		if len(existing) == 0:
+		existing = titleStmt.getDocument().getElementById(adi[3])
+		if not existing:
 			editor = MeiElement('editor')
-			editor.addAttribute('xml:id', ali[3])
+			editor.id = ali[3]
 			titleStmt.addChild(editor)
 
 	titleStmt = chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'titleStmt'])
