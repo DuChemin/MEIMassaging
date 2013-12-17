@@ -2,77 +2,96 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Processing</title>   
-	</head>
+		<title>MEI Massaging - Metadata settings</title>   
+		{% load staticfiles %}
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script src="http://duchemin-dev.haverford.edu/static/js/bootstrap/bootstrap.min.js"></script>
+		<link href="http://duchemin-dev.haverford.edu/static/css/bootstrap.min.css" rel="stylesheet"></link>
+		<link href="http://duchemin-dev.haverford.edu/static/css/bootstrap-responsive.min.css" rel="stylesheet"></link>
+		<link rel="stylesheet" href="http://duchemin-dev.haverford.edu/static/css/style.css">
 	<body>
-		{% if MEI_filename %}
-			<form action ="{% url "selectTransform" %}" method="post" enctype="multipart/form-data">
-				{% csrf_token %}
+		<div id="main" class="container">
+			<div>
+				<div class="row">
+					<div class="container">
+						{% if MEI_filename %}
+							<form action ="{% url "list" %}" method="post" enctype="multipart/form-data">
+								{% csrf_token %}
+								<div class="row span10">
 
-				<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
-				Processing:
-				{% autoescape off %}
-				{{ MEI_filename }}<br /><br />
-				{% endautoescape %}
+									<input type="hidden" name="MEI_filename" value={{MEI_filename}} />
+									<h3>Metadata settings</h3>
+									<p>
+										<h4>
+											{% autoescape off %}
+											{{ MEI_filename }}<br /><br />
+											{% endautoescape %}
+										</h4>
+									</p>
+									<div style="font-size: 11px; text-align: center;">
+										Leave original staves untouched, as &lsquo;variants&rsquo; of themselves.
+										<br />
+										<b>WARNING:</b> Marking staff X as a reconstruction of staff Y
+										will eliminate staff Y information.<br /><br />
+									</div>
+								</div>
+								<div class="row span10 well">
+									{% if staff_list %}
+										{% for altStaff in staff_list %}
+											Staff {{ forloop.counter }} ({{altStaff.0|escape}})
+											<input type="hidden" name="staff{{forloop.counter}}" value={{altStaff.0}} />
+											<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.2}} />
+											is {{altStaff.2}} of staff 
+											<select name="readingOf{{forloop.counter}}">
+												<option value="0">(Ignore this staff)</option>
+												{% for origStaff in staff_list %}
+													<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.1 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
+												{% endfor %}
+											</select>
+											from source <input type="text" name="source{{forloop.counter}}" value="{{altStaff.3}}" /><br />
+										{% endfor %}
 
-				Leave original staves untouched, as &lsquo;variants&rsquo; of themselves.
-				These staves should be at the top of the list.<br />
-				<b>Warning:</b> Marking staff X as a reconstruction of staff Y
-				will eliminate staff Y information.<br /><br />
+									{% else %}
+										<p>No staves were detected! What a Cagian piece!</p>
+									{% endif %}
+									<br />
 
-				{% if staff_list %}
-					{% for altStaff in staff_list %}
-						Staff {{ forloop.counter }} ({{altStaff.0|escape}})
-						<input type="hidden" name="staff{{forloop.counter}}" value={{altStaff.0}} />
-						<input type="hidden" name="kindOfReading{{forloop.counter}}" value={{altStaff.1}} />
-						is {{altStaff.1}} of staff 
-						<select name="readingOf{{forloop.counter}}">
-							<option value="0">(Ignore this staff)</option>
-							{% for origStaff in staff_list %}
-								<option value="{{forloop.counter}}"{% ifequal origStaff.0 altStaff.0 %} selected="selected"{% else %}{% endifequal %}>{{origStaff.0}}</option>
-							{% endfor %}
-						</select>
-						from source <input type="text" name="source{{forloop.counter}}" /><br />
-					{% endfor %}
+									<input type="checkbox" name="replace_longa" checked="checked" />
+									Make final note longa?<br />
 
-				{% else %}
-					<p>No staves were detected! What a Cagian piece!</p>
-				{% endif %}
-				<br />
+									<input type="checkbox" name="obliterate_incipit"
+									{% if first_measure_empty %} checked="checked" {% else %}{% endif %} />
+									Obliterate first measure? (Leave checked if first measure is incipit.)<br /><br />
 
-				<input type="checkbox" name="replace_longa" checked="checked" />
-				Make final note longa?<br />
+									{% if has_editor_element %}
+									<input type="hidden" name="arranger_to_editor" value="false" />
+									Editor listed as &lsquo;{{editor_name}}&rsquo;.<br />
+									{% else %}
+									{% if has_arranger_element %}
+									<input type="checkbox" name="arranger_to_editor" checked="checked" />
+									Mark &lsquo;{{editor_name}}&rsquo; as editor (instead of arranger)?<br />
+									{% else %}
+									<input type="hidden" name="arranger_to_editor" value="false" />
+									{% endif %}
+									{% endif %}
+		
+									Responsibility for editorial accidentals: <input type="text" name="editorial_resp" />
+									<p><input type="submit" name="action" value="Process" /></p>
+								</div>
+							</form>
 
-				<input type="checkbox" name="obliterate_incipit"
-				{% if first_measure_empty %} checked="checked" {% else %}{% endif %} />
-				Obliterate first measure? (Leave checked if first measure is incipit.)<br /><br />
-
-				{% if has_editor_element %}
-				<input type="hidden" name="arranger_to_editor" value="false" />
-				Editor listed as &lsquo;{{editor_name}}&rsquo;.<br />
-				{% else %}
-				{% if has_arranger_element %}
-				<input type="checkbox" name="arranger_to_editor" checked="checked" />
-				Mark &lsquo;{{editor_name}}&rsquo; as editor (instead of arranger)?<br />
-				{% else %}
-				<input type="hidden" name="arranger_to_editor" value="false" />
-				{% endif %}
-				{% endif %}
-				
-				Responsibility for editorial accidentals: <input type="text" name="editorial_resp" />
-
-
-				<p><input type="submit" value="Process" /></p>
-
-			</form>
-
-		{% else %}
-			<p>No document selected.</p>
-		{% endif %}
-
-		<form action ="{% url "select" %}" method="post" enctype="multipart/form-data">
-			{% csrf_token %}
-			<input type="submit" value="Go back"/>
-		</form>
+						{% else %}
+							<p>No document selected.</p>
+						{% endif %}
+					</div>
+				</div>
+					<div class="row span10">
+						<form action ="{% url "list" %}" method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							<input type="submit" value="Go back"/>
+						</form>
+					</div>
+			</div>
+		</div>
 	</body>
 </html>

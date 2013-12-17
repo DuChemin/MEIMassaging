@@ -93,6 +93,11 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    # 'sekizai.context_processors.sekizai',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -115,6 +120,11 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'cms',
+    'mptt',
+    'menus',
+    'south',
+    'sekizai',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

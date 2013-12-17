@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mei meiversion="2013" xmlns="http://www.music-encoding.org/ns/mei" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<meiHead>
+		<fileDesc>
+			<titleStmt>
+				<title>Test Case for MEIMassaging - Specify color for variants and emendations</title>
+			</titleStmt>
+			<pubStmt>
+				<availability>
+					<useRestrict>Copyright © </useRestrict>
+				</availability>
+			</pubStmt>
+		</fileDesc>
+	</meiHead>
+	<music>
+		<body>
+			<mdiv>
+				<score>
+					<scoreDef meter.count="4" meter.unit="4" ppq="256">
+						<staffGrp>
+							<staffGrp n="1" symbol="bracket">
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius" lines="5" n="1" xml:id="sd1"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceA-1552" lines="5" n="2" xml:id="sd2"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceB-1553" lines="5" n="3" xml:id="sd3"/>
+							</staffGrp>
+						</staffGrp>
+					</scoreDef>
+					<section>
+						<measure n="1">
+							<staff n="1">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="e" color="rgba(0,0,255,1)"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<mRest/>
+								</layer>
+							</staff>
+						</measure>
+						<measure n="2">
+							<staff n="1">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<mRest/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="e" color="rgba(0,255,0,1)"/>
+								</layer>
+							</staff>
+						</measure>
+					</section>
+				</score>
+			</mdiv>
+		</body>
+	</music>
+</mei>

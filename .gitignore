@@ -14,3 +14,9 @@ massage/massage/wsgi.pyc
 massage/transform/minimal_.mei
 massage/transform/shr.mei
 massage/transform/shr_.mei
+
+*.pyc
+massage/test/dat/*_.mei
+massage/massage/massage/media/documents/uploads/*
+
+*.log

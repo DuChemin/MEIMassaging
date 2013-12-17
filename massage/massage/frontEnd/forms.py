@@ -3,8 +3,8 @@ from django import forms
 
 class DocumentForm(forms.Form):
 #	name = forms.CharField(max_length = 200)
-	docfile = forms.FileField(
-		label='Select a file',
+	plainmei = forms.FileField(
+		label='Select a file now!',
 		help_text='max. 42 megabytes'
 	)
 

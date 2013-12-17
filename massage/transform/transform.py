@@ -2,18 +2,16 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-from incipit import obliterate_incipit
-from incipit import renumber_measures
+from incipit import obliterate_incipit, renumber_measures, orig_clefs
 from responsibility import responsibility
 from longa import longa
-from sources import sources
+from sources import sources_and_editors
 from variants import variants
 from emendations import emendations
 from reconstructions import reconstructions
 from ignored import ignored
 
 from constants import *
-from pymei import XmlImport, XmlExport
 
 import logging
 # logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
@@ -24,7 +22,9 @@ class TransformData:
 			arranger_to_editor=False,
 			obliterate_incipit=False,
 			editorial_resp='',
-			replace_longa=False):
+			replace_longa=False,
+			color_for_variants=ANYCOLOR,
+			color_for_emendations=ANYCOLOR):
 		# The alternates_list field contains information about variants,
 		# emendations and reconstructions. It is a list of 4-tuples.
 		# A basic file with only four staves will look like this:
@@ -41,27 +41,17 @@ class TransformData:
 		self.obliterate_incipit = obliterate_incipit
 		self.replace_longa = replace_longa
 		self.editorial_resp = editorial_resp
-
-def TEST_SET_UP(data):
-	"""Mutates data to test specific transformations"""
-	data.arranger_to_editor = True
-	data.replace_longa = True
-	data.obliterate_incipit = True
-	data.editorial_resp = 'mjw'
-	data.alternates_list = [
-			('1', VARIANT, '1', ''),
-			('2', VARIANT, '2', ''),
-			('3', VARIANT, '3', ''),
-			('4', VARIANT, '4', ''),
-			('5', VARIANT, '2', 'MJW'),
-			('6', VARIANT, '4', 'MJW')]
-
+		self.color_for_variants = color_for_variants
+		self.color_for_emendations = color_for_emendations
+	
 def transform(MEI_doc, data=TransformData()):
 	logging.info('alternates_list: ' + str(data.alternates_list))
 	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
 	logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
 	logging.info('replace_longa: ' + str(data.replace_longa))
 	logging.info('editorial_resp: ' + str(data.editorial_resp))
+	logging.info('color_for_variants: ' + str(data.color_for_variants))
+	logging.info('color_for_emendations: ' + str(data.color_for_emendations))
 	MEI_tree = MEI_doc.getRootElement()
 	# Measure renumbering needs to be done first!
 	if data.obliterate_incipit:
@@ -71,42 +61,16 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
+	orig_clefs(MEI_tree, data.alternates_list)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
-	sources(MEI_tree, data.alternates_list)
-	variants(MEI_tree, data.alternates_list)
-	emendations(MEI_tree, data.alternates_list)
+	sources_and_editors(MEI_tree, data.alternates_list)
+	variants(MEI_tree, data.alternates_list, data.color_for_variants)
+	emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
 	reconstructions(MEI_tree, data.alternates_list)
 	ignored(MEI_tree, data.alternates_list)
 	# Thing to do: remove ties from removed staves!
 	return MEI_doc
-
-def write_transformation(filename, data=TransformData()):
-	old_MEI_doc = XmlImport.documentFromFile(MEDIA + filename)
-	new_MEI_doc = transform(old_MEI_doc, data)
-	XmlExport.meiDocumentToFile(new_MEI_doc,
-			MEDIA + filename.replace(UPLOADS, PROCESSED))
-
-def test_ui():
-	old_filename = raw_input("Filename to transform: ")
-	if (len(old_filename) < EXT_LENGTH or
-			old_filename[-EXT_LENGTH:] not in EXT):
-		print("No file extension provided; " + EXT[0] + " used.")
-		old_filename += EXT[0]
-	data = TransformData() # Will be filled in
-	TEST_SET_UP(data) # For testing purposes
-	old_MEI_doc = XmlImport.documentFromFile(old_filename)
-	new_MEI_doc = transform(old_MEI_doc, data)
-	new_filename = (old_filename[:-EXT_LENGTH] + '_' +
-			old_filename[-EXT_LENGTH:])
-	status = XmlExport.meiDocumentToFile(new_MEI_doc, new_filename)
-	if status:
-		print("Transformed file saved as " + new_filename)
-	else:
-		print("Transformation failed")
-
-if __name__ == "__main__":
-	test_ui()
 
 #                                 ,_-=(!7(7/zs_.
 #                              .='  ' .`/,/!(=)Zm.

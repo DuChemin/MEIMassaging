@@ -1,13 +1,12 @@
 
 from constants import *
+from alt import local_alternatives
 # from pymei import MeiElement
 
-def emendations(MEI_tree, alternates_list):
+def emendations(MEI_tree, alternates_list, color_we_want):
 	"""Uses the list of alternate readings to find the emendations,
 	and reorganize the MEI file so that the alternate readings are
 	grouped together with the lemma.
 	"""
-	# See transform.py for documentation for the alternates_list object.
-	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
-	for i in alternates_list:
-		pass
+	local_alternatives(MEI_tree, alternates_list, color_we_want, EMENDATION)
+
