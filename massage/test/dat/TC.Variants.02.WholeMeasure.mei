@@ -5,6 +5,11 @@
 			<titleStmt>
 				<title>Test Case for MEIMassaging - Variants: app wraps whole measure</title>
 			</titleStmt>
+    		<pubStmt>
+    			<availability>
+    				<useRestrict>Copyright © </useRestrict>
+    			</availability>
+    		</pubStmt>
 		</fileDesc>
 	</meiHead>
 	<music>
