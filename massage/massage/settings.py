@@ -120,11 +120,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'cms',
-    'mptt',
     'menus',
     'south',
-    'sekizai',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

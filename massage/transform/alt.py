@@ -381,7 +381,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 			skip += note_dur
 	if dur>0:
 		skipdurs.append((curr_color, skip, dur, colored_notes))
-	print(skipdurs)
+	# print(skipdurs)
 	return skipdurs	
 
 def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
