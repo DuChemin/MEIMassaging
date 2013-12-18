@@ -1,0 +1,7 @@
+Django==1.5.5
+South==0.8.4
+django-classy-tags==0.4
+html5lib==0.99
+pymei==2.0
+six==1.4.1
+wsgiref==0.1.2
