@@ -20,7 +20,7 @@
 						<staffGrp>
 							<staffGrp n="1" symbol="bracket">
 								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius" lines="5" n="1" xml:id="sd1"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceA-1552" lines="5" n="2" xml:id="sd2"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceA 1552/01" lines="5" n="2" xml:id="sd2"/>
 							</staffGrp>
 						</staffGrp>
 					</scoreDef>
