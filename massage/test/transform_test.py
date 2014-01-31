@@ -114,6 +114,17 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'TC_Variants.04 - One variant source'
+mei_file = 'dat/TC.Variants.04.mei'
+transform_data = TransformData()
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '1', 'ZK'),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+
 name = 'TC_Emendations.01'
 mei_file = 'dat/TC.Emendations.01.mei'
 transform_data = TransformData()
