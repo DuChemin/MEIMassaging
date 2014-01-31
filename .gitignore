@@ -20,4 +20,4 @@ massage/test/dat/*_.mei
 massage/massage/massage/media/documents/uploads/*
 
 *.log
-*.sqlite
+*.sqlite3
