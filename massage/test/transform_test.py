@@ -281,13 +281,12 @@ transform_data.alternates_list = [
 		('4', VARIANT, '4', ''),
 		('5', VARIANT, '4', 'ZK'),
 		('6', VARIANT, '4', 'ZK'),
-		('7', VARIANT, '4', 'ZK'),
-		('8', VARIANT, '8', ''),
-		('9', VARIANT, '8', 'ZK'),
-		('10', VARIANT, '8', 'ZK'),
-		('11', VARIANT, '11', ''),
-		('12', VARIANT, '11', 'ZK'),
-		('13', VARIANT, '11', 'ZK') ]
+		('7', VARIANT, '7', ''),
+		('8', VARIANT, '7', 'ZK'),
+		('9', VARIANT, '7', 'ZK'),
+		('10', VARIANT, '10', ''),
+		('11', VARIANT, '10', 'ZK'),
+		('12', VARIANT, '10', 'ZK') ]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
 to_run = []
