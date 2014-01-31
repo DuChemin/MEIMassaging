@@ -177,6 +177,26 @@ transform_data.alternates_list = [
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
+name = 'MasterPlainMEI.03 - recon+variant for the same voice'
+mei_file = 'dat/TC.MasterPlainMEI.03.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = False
+transform_data.obliterate_incipit = False
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', VARIANT, '3', ''),
+		('4', VARIANT, '3', 'RISM1560-6'),
+		('5', RECONSTRUCTION, '2', 'Contributor-A'),
+		('6', RECONSTRUCTION, '2', 'Contributor-B'), 
+		('7', VARIANT, '7', ''),
+		('8', EMENDATION, '7', 'Komives'), 
+		('9', VARIANT, '9', ''),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
 """ =========================================="""
 """ ========== DU CHEMIN TEST FILES ========== """
 
@@ -273,6 +293,7 @@ to_run.append('TC_Reconstructions.01 - Two reconstructed voices')
 # to_run.append('TC_Emendations.DC0113')
 # to_run.append('TC_Reconstructions.DC1209')
 # to_run.append('TC_Reconstructions.DC1313')
+to_run.append('MasterPlainMEI.03 - recon+variant for the same voice')
 # to_run.append('TC_DC0221')
 
 for tc in test_cases:
