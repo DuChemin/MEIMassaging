@@ -257,7 +257,7 @@ transform_data.alternates_list = [
 test_cases.append(TestCase(name, mei_file, transform_data))
 
 name = 'TC_DC0221'
-mei_file = 'dat/DC0221_Synoptic_Variants.Voice_Type_Source.mei'
+mei_file = 'dat/DC0221E.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
 transform_data.replace_longa = True
