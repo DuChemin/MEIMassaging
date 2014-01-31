@@ -120,7 +120,7 @@ transform_data = TransformData()
 transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
-		('2', VARIANT, '1', 'ZK'),
+		('2', VARIANT, '1', 'SourceA 1552/01'),
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 
