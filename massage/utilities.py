@@ -1,5 +1,6 @@
 
 from pymei import MeiElement
+import re
 
 def has_C_clef(staffGrp):
 	for staffDef in staffGrp.getChildren():
@@ -38,3 +39,13 @@ def chain_elems(start_elem, elems):
 		return start_elem
 	children = getOrAddChild(start_elem, elems[0])
 	return chain_elems(children[0], elems[1:])
+
+def source_name2NCName(source_name, prefix="RISM"):
+	# replace illegal characters:
+	#   * '/' --> '-'
+	# add prefix if the string starts with a digit
+	res = re.sub("\s+", "_", source_name)
+	res = re.sub("/", "-", res)
+	res = re.sub("[^a-zA-Z0-9_\-.]", "_", res)
+	res = re.sub("^([0-9\-.])", prefix+"\g<1>", res)
+	return res

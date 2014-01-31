@@ -3,6 +3,7 @@ sys.path.insert(0, '..')
 
 from constants import *
 from re import split
+from utilities import source_name2NCName
 
 def staff_list(MEI_tree):
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
@@ -24,7 +25,7 @@ def staff_list(MEI_tree):
 				staff_type = staff_role(staff_name_split[1])
 				if len(staff_name_split)>2:
 					staff_source = staff_name_split[2]
-			staff_list.append((staff_name, staff_voice, staff_type, staff_source))
+			staff_list.append((staff_name, staff_voice, staff_type, source_name2NCName(staff_source)))
 	return staff_list
 
 def staff_role(s):
