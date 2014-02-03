@@ -21,13 +21,11 @@ def sources_and_editors(MEI_tree, alternates_data):
 			editor.id = ali[3]
 			titleStmt.addChild(editor)
 
-	titleStmt = chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'titleStmt'])
-	sourceDesc = chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'sourceDesc'])
 	for adi in alternates_data:
 		if adi[1] == RECONSTRUCTION or adi[1] == EMENDATION:
-			add_editor(titleStmt, adi)
+			add_editor(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'titleStmt']), adi)
 		if adi[0] != adi[2] and adi[1] == VARIANT:
-			add_source(sourceDesc, adi)
+			add_source(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'sourceDesc']), adi)
 
 # END OF FILE
 

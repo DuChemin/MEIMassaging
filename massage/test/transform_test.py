@@ -230,26 +230,7 @@ test_cases.append(TestCase(name, mei_file, transform_data))
 
 
 name = 'TC_Reconstructions.DC1209'
-mei_file = 'dat/DC1209_Synoptic_Reconstruction-normalized.mei'
-transform_data = TransformData()
-transform_data.arranger_to_editor = True
-transform_data.replace_longa = True
-transform_data.obliterate_incipit = False
-transform_data.editorial_resp = 'ZK'
-transform_data.alternates_list = [
-		('1', VARIANT, '1', ''),
-		('2', VARIANT, '2', ''),
-		('3', RECONSTRUCTION, '2', 'ZK'),
-		('4', RECONSTRUCTION, '2', 'ZK'),
-		('5', VARIANT, '5', ''), 
-		('6', VARIANT, '6', ''), 
-		('7', RECONSTRUCTION, '6', 'ZK'),
-		('8', RECONSTRUCTION, '6', 'ZK'),
-		]
-test_cases.append(TestCase(name, mei_file, transform_data))
-
-name = 'TC_Reconstructions.DC1313'
-mei_file = 'dat/DC1313_Synoptic_Reconstruction-normalized.mei'
+mei_file = 'dat/DC1209E.mei'
 transform_data = TransformData()
 transform_data.arranger_to_editor = True
 transform_data.replace_longa = True
@@ -258,12 +239,37 @@ transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
 		('2', VARIANT, '2', ''),
-		('3', RECONSTRUCTION, '2', 'ZK'),
-		('4', RECONSTRUCTION, '2', 'ZK'),
-		('5', VARIANT, '5', ''), 
+		('3', RECONSTRUCTION, '2', 'Apgar'),
+		('4', RECONSTRUCTION, '2', 'Busnel'),
+		('5', RECONSTRUCTION, '2', 'Freedman'),
 		('6', VARIANT, '6', ''), 
-		('7', RECONSTRUCTION, '6', 'ZK'),
-		('8', RECONSTRUCTION, '6', 'ZK'),
+		('7', VARIANT, '7', ''), 
+		('8', RECONSTRUCTION, '7', 'Apgar'),
+		('9', RECONSTRUCTION, '7', 'Busnel'),
+		('10', RECONSTRUCTION, '7', 'Freedman'),
+		]
+test_cases.append(TestCase(name, mei_file, transform_data))
+
+name = 'TC_Reconstructions.DC1313'
+mei_file = 'dat/DC1313E.mei'
+transform_data = TransformData()
+transform_data.arranger_to_editor = True
+transform_data.replace_longa = True
+transform_data.obliterate_incipit = True
+transform_data.editorial_resp = 'ZK'
+transform_data.alternates_list = [
+		('1', VARIANT, '1', ''),
+		('2', VARIANT, '2', ''),
+		('3', RECONSTRUCTION, '2', 'Apgar'),
+		('4', RECONSTRUCTION, '2', 'Bruke'),
+		('5', RECONSTRUCTION, '2', 'Derycz'),
+		('6', RECONSTRUCTION, '2', 'Freedman'),
+		('7', VARIANT, '7', ''), 
+		('8', VARIANT, '8', ''), 
+		('9', RECONSTRUCTION, '8', 'Apgar'),
+		('10', RECONSTRUCTION, '8', 'Bruke'),
+		('11', RECONSTRUCTION, '8', 'Derycz'),
+		('12', RECONSTRUCTION, '8', 'Freedman'),
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 

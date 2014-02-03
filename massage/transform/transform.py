@@ -62,7 +62,9 @@ def transform(MEI_doc, data=TransformData()):
 	logging.info('color_for_emendations: ' + str(data.color_for_emendations))
 	MEI_tree = MEI_doc.getRootElement()
 	data.alternates_list = validate_ncnames(data.alternates_list)
-	# Measure renumbering needs to be done first!
+	orig_clefs(MEI_tree, data.alternates_list)
+	# Measure renumbering needs to be done after the transcription clef info is 
+	# compiled back to the main scoreDef!
 	if data.obliterate_incipit:
 		obliterate_incipit(MEI_tree)
 		renumber_measures(MEI_tree)
@@ -70,7 +72,6 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
-	orig_clefs(MEI_tree, data.alternates_list)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources_and_editors(MEI_tree, data.alternates_list)
