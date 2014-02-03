@@ -40,9 +40,7 @@ def orig_clefs(MEI_tree, alternates_list):
 		#  * dis
 		#  * dis.place
 		def mergeAttr(attr_name):
-			print 'merging attributes ' + attr_name
 			if (clef.hasAttribute(attr_name)):
-				print 'merging attributes ' + attr_name + ' new value: ' +  clef.getAttribute(attr_name).getValue()
 				staffDef.addAttribute('clef.' + attr_name, clef.getAttribute(attr_name).getValue())
 		mergeAttr('shape')
 		mergeAttr('line')
@@ -81,6 +79,24 @@ def orig_clefs(MEI_tree, alternates_list):
 		mergeAttr('key.accid')
 		mergeAttr('key.mode')
 		mergeAttr('key.sig.mixed')
+		
+	def assert_position(scoreDef, k):
+		# check if there's no more than 'k' measures before this scoreDef
+		peers = scoreDef.getPeers()
+		n = 0
+		for p in peers:
+			if p == scoreDef:
+				if n > k:
+					if WARNING:
+						print "WARNING: there are more measures before scoreDef than expected (" + \
+							str(k) + "). scoreDef: " + str(scoreDef)
+					return False
+				else:
+					return True
+				break
+			if p.getName() == 'measure':
+				n += 1
+		
 				
 	# copy initial scoreDef to meiHead/workDesc/work/incip/score/
 	scoreDefs = MEI_tree.getDescendantsByName('scoreDef')
@@ -102,44 +118,47 @@ def orig_clefs(MEI_tree, alternates_list):
 	workDesc = MeiElement('workDesc')
 	head_score = chain_elems(meiHead, ['workDesc', 'work', 'incip', 'score'])
 	head_score.addChild(mainScoreDef)
-	# TODO: remove the milestone scoreDef and update the
-	# main scoreDef accordingly.
-	# In addition: 
+
+	# remove the milestone scoreDef and update the
+	# main scoreDef accordingly, and:
 	#  1. find <clef> elements (they should be in the first measure: 
 	#     assert this, and signal warning if it's not the case)
-	#  2. update main scoreDef according to <clef>
+	#  2. update main scoreDef according to <clef>s
 
 	music = MEI_tree.getDescendantsByName('music')[0]
 	section = music.getDescendantsByName('section')[0]
 	
-	#TODO: NEXT!!!!
-	# msScoreDefs = music.getDescendantsByName('scoreDef')
-	
-	# assert whether this scoreDef appears right after the incipit measure;
-	# if not, issue warning.
-	
+	mainScoreDef = music.getDescendantsByName('scoreDef')[0]
+	i = 0
+	for scoreDef in music.getDescendantsByName('scoreDef'):
+		if i>0 and assert_position(scoreDef, 1):
+			mergeScoreDefAttributes(mainScoreDef, scoreDef)
+			scoreDef.getParent().removeChild(scoreDef)
+		i += 1
+		
 	clefs = section.getDescendantsByName('clef')
 	for clef in clefs:
 		clef_valid = False
 		clef_in_measure = False
 		clef_in_staff = False
-		if (clef.hasAncestor('measure')): 
+		if clef.hasAncestor('measure'): 
 			measure = clef.getAncestor('measure')
 			if (measure.hasAttribute('n') and measure.getAttribute('n').getValue() == '1'):
 				clef_in_measure = True
-		if (clef.hasAncestor('staff')):
+		if clef.hasAncestor('staff'):
 			staff = clef.getAncestor('staff')
 			clef_in_staff = True
 		
-		if (not clef_in_measure): 
-			print "WARNING: <clef> is only valid under the first <measure>."
-			continue
+		if WARNING:
+			if not clef_in_measure: 
+				print "WARNING: <clef> is only valid under the first <measure>."
+				continue
 
-		if (not clef_in_staff): 
-			print "WARNING: <clef> is only valid under a <staff>."
-			continue
+			if not clef_in_staff: 
+				print "WARNING: <clef> is only valid under a <staff>."
+				continue
 
-		if (staff.hasAttribute('n')):
+		if staff.hasAttribute('n'):
 			clef_staff_n = staff.getAttribute('n').getValue()
 		else:
 			clef_staff_n = '1'

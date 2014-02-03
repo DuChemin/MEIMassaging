@@ -28,3 +28,6 @@ RED = 'rgba(255,0,0,1)'
 EMPTY_CLEFS = ('', '', '', '')
 CLEF_SHAPES = ['G', 'C', 'F']
 POSSIBLE_LINES = ['1', '2', '3', '4', '5']
+
+# Miscelanous parameters
+WARNING = True
