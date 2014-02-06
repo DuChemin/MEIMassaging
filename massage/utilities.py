@@ -1,5 +1,5 @@
 
-from pymei import MeiElement
+from pymei import MeiElement, MeiAttribute
 import re
 
 def has_C_clef(staffGrp):
@@ -11,6 +11,66 @@ def has_C_clef(staffGrp):
 def get_all_staves(MEI_tree):
 	return MEI_tree.getDescendantsByName('staff')
 
+def get_descendants(MEI_tree, expr):	
+
+	def parse_tokens(tokens):	
+		
+		def parse_token(token):
+			
+			def parse_attrs(token):
+				
+				def parse_attrs_str(attrs_str):
+					res = []
+					if (len(attrs_str) > 0):
+						m = re.search("^(.*)=([^, ]*)", attrs_str)
+						attr = MeiAttribute(m.group(1), m.group(2))
+						res.append(attr)
+						attrs_str = re.sub("^.*=[^, ]*[, ]*", "", attrs_str)
+						res.extend(parse_attrs_str(attrs_str))
+					return res
+				m = re.search("\[(.*)\]", token)
+				attrs_str = ""
+				if m != None:
+					attrs_str = m.group(1)
+				return parse_attrs_str(attrs_str)
+
+			m = re.search("^([^\[]+)", token)
+			elem = MeiElement(m.group(1))
+			attrs = parse_attrs(token)
+			for attr in attrs:
+				elem.addAttribute(attr)
+			return elem
+			
+		elems = []
+		for t in tokens:
+			elems.append(parse_token(t))
+		return elems
+	
+	def match_elems(elems2match, el):
+		tagname = el.getName()
+		for e2m in elems2match:
+			if e2m.getName() == tagname:
+				match = True
+				for atr in e2m.getAttributes():
+					if atr.getName() == "n" and atr.getValue() == "1":
+						if el.hasAttribute("n") and el.getAttribute("n").getValue() != "1":
+							match = False
+					elif not el.hasAttribute(atr.getName()) or el.getAttribute(atr.getName()).getValue() != atr.getValue():
+						match = False
+				if match:
+					return True
+		return False
+		
+	res = []
+	descendants = MEI_tree.getDescendants()
+	tokens = expr.split(" ")
+	elems2match = parse_tokens(tokens)
+	for el in descendants:
+		if (match_elems(elems2match, el)):
+			res.append(el)
+	return res
+	
+	
 def get_descendants_with_attribute_value(MEI_tree, names, attr, value):
 	res = []
 	descendants = MEI_tree.getDescendantsByName(names)
