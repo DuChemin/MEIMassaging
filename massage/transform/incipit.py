@@ -1,16 +1,16 @@
 
 from constants import *
 from pymei import MeiElement
-from utilities import chain_elems
+from utilities import chain_elems, get_descendants
 
 def obliterate_incipit(MEI_tree):
-	all_measures = MEI_tree.getDescendantsByName('measure')
+	all_measures = get_descendants(MEI_tree, 'measure')
 	for measure in all_measures:
 		if measure.getAttribute('n').getValue() == '1':
 			measure.getParent().removeChild(measure)
 
 def renumber_measures(MEI_tree):
-	all_measures = MEI_tree.getDescendantsByName('measure')
+	all_measures = get_descendants(MEI_tree, 'measure')
 	for measure in all_measures:
 		# Get measure number attribute
 		attr_measure_number = measure.getAttribute('n')
@@ -99,21 +99,21 @@ def orig_clefs(MEI_tree, alternates_list):
 		
 				
 	# copy initial scoreDef to meiHead/workDesc/work/incip/score/
-	scoreDefs = MEI_tree.getDescendantsByName('scoreDef')
+	scoreDefs = get_descendants(MEI_tree, 'scoreDef')
 	# make a copy of the main scoreDef
 	mainScoreDef = MeiElement(scoreDefs[0])	
 	# remove unwanted staves:
 	#  - Reconstructed (placeholder) staves
 	#  - Reconstruction (actual reconstruction) staves
 	#  - Emendation staves
-	staffDefs = mainScoreDef.getDescendantsByName('staffDef')
+	staffDefs = get_descendants(mainScoreDef, 'staffDef')
 	for staffDef in staffDefs:
 		staff_n = staffDef.getAttribute('n').getValue() 
 		if (is_placeholder(staff_n, alternates_list) or 
 				staff_role(staff_n, alternates_list) == RECONSTRUCTION or
 				staff_role(staff_n, alternates_list) == EMENDATION):
 			staffDef.parent.removeChild(staffDef)
-	meiHead = MEI_tree.getDescendantsByName('meiHead')[0]
+	meiHead = get_descendants(MEI_tree, 'meiHead')[0]
 	
 	workDesc = MeiElement('workDesc')
 	head_score = chain_elems(meiHead, ['workDesc', 'work', 'incip', 'score'])
@@ -125,7 +125,7 @@ def orig_clefs(MEI_tree, alternates_list):
 	#     assert this, and signal warning if it's not the case)
 	#  2. update main scoreDef according to <clef>s
 
-	music = MEI_tree.getDescendantsByName('music')[0]
+	music = get_descendants(MEI_tree, 'music')[0]
 	section = music.getDescendantsByName('section')[0]
 	
 	mainScoreDef = music.getDescendantsByName('scoreDef')[0]
