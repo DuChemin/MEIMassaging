@@ -80,9 +80,9 @@ transform_data.obliterate_incipit = False
 transform_data.editorial_resp = 'ZK'
 transform_data.alternates_list = [
 		('1', VARIANT, '1', ''),
-		('2', VARIANT, '1', 'ZK'),
-		('3', VARIANT, '1', 'ZK'),
-		('4', VARIANT, '1', 'ZK'), 
+		('2', VARIANT, '1', '2014/01'),
+		('3', VARIANT, '1', '0001/01'),
+		('4', VARIANT, '1', 'ZK 0001/00'), 
 		]
 test_cases.append(TestCase(name, mei_file, transform_data))
 

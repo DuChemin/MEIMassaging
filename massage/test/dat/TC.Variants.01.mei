@@ -23,9 +23,9 @@
 						<staffGrp>
 							<staffGrp n="1" symbol="bracket">
 								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius" lines="5" n="1" xml:id="sd1"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceA-1552" lines="5" n="2" xml:id="sd2"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceB-1553" lines="5" n="3" xml:id="sd3"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceC-1554" lines="5" n="4" xml:id="sd4"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_2014/01" lines="5" n="2" xml:id="sd2"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_0001/01" lines="5" n="3" xml:id="sd3"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_ZK 0001/00" lines="5" n="4" xml:id="sd4"/>
 							</staffGrp>
 						</staffGrp>
 					</scoreDef>
