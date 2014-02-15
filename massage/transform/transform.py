@@ -12,6 +12,7 @@ from reconstructions import reconstructions
 from ignored import ignored
 
 from constants import *
+from utilities import source_name2NCName
 
 import logging
 # logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
@@ -44,6 +45,13 @@ class TransformData:
 		self.color_for_variants = color_for_variants
 		self.color_for_emendations = color_for_emendations
 	
+def validate_ncnames(alternates_list):
+	res_list = []
+	for alternates_item in alternates_list:
+		res_item = (alternates_item[0], alternates_item[1], alternates_item[2], source_name2NCName(alternates_item[3]))
+		res_list.append(res_item)
+	return res_list
+
 def transform(MEI_doc, data=TransformData()):
 	logging.info('alternates_list: ' + str(data.alternates_list))
 	logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
@@ -53,7 +61,10 @@ def transform(MEI_doc, data=TransformData()):
 	logging.info('color_for_variants: ' + str(data.color_for_variants))
 	logging.info('color_for_emendations: ' + str(data.color_for_emendations))
 	MEI_tree = MEI_doc.getRootElement()
-	# Measure renumbering needs to be done first!
+	data.alternates_list = validate_ncnames(data.alternates_list)
+	orig_clefs(MEI_tree, data.alternates_list)
+	# Measure renumbering needs to be done after the transcription clef info is 
+	# compiled back to the main scoreDef!
 	if data.obliterate_incipit:
 		obliterate_incipit(MEI_tree)
 		renumber_measures(MEI_tree)
@@ -61,7 +72,6 @@ def transform(MEI_doc, data=TransformData()):
 		arranger(MEI_tree)
 	if data.replace_longa:
 		longa(MEI_tree)
-	orig_clefs(MEI_tree, data.alternates_list)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources_and_editors(MEI_tree, data.alternates_list)

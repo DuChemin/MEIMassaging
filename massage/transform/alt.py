@@ -1,6 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
+from utilities import get_descendants
 
 def get_notes(measure, staff_n):
 	"""Return of all list of notes and rests in a given measure and staff."""
@@ -236,7 +237,7 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 		rich_default_name = 'sic'
 
 	old_layer = staff.getChildrenByName('layer')[0]	
-	layer_notes = old_layer.getDescendantsByName('note rest')
+	layer_notes = get_descendants(old_layer, 'note rest')
 	if skip not in wrapperlist:
 		rich_wrapper = MeiElement(rich_wrapper_name)
 		rich_default_elem = MeiElement(rich_default_name)
@@ -270,7 +271,7 @@ def wrap_whole_measure(staff, ALT_TYPE):
 		rich_wrapper_name = 'choice'	
 		rich_default_name = 'sic'
 	old_layer = staff.getChildrenByName('layer')[0]
-	notelist = old_layer.getDescendantsByName('note rest')
+	notelist = get_descendants(old_layer, 'note rest')
 	new_layer = MeiElement('layer')
 	rich_wrapper = MeiElement(rich_wrapper_name)
 	rich_default_elem = MeiElement(rich_default_name)
@@ -293,7 +294,7 @@ def legal_overlapping(staff, skipdurs):
 		"""
 		# print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
 		old_layer = staff.getChildrenByName('layer')[0]
-		notelist = old_layer.getDescendantsByName('note rest')
+		notelist = get_descendants(old_layer, 'note rest')
 		for note in notelist:
 			dur_attr = note.getAttribute('dur').getValue()
 			dur_of_next_note = convert_to_semibreves(dur_attr)
@@ -349,7 +350,7 @@ def get_colored_blocks(measure, lemma_n, vl, color_we_want):
 		if vl[0][2] == lemma_n:
 			staff = get_staff(measure, vl[0][0])
 			layer = staff.getChildrenByName('layer')[0]
-			notelist = layer.getDescendantsByName('note rest')
+			notelist = get_descendants(layer, 'note rest')
 			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
@@ -457,7 +458,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 				staves_of_measure = measure.getChildrenByName('staff')
 				for staff in staves_of_measure:
 					if staff.getAttribute('n').getValue() == varstaff_n:
-						notelist = staff.getDescendantsByName('note rest')
+						notelist = get_descendants(staff, 'note rest')
 						for note in notelist:
 							rdg.addChild(note)
 

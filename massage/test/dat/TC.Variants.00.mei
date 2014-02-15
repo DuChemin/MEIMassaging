@@ -4,9 +4,6 @@
 		<fileDesc>
 			<titleStmt>
 				<title>Test Case for MEIMassaging - Variants</title>
-				<respStmt>
-					<persName/>
-				</respStmt>
 			</titleStmt>
 			<pubStmt>
 				<availability>
@@ -23,9 +20,7 @@
 						<staffGrp>
 							<staffGrp n="1" symbol="bracket">
 								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius" lines="5" n="1" xml:id="sd1"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_2014/01" lines="5" n="2" xml:id="sd2"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_0001/01" lines="5" n="3" xml:id="sd3"/>
-								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_ZK 0001/00" lines="5" n="4" xml:id="sd4"/>
+								<staffDef clef.line="2" clef.shape="G" key.mode="major" key.sig="0" label="Superius_Variants_SourceA 1552/01" lines="5" n="2" xml:id="sd2"/>
 							</staffGrp>
 						</staffGrp>
 					</scoreDef>
@@ -33,7 +28,7 @@
 						<measure n="1">
 							<staff n="1">
 								<layer n="1">
-									<note dur="2" oct="4" pname="f"/>
+									<rest dur="2"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
@@ -41,20 +36,10 @@
 							</staff>
 							<staff n="2">
 								<layer n="1">
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
 									<note dur="2" oct="4" pname="f"/>
-								</layer>
-							</staff>
-							<staff n="3">
-								<layer n="1">
-									<mRest/>
-								</layer>
-							</staff>
-							<staff n="4">
-								<layer n="1">
-									<mRest/>
 								</layer>
 							</staff>
 						</measure>
@@ -70,20 +55,8 @@
 							<staff n="2">
 								<layer n="1">
 									<note dur="2" oct="4" pname="f"/>
-									<note dur="1" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<rest dur="1" color="rgba(255,0,0,1)"/>
 									<note dur="2" oct="4" pname="f"/>
-								</layer>
-							</staff>
-							<staff n="3">
-								<layer n="1">
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="1" oct="4" pname="g" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="f"/>
-								</layer>
-							</staff>
-							<staff n="4">
-								<layer n="1">
-									<mRest/>
 								</layer>
 							</staff>
 						</measure>
@@ -102,22 +75,6 @@
 									<note dur="2" oct="4" pname="b"/>
 									<note dur="2" oct="4" pname="c"/>
 									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
-								</layer>
-							</staff>
-							<staff n="3">
-								<layer n="1">
-									<note dur="2" oct="4" pname="a"/>
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="c"/>
-									<note dur="2" oct="4" pname="d"/>
-								</layer>
-							</staff>
-							<staff n="4">
-								<layer n="1">
-									<note dur="2" oct="4" pname="a"/>
-									<note dur="2" oct="4" pname="b"/>
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="d"/>
 								</layer>
 							</staff>
 						</measure>

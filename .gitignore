@@ -1,22 +1,7 @@
-massage/analyze/__init__.pyc
-massage/analyze/analyze.pyc
-massage/analyze/orig_clefs_missing.pyc
-massage/analyze/staff_names.pyc
-massage/massage/__init__.pyc
-massage/massage/frontEnd/__init__.pyc
-massage/massage/frontEnd/forms.pyc
-massage/massage/frontEnd/models.pyc
-massage/massage/frontEnd/urls.pyc
-massage/massage/frontEnd/views.pyc
-massage/massage/settings.pyc
-massage/massage/urls.pyc
-massage/massage/wsgi.pyc
-massage/transform/minimal_.mei
-massage/transform/shr.mei
-massage/transform/shr_.mei
 
 *.pyc
-massage/test/dat/*_.mei
+*_.mei
 massage/massage/massage/media/documents/uploads/*
 
 *.log
+*.sqlite3
