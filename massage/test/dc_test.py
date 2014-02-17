@@ -173,5 +173,5 @@ def suite():
     test_suite.addTest(unittest.TestLoader().loadTestsFromName('dc_test.DuCheminTest.test_variants_DC0221'))
     test_suite.addTest(unittest.TestLoader().loadTestsFromName('dc_test.DuCheminTest.test_emendationandvariant_DC0110'))
     test_suite.addTest(unittest.TestLoader().loadTestsFromName('dc_test.DuCheminTest.test_emendationandvariant_DC0909'))
-    test_suite.addTest(unittest.TestLoader().loadTestsFromName('dc_test.DuCheminTest.test_reconstructions_DC1323'))
+    test_suite.addTest(unittest.TestLoader().loadTestsFromName('dc_test.DuCheminTest.test_emendandreconstr_DC1323'))
     return test_suite
