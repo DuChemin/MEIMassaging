@@ -12,7 +12,8 @@ def staff_list(MEI_tree):
 		print("Error: No staffGrp in file.")
 	else:
 		if len(all_staffGrp) > 1:
-			print("Warning: more than one <staffGrp>; using first occurrence.")
+			if WARNING:
+				print("Warning: more than one <staffGrp>; using first occurrence.")
 		staffGrp = all_staffGrp[0]
 		for staffDef in staffGrp.getDescendantsByName('staffDef'):
 			staff_name = staffDef.getAttribute('label').getValue()
@@ -49,8 +50,8 @@ def alternates_list(staff_list):
 			staff_voice_n = n_of_voice(staff_voice, staff_list)
 			if (staff_voice_n):
 				res_item = (staff_n, staff_type, staff_voice_n, staff_source)
-			else:
-				raise "Cannot find corresponding staff for staff: " + staff_list_item
+			if WARNING:
+				print("Cannot find corresponding staff for staff: " + str(staff_list_item))
 		result.append(res_item)
 	return result
 
