@@ -50,7 +50,7 @@ def alternates_list(staff_list):
 			staff_voice_n = n_of_voice(staff_voice, staff_list)
 			if (staff_voice_n):
 				res_item = (staff_n, staff_type, staff_voice_n, staff_source)
-			if WARNING:
+			elif WARNING:
 				print("Cannot find corresponding staff for staff: " + str(staff_list_item))
 		result.append(res_item)
 	return result
