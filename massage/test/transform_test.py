@@ -226,8 +226,6 @@ def suite():
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_reconvariantforsamevoice'))
 	return test_suite
     
-# for tc in test_cases:
-# 	if tc.name in to_run:
-# 		tc.Run()
-
-# 
+if __name__ == "__main__":
+    runner = unittest.TextTestRunner(verbosity=2)
+    runner.run(suite())
