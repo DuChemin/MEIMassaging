@@ -7,36 +7,85 @@ import utilities
 from analyze.analyze import analyze
 
 class UtilitiesTest(unittest.TestCase):
-	
-	def test_get_descendants(self):
-		
-		measure = MeiElement('measure')
-		layer = MeiElement('layer')
-		note1 = MeiElement('note')
-		note2 = MeiElement('note')
-		note3 = MeiElement('note')
-		rest1 = MeiElement('rest')
-		rest2 = MeiElement('rest')
-		
-		note1.addAttribute('pname', 'c')
-		note2.addAttribute('pname', 'd')
-		note2.addAttribute('dur', '1')
-		note3.addAttribute('pname', 'd')
-		note3.addAttribute('dur', '2')
-		rest1.addAttribute('dur', '1')
-		rest2.addAttribute('dur', '2')
-		
-		layer.addChild(note1)
-		layer.addChild(note2)
-		layer.addChild(note3)
-		layer.addChild(rest1)
-		layer.addChild(rest2)
-		measure.addChild(layer)
-		
-		self.assertEqual(3, len(utilities.get_descendants(measure, 'note')))
-		self.assertEqual(5, len(utilities.get_descendants(measure, 'note rest')))
-		self.assertEqual(1, len(utilities.get_descendants(measure, 'note[dur=1]')))
-		self.assertEqual(4, len(utilities.get_descendants(measure, 'note[dur=1] note[pname=c] rest[dur=2] layer')))
+
+    def test_get_descendants(self):
+
+        measure = MeiElement('measure')
+        layer   = MeiElement('layer')
+        note1   = MeiElement('note')
+        note2   = MeiElement('note')
+        note3   = MeiElement('note')
+        rest1   = MeiElement('rest')
+        rest2   = MeiElement('rest')
+
+        note1.addAttribute('pname', 'c')
+        note2.addAttribute('pname', 'd')
+        note2.addAttribute('dur', '1')
+        note3.addAttribute('pname', 'd')
+        note3.addAttribute('dur', '2')
+        rest1.addAttribute('dur', '1')
+        rest2.addAttribute('dur', '2')
+
+        layer.addChild(note1)
+        layer.addChild(note2)
+        layer.addChild(note3)
+        layer.addChild(rest1)
+        layer.addChild(rest2)
+        measure.addChild(layer)
+
+        self.assertEqual(3, len(utilities.get_descendants(measure, 'note')))
+        self.assertEqual(5, len(utilities.get_descendants(measure, 'note rest')))
+        self.assertEqual(1, len(utilities.get_descendants(measure, 'note[dur=1]')))
+        self.assertEqual(4, len(utilities.get_descendants(measure, 'note[dur=1] note[pname=c] rest[dur=2] layer')))
+
+    def test_effective_meter(self):
+        sctn    = MeiElement('score')
+        scD1    = MeiElement('scoreDef')
+        scD2    = MeiElement('scoreDef')
+        stG1    = MeiElement('staffGrp')
+        stG2    = MeiElement('staffGrp')
+        stD1    = MeiElement('staffDef')
+        stD2    = MeiElement('staffDef')
+
+        m1      = MeiElement('measure')
+        m2      = MeiElement('measure')
+        l1      = MeiElement('layer')
+        l2      = MeiElement('layer')
+        s1      = MeiElement('staff')
+        s2      = MeiElement('staff')
+
+        mR1     = MeiElement('mRest')
+        mR2     = MeiElement('mRest')
+
+        scD1.addAttribute('meter.unit', '2')
+        stD1.addAttribute('meter.count', '2')
+        stD2.addAttribute('meter.count', '3')
+
+        s1.addAttribute('n', '1')
+
+        sctn.addChild(scD1)
+        scD1.addChild(stG1)
+        stG1.addChild(stD1)
+        sctn.addChild(m1)
+        m1.addChild(s1)
+        s1.addChild(l1)
+        l1.addChild(mR1)
+
+        sctn.addChild(scD2)
+        scD2.addChild(stG2)
+        stG2.addChild(stD2)
+        sctn.addChild(m2)
+        m2.addChild(s2)
+        s2.addChild(l2)
+        l2.addChild(mR2)
+
+        meter1  = utilities.effective_meter(mR1)
+        meter2  = utilities.effective_meter(mR2)
+
+        self.assertEqual(meter1.count, 2)
+        self.assertEqual(meter1.unit, 2)
+        self.assertEqual(meter2.count, 3)
+        self.assertEqual(meter2.unit, 2)
 
 class AnalysisTest(unittest.TestCase):
     
