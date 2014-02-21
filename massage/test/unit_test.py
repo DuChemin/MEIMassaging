@@ -19,6 +19,8 @@ class UtilitiesTest(unittest.TestCase):
         rest2   = MeiElement('rest')
 
         note1.addAttribute('pname', 'c')
+        note1.addAttribute('oct', '4')
+        note1.addAttribute('dur', 'breve')
         note2.addAttribute('pname', 'd')
         note2.addAttribute('dur', '1')
         note3.addAttribute('pname', 'd')
@@ -36,7 +38,8 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(3, len(utilities.get_descendants(measure, 'note')))
         self.assertEqual(5, len(utilities.get_descendants(measure, 'note rest')))
         self.assertEqual(1, len(utilities.get_descendants(measure, 'note[dur=1]')))
-        self.assertEqual(4, len(utilities.get_descendants(measure, 'note[dur=1] note[pname=c] rest[dur=2] layer')))
+        self.assertEqual(1, len(utilities.get_descendants(measure, 'note[pname=d,dur=1]')))
+        self.assertEqual(4, len(utilities.get_descendants(measure, 'note[pname=d,dur=1] note[pname=c,oct=4,dur=breve] rest[dur=2] layer')))
 
     def test_effective_meter(self):
         music   = MeiElement('music')

@@ -21,12 +21,17 @@ def get_descendants(MEI_tree, expr):
 				
 				def parse_attrs_str(attrs_str):
 					res = []
-					if (len(attrs_str) > 0):
-						m = re.search("^(.*)=([^, ]*)", attrs_str)
-						attr = MeiAttribute(m.group(1), m.group(2))
-						res.append(attr)
-						attrs_str = re.sub("^.*=[^, ]*[, ]*", "", attrs_str)
-						res.extend(parse_attrs_str(attrs_str))
+					attr_pairs = attrs_str.split(",")
+					for attr_pair in attr_pairs:
+						if attr_pair == '':
+							continue
+						name_val = attr_pair.split("=")
+						if len(name_val)>1:
+							attr = MeiAttribute(name_val[0], name_val[1])
+							res.append(attr)
+						else:
+							if WARNING:
+								print "Warning: get_descendants(): invalid attribute specifier in expression: " + expr
 					return res
 				m = re.search("\[(.*)\]", token)
 				attrs_str = ""
