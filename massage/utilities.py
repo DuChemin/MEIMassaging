@@ -135,9 +135,9 @@ def effective_meter(elem):
 	all_scoreDefs = elem.lookBack('music').getDescendantsByName('scoreDef')
 	meter = Meter()
 	for scD in all_scoreDefs:
-		meter.read(scoreDef)
-		stD = get_descendants(scoreDef, 'staffDef[n=' + staff_n + ']')[0]
-		meter.read(staffDef)
+		meter.read(scD)
+		stD = get_descendants(scD, 'staffDef[n=' + staff_n + ']')[0]
+		meter.read(stD)
 		if scD == last_scoreDef:
 			break
 	return meter
