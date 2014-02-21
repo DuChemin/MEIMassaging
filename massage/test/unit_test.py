@@ -2,7 +2,7 @@ import sys
 import unittest
 sys.path.insert(0, '..')
 
-from pymei import MeiElement, MeiAttribute, XmlImport, XmlExport
+from pymei import MeiElement, MeiAttribute, XmlImport, XmlExport, MeiDocument
 import utilities
 from analyze.analyze import analyze
 
@@ -39,7 +39,11 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(4, len(utilities.get_descendants(measure, 'note[dur=1] note[pname=c] rest[dur=2] layer')))
 
     def test_effective_meter(self):
-        sctn    = MeiElement('score')
+        music   = MeiElement('music')
+        body    = MeiElement('body')
+        mdiv    = MeiElement('mdiv')
+        score   = MeiElement('score')
+        sctn    = MeiElement('section')
         scD1    = MeiElement('scoreDef')
         scD2    = MeiElement('scoreDef')
         stG1    = MeiElement('staffGrp')
@@ -62,7 +66,11 @@ class UtilitiesTest(unittest.TestCase):
         stD2.addAttribute('meter.count', '3')
 
         s1.addAttribute('n', '1')
-
+        
+        music.addChild(body)
+        body.addChild(mdiv)
+        mdiv.addChild(score)
+        score.addChild(sctn)
         sctn.addChild(scD1)
         scD1.addChild(stG1)
         stG1.addChild(stD1)
@@ -79,13 +87,16 @@ class UtilitiesTest(unittest.TestCase):
         s2.addChild(l2)
         l2.addChild(mR2)
 
+        doc = MeiDocument()
+        doc.setRootElement(music)
+
         meter1  = utilities.effective_meter(mR1)
         meter2  = utilities.effective_meter(mR2)
 
-        self.assertEqual(meter1.count, 2)
-        self.assertEqual(meter1.unit, 2)
-        self.assertEqual(meter2.count, 3)
-        self.assertEqual(meter2.unit, 2)
+        self.assertEqual(meter1.count, '2')
+        self.assertEqual(meter1.unit, '2')
+        self.assertEqual(meter2.count, '3')
+        self.assertEqual(meter2.unit, '2')
 
 class AnalysisTest(unittest.TestCase):
     
