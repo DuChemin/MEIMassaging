@@ -109,3 +109,38 @@ def source_name2NCName(source_name, prefix="RISM"):
 	res = re.sub("[^a-zA-Z0-9_\-.]", "_", res)
 	res = re.sub("^([0-9\-.])", prefix+"\g<1>", res)
 	return res
+
+
+class Meter:
+	count = None
+	unit = None
+	def read(self, sDef):
+		if sDef.hasAttribute('meter.count'):
+			self.count = sDef.getAttribute('meter.count').getValue()
+		if sDef.hasAttribute('meter.unit'):
+			self.unit = sDef.getAttribute('meter.unit').getValue()
+	def semibreves(self):
+		return count / unit
+
+
+def effective_meter(elem):
+	"""Gets the effective time signature at a given location under a 
+	<staff> element that is a descendent of the <music> element.
+	"""
+	staff_n = '1'
+	staff = elem.lookBack('staff')
+	if staff.hasAttribute('n'):
+		staff_n = staff.getAttribute('n').getValue()
+	last_scoreDef = elem.lookBack('scoreDef')
+	all_scoreDefs = elem.lookBack('music').getDescendantsByName('scoreDef')
+	meter = Meter()
+	for scD in all_scoreDefs:
+		meter.read(scoreDef)
+		stD = get_descendants(scoreDef, 'staffDef[n=' + staff_n + ']')[0]
+		meter.read(staffDef)
+		if scD == last_scoreDef:
+			break
+	return meter
+	
+	
+	
