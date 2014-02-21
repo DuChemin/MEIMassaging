@@ -5,6 +5,89 @@ sys.path.insert(0, '..')
 from transform.transform import TransformData
 from transformtestrunner import TransformTestCase
 from constants import *
+from transform.alt import *
+
+class FunctionTest(unittest.TestCase):
+			
+	def test_dur_in_semibreves_notes(self):
+		section = MeiElement('score')
+
+		m1 = MeiElement('measure')
+		st1 = MeiElement('staff')
+		ly1 = MeiElement('layer')
+		nt1 = MeiElement('note')
+		nt2 = MeiElement('note')
+		nt3 = MeiElement('note')
+		nt4 = MeiElement('note')
+		nt5 = MeiElement('note')
+		nt6 = MeiElement('note')
+		nt7 = MeiElement('note')
+		nt8 = MeiElement('note')
+		nt9 = MeiElement('note')
+		nt1.addAttribute('dur', '1')
+		nt2.addAttribute('dur', '2')
+		nt3.addAttribute('dur', '4')
+		nt4.addAttribute('dur', '8')
+		nt5.addAttribute('dur', '16')
+		nt6.addAttribute('dur', '32')
+		nt7.addAttribute('dur', '64')
+		nt8.addAttribute('dur', 'long')
+		nt9.addAttribute('dur', 'breve')
+		
+		self.assertEqual(dur_in_semibreves(nt1), 1)
+		self.assertEqual(dur_in_semibreves(nt2), 1/2)
+		self.assertEqual(dur_in_semibreves(nt3), 1/4)
+		self.assertEqual(dur_in_semibreves(nt4), 1/8)
+		self.assertEqual(dur_in_semibreves(nt5), 1/16)
+		self.assertEqual(dur_in_semibreves(nt6), 1/32)
+		self.assertEqual(dur_in_semibreves(nt7), 1/64)
+		self.assertEqual(dur_in_semibreves(nt8), 2)
+		self.assertEqual(dur_in_semibreves(nt9), 4)
+
+	def test_dur_in_semibreves_mRests(self):
+		sctn = MeiElement('score')
+		scD1 = MeiElement('scoreDef')
+		scD2 = MeiElement('scoreDef')
+		srG1 = MeiElement('staffGrp')
+		srG2 = MeiElement('staffGrp')
+		stD1 = MeiElement('staffDef')
+		stD2 = MeiElement('staffDef')
+
+		m1 = MeiElement('measure')
+		m2 = MeiElement('measure')
+		l1 = MeiElement('layer')
+		l2 = MeiElement('layer')
+		s1 = MeiElement('staff')
+		s2 = MeiElement('staff')
+
+		mR1 = MeiElement('mRest')
+		mR2 = MeiElement('mRest')
+		
+		scD1.addAttribute('meter.unit', '2')
+		stD1.addAttribute('meter.count', '2')
+		stD2.addAttribute('meter.count', '3')
+		
+		st1.addAttribute('n', '1')
+		
+		sctn.addChild(scD1)
+		scD1.addChild(stG1)
+		stG1.addChild(stD1)
+		sctn.addChild(m1)
+		m1.addChild(l1)
+		l1.addChild(s1)
+		s1.addChild(mR1)
+
+		sctn.addChild(scD2)
+		scD2.addChild(stG2)
+		stG2.addChild(stD2)
+		sctn.addChild(m2)
+		m2.addChild(l2)
+		l2.addChild(s2)
+		s2.addChild(mR2)
+
+		self.assertEqual(dur_in_semibreves(mR1), 1)
+		self.assertEqual(dur_in_semibreves(mR2), 1.5)
+		
 
 class TransformTest(unittest.TestCase):
 	

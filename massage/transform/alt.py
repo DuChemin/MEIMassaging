@@ -1,7 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
-from utilities import get_descendants
+from utilities import get_descendants, Meter, effective_meter
 
 def get_notes(measure, staff_n):
 	"""Return of all list of notes and rests in a given measure and staff."""
@@ -74,10 +74,27 @@ def color_matches(this_note_color, color_we_want):
 	else:
 		return this_note_color == color_we_want
 
+def dur_in_semibreves(elem):
+	
+	if elem.hasAttribute('dur'):
+		dur_attr = elem.getAttribute('dur').getValue()
+		if dur_attr == 'breve':
+			return 2.0
+		elif dur_attr == 'long':
+			return 4.0
+		else:
+			return 1.0 / eval(dur_attr)
+	elif elem.getName() == 'mRest':
+		meter = effective_meter(elem)
+		return meter.semibreves()
+	else:
+		return 0
+
 def convert_to_semibreves(dur_attr):
 	"""Converts an MEI @dur value to its equivalent
 	in number of semibreves.
 	"""
+	print "dur_attr:" + str(dur_attr)
 	if dur_attr == 'breve':
 		return 2.0
 	elif dur_attr == 'long':
@@ -240,6 +257,7 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 		rich_default_name = 'sic'
 
 	old_layer = staff.getChildrenByName('layer')[0]	
+	# TODO: Consider mRest!!!
 	layer_notes = get_descendants(old_layer, 'note rest space')
 	if skip not in wrapperlist:
 		rich_wrapper = MeiElement(rich_wrapper_name)
@@ -291,10 +309,23 @@ def legal_overlapping(staff, skipdurs):
 	True if the variants either line up or do not overlap,
 	False if the variants overlap in an illegal way.
 	"""
-	def legal_with_lemma(staff, skip, dur):
+	"""
+	TODO: Consider mRest!
+		1. mRest in lemma
+			-> all the notes have to be colored (to one color), or in other words:
+			there must be one colored block, and that should be (0, length-of-measure)
+		2. mRest in one of the varinats!
+			-> a colored mRest's skip-dur is (0, lenght-of-measure) which is 
+				a) always legal with the lemma;
+				b) only legal with another skip-dur pair if that is also (0, lenght-of-measure)
+				(unless the the other skip>lenght-of-measure...)
+			
+	"""
+		def legal_with_lemma(staff, skip, dur):
 		"""Returns whether the given skip and dur work
 		with the given staff.
 		"""
+		print "legal_with_lemma(" + str(staff) + ", " + str(skip) + ", " + str(dur) +")"
 		# print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
 		old_layer = staff.getChildrenByName('layer')[0]
 		notelist = get_descendants(old_layer, 'note rest space')
@@ -334,11 +365,11 @@ def legal_overlapping(staff, skipdurs):
 
 	for sdA in skipdurs:
 		if not legal_with_lemma(staff, sdA[1], sdA[2]):
-			# print('not legal with lemma')
+			print('not legal with lemma')
 			return False
 		for sdB in skipdurs:
 			if not legal_with_each_other(sdA[1], sdA[2], sdB[1], sdB[2]):
-				# print('not legal with each-other')
+				print('not legal with each-other')
 				return False
 	return True
 	
@@ -354,6 +385,10 @@ def get_colored_blocks(measure, lemma_n, vl, color_we_want):
 			staff = get_staff(measure, vl[0][0])
 			layer = staff.getChildrenByName('layer')[0]
 			notelist = get_descendants(layer, 'note rest space')
+			"""
+			TODO: consider mRest:
+				-> answer = [(staff, (0, lenght-of-measure))]
+			"""
 			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
@@ -418,12 +453,15 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 	for L in lemmas:
 		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
 		staff = get_staff(measure, L)
-		# print('Lemma no. ' + L)
-		# print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
+		print('Lemma no. ' + L)
+		print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
 		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
 		#       Possibly do both at the same time...
+		print "add_rich_elems {a}"
 		flat_list_of_colored_blocks = flatten_all_colored_blocks(colored_blocks)
+		print "add_rich_elems {b}"
 		if legal_overlapping(staff, flat_list_of_colored_blocks):
+			print "add_rich_elems {c.1}"
 			wrapperlist = dict()
 			RDGs_to_fill = []
 			for cbs in colored_blocks:
@@ -449,6 +487,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 					# print(rdgf[0])
 					rdgf[0].addChild(note)
 		else:
+			print "add_rich_elems {c.2}"
 			rich_wrapper = wrap_whole_measure(staff, ALT_TYPE)
 			# add rdg elements with reference to notelist, but do not insert notelist yet.
 			for cbs in colored_blocks:
@@ -501,6 +540,7 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 	filtered_alternates_list = [i for i in alternates_list
 			if i[1] == ALT_TYPE and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
+		print ('measure: ' + measure.getAttribute('n').getValue())
 		add_rich_elems(measure, filtered_alternates_list, color_we_want, ALT_TYPE)
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)
