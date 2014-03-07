@@ -321,7 +321,7 @@ def legal_overlapping(staff, skipdurs):
 				(unless the the other skip>lenght-of-measure...)
 			
 	"""
-		def legal_with_lemma(staff, skip, dur):
+	def legal_with_lemma(staff, skip, dur):
 		"""Returns whether the given skip and dur work
 		with the given staff.
 		"""
