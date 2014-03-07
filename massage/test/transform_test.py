@@ -6,11 +6,17 @@ from transform.transform import TransformData
 from transformtestrunner import TransformTestCase
 from constants import *
 from transform.alt import *
+from pymei import MeiElement, MeiDocument, MeiAttribute
+import utilities
 
 class FunctionTest(unittest.TestCase):
 			
 	def test_dur_in_semibreves_notes(self):
-		section = MeiElement('score')
+		music = MeiElement('music')
+		body = MeiElement('body')
+		mdiv = MeiElement('mdiv')
+		score = MeiElement('score')
+		section = MeiElement('section')
 
 		m1 = MeiElement('measure')
 		st1 = MeiElement('staff')
@@ -31,25 +37,46 @@ class FunctionTest(unittest.TestCase):
 		nt5.addAttribute('dur', '16')
 		nt6.addAttribute('dur', '32')
 		nt7.addAttribute('dur', '64')
-		nt8.addAttribute('dur', 'long')
-		nt9.addAttribute('dur', 'breve')
-		
-		self.assertEqual(dur_in_semibreves(nt1), 1)
-		self.assertEqual(dur_in_semibreves(nt2), 1/2)
-		self.assertEqual(dur_in_semibreves(nt3), 1/4)
-		self.assertEqual(dur_in_semibreves(nt4), 1/8)
-		self.assertEqual(dur_in_semibreves(nt5), 1/16)
-		self.assertEqual(dur_in_semibreves(nt6), 1/32)
-		self.assertEqual(dur_in_semibreves(nt7), 1/64)
-		self.assertEqual(dur_in_semibreves(nt8), 2)
-		self.assertEqual(dur_in_semibreves(nt9), 4)
+		nt8.addAttribute('dur', 'breve')
+		nt9.addAttribute('dur', 'long')
 
+		music.addChild(body)
+		body.addChild(mdiv)
+		mdiv.addChild(score)
+		score.addChild(section)
+		section.addChild(m1)
+		m1.addChild(st1)
+		st1.addChild(ly1)
+		ly1.addChild(nt1)
+		ly1.addChild(nt2)
+		ly1.addChild(nt3)
+		ly1.addChild(nt4)
+		ly1.addChild(nt5)
+		ly1.addChild(nt6)
+		ly1.addChild(nt7)
+		ly1.addChild(nt8)
+		ly1.addChild(nt9)
+		
+		self.assertEqual(dur_in_semibreves(nt1), 1.0)
+		self.assertEqual(dur_in_semibreves(nt2), 1.0/2.0)
+		self.assertEqual(dur_in_semibreves(nt3), 1.0/4.0)
+		self.assertEqual(dur_in_semibreves(nt4), 1.0/8.0)
+		self.assertEqual(dur_in_semibreves(nt5), 1.0/16.0)
+		self.assertEqual(dur_in_semibreves(nt6), 1.0/32.0)
+		self.assertEqual(dur_in_semibreves(nt7), 1.0/64.0)
+		self.assertEqual(dur_in_semibreves(nt8), 2.0)
+		self.assertEqual(dur_in_semibreves(nt9), 4.0)
+		
 	def test_dur_in_semibreves_mRests(self):
-		sctn = MeiElement('score')
+		music = MeiElement('music')
+		body = MeiElement('body')
+		mdiv = MeiElement('mdiv')
+		score = MeiElement('score')
+		sctn = MeiElement('section')
 		scD1 = MeiElement('scoreDef')
 		scD2 = MeiElement('scoreDef')
-		srG1 = MeiElement('staffGrp')
-		srG2 = MeiElement('staffGrp')
+		stG1 = MeiElement('staffGrp')
+		stG2 = MeiElement('staffGrp')
 		stD1 = MeiElement('staffDef')
 		stD2 = MeiElement('staffDef')
 
@@ -67,8 +94,13 @@ class FunctionTest(unittest.TestCase):
 		stD1.addAttribute('meter.count', '2')
 		stD2.addAttribute('meter.count', '3')
 		
-		st1.addAttribute('n', '1')
+		s1.addAttribute('n', '1')
 		
+		music.addChild(body)
+		body.addChild(mdiv)
+		mdiv.addChild(score)
+		score.addChild(sctn)
+
 		sctn.addChild(scD1)
 		scD1.addChild(stG1)
 		stG1.addChild(stD1)
@@ -85,6 +117,11 @@ class FunctionTest(unittest.TestCase):
 		l2.addChild(s2)
 		s2.addChild(mR2)
 
+		doc = MeiDocument()
+		doc.setRootElement(music)
+		
+		self.assertEqual(doc.lookBack(body, 'music'), music)
+		
 		self.assertEqual(dur_in_semibreves(mR1), 1)
 		self.assertEqual(dur_in_semibreves(mR2), 1.5)
 		
@@ -307,6 +344,7 @@ def suite():
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_01'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_colors'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_reconvariantforsamevoice'))
+	test_suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
 	return test_suite
     
 if __name__ == "__main__":
