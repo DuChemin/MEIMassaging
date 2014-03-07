@@ -125,7 +125,7 @@ class Meter:
 		if sDef.hasAttribute('meter.unit'):
 			self.unit = sDef.getAttribute('meter.unit').getValue()
 	def semibreves(self):
-		return count / unit
+		return float(self.count) / float(self.unit)
 
 
 def effective_meter(elem):
