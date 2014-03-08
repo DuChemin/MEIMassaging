@@ -291,8 +291,12 @@ def wrap_whole_measure(staff, ALT_TYPE):
 	if ALT_TYPE == EMENDATION:
 		rich_wrapper_name = 'choice'	
 		rich_default_name = 'sic'
-	old_layer = staff.getChildrenByName('layer')[0]
-	notelist = get_descendants(old_layer, 'note rest space')
+	old_layers = staff.getChildrenByName('layer')
+	notelist = []
+	if len(old_layers) > 0:
+		old_layer = staff.getChildrenByName('layer')[0]
+		notelist.extend(get_descendants(old_layer, 'note rest space'))
+		staff.removeChild(old_layer)
 	new_layer = MeiElement('layer')
 	rich_wrapper = MeiElement(rich_wrapper_name)
 	rich_default_elem = MeiElement(rich_default_name)
@@ -300,7 +304,6 @@ def wrap_whole_measure(staff, ALT_TYPE):
 		rich_default_elem.addChild(note)
 	rich_wrapper.addChild(rich_default_elem)
 	new_layer.addChild(rich_wrapper)
-	staff.removeChild(old_layer)
 	staff.addChild(new_layer)
 	return rich_wrapper
 
@@ -327,7 +330,10 @@ def legal_overlapping(staff, skipdurs):
 		"""
 		print "legal_with_lemma(" + str(staff) + ", " + str(skip) + ", " + str(dur) +")"
 		# print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
-		old_layer = staff.getChildrenByName('layer')[0]
+		old_layers = staff.getChildrenByName('layer')
+		if len(old_layers) == 0:
+			return False
+		old_layer = old_layers[0]
 		notelist = get_descendants(old_layer, 'note rest space')
 		for note in notelist:
 			dur_attr = note.getAttribute('dur').getValue()
