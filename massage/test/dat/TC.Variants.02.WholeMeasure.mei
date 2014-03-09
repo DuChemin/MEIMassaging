@@ -108,7 +108,7 @@
 								<layer/>
 							</staff>
 						</measure>
-						<!-- <measure n="5">
+						<measure n="5">
 							<staff n="1">
 								<layer n="1">
 									<mRest/>
@@ -126,7 +126,7 @@
 									<mRest/>
 								</layer>
 							</staff>
-						</measure> -->
+						</measure>
 					</section>
 				</score>
 			</mdiv>
