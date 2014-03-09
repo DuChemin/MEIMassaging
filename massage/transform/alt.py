@@ -2,6 +2,7 @@
 from constants import *
 from pymei import MeiElement
 from utilities import get_descendants, Meter, effective_meter
+import logging
 
 def get_notes(measure, staff_n):
 	"""Return of all list of notes and rests in a given measure and staff."""
@@ -127,7 +128,7 @@ def previous_measure_last_color(staff):
 		return last_note.getAttribute('color').getValue()
 
 def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
-	# print('add_wrapper_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
+	logging.debug('add_wrapper_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
 	"""
 	When ALT_TYPE == VARIANTS the method modifies the <staff> element 
 	by wrapping the specified section of notes into an <app><lem/></app> 
@@ -162,14 +163,16 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 	if ALT_TYPE == EMENDATION:
 		rich_wrapper_name = 'choice'	
 		rich_default_name = 'sic'
-
 	old_layer = staff.getChildrenByName('layer')[0]	
+	
 	layer_notes = get_descendants(old_layer, 'note rest space mRest')
 	if skip not in wrapperlist:
+		logging.debug("There isn't any wrapper at position " + str(skip) + " yet. Creating wrapper.")
 		rich_wrapper = MeiElement(rich_wrapper_name)
 		rich_default_elem = MeiElement(rich_default_name)
 		rich_wrapper.addChild(rich_default_elem)
 		skip__ = skip
+		logging.debug("Skipping notes in lemma that are before position " + str(skip) + ":")
 		for note in layer_notes:
 			dur_of_next_note = dur_in_semibreves(note)
 			# We haven't yet exhausted the skip;
@@ -178,7 +181,7 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 			# If the skip has been exhausted, begin the duration:
 			elif duration > 0:
 				if skip not in wrapperlist:
-					# print('adding new rich_wrapper at SKIP' + str(skip))
+					logging.debug('adding new rich_wrapper at SKIP' + str(skip))
 					wrappers_in_layer = old_layer.getChildrenByName(rich_wrapper_name)
 					note.getParent().addChildBefore(note, rich_wrapper)
 					wrapperlist[skip] = rich_wrapper
@@ -221,8 +224,8 @@ def legal_overlapping(staff, skipdurs):
 		"""Returns whether the given skip and dur work
 		with the given staff.
 		"""
-		print "legal_with_lemma(" + str(staff) + ", " + str(skip) + ", " + str(dur) +")"
-		# print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
+		logging.debug("legal_with_lemma(" + str(staff) + ", " + str(skip) + ", " + str(dur) +")")
+		logging.debug('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
 		old_layers = staff.getChildrenByName('layer')
 		if len(old_layers) == 0:
 			return False
@@ -258,16 +261,16 @@ def legal_overlapping(staff, skipdurs):
 		elif durA == 0 or durB == 0:
 			return True
 		else:
-			# print('Not legal with each-other: s' + str(skipA) + 'd' + str(durA) + ', and ' + 's' + str(skipB) + 'd' + str(durB))
+			logging.debug('Not legal with each-other: s' + str(skipA) + 'd' + str(durA) + ', and ' + 's' + str(skipB) + 'd' + str(durB))
 			return False
 
 	for sdA in skipdurs:
 		if not legal_with_lemma(staff, sdA[1], sdA[2]):
-			print('not legal with lemma')
+			logging.debug('not legal with lemma')
 			return False
 		for sdB in skipdurs:
 			if not legal_with_each_other(sdA[1], sdA[2], sdB[1], sdB[2]):
-				print('not legal with each-other')
+				logging.debug('not legal with each-other')
 				return False
 	return True
 	
@@ -314,7 +317,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 			skip += note_dur
 	if dur>0:
 		skipdurs.append((curr_color, skip, dur, colored_notes))
-	# print(skipdurs)
+	logging.debug(skipdurs)
 	return skipdurs	
 
 def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
@@ -339,7 +342,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 		
 	# Determine if each variant group is legally lined up.
 	# Get list of distinct lemma staff @n values:
-	# print('M' + str(measure.getAttribute('n').value))
+	logging.debug('M' + str(measure.getAttribute('n').value))
 	lemmas = []
 	for v in alternates_list:
 		if v[2] not in lemmas:
@@ -347,15 +350,15 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 	for L in lemmas:
 		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
 		staff = get_staff(measure, L)
-		print('Lemma no. ' + L)
-		print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
+		logging.debug('Lemma no. ' + L)
+		logging.debug('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
 		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
 		#       Possibly do both at the same time...
-		print "add_rich_elems {a}"
+		logging.debug("add_rich_elems {a}")
 		flat_list_of_colored_blocks = flatten_all_colored_blocks(colored_blocks)
-		print "add_rich_elems {b}"
+		logging.debug("add_rich_elems {b}")
 		if legal_overlapping(staff, flat_list_of_colored_blocks):
-			print "add_rich_elems {c.1}"
+			logging.debug("add_rich_elems {c.1}")
 			wrapperlist = dict()
 			RDGs_to_fill = []
 			for cbs in colored_blocks:
@@ -363,7 +366,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 				# TODO: look up source ID from staffDef
 				sourceID = '#' + source_of_variant(varstaff_n, alternates_list)
 				for cb in cbs[1]:
-					# print("add_rich_elems() {A}: cb=" + str(cb))
+					logging.debug("add_rich_elems() {A}: cb=" + str(cb))
 					skip=cb[1]
 					dur=cb[2]
 					notelist=cb[3]
@@ -377,11 +380,11 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 			# fill in rdg elements 
 			for rdgf in RDGs_to_fill:
 				for note in rdgf[1]:
-					# print('adding child to rdg:')
-					# print(rdgf[0])
+					logging.debug('adding child to rdg:')
+					logging.debug(rdgf[0])
 					rdgf[0].addChild(note)
 		else:
-			print "add_rich_elems {c.2}"
+			logging.debug("add_rich_elems {c.2}")
 			rich_wrapper = wrap_whole_measure(staff, ALT_TYPE)
 			# add rdg elements with reference to notelist, but do not insert notelist yet.
 			for cbs in colored_blocks:
@@ -429,12 +432,12 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 	and reorganize the MEI file so that the alternate readings are
 	grouped together with the lemma.
 	"""
-	# print('Transforming ' + ALT_TYPE)
+	logging.debug('Transforming ' + ALT_TYPE)
 	# See transform.py for documentation for the alternates_list object.
 	filtered_alternates_list = [i for i in alternates_list
 			if i[1] == ALT_TYPE and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
-		print ('measure: ' + measure.getAttribute('n').getValue())
+		logging.debug('measure: ' + measure.getAttribute('n').getValue())
 		add_rich_elems(measure, filtered_alternates_list, color_we_want, ALT_TYPE)
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)

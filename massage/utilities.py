@@ -1,6 +1,24 @@
 
 from pymei import MeiElement, MeiAttribute
 import re
+import logging
+import argparse
+
+def set_logging(parser):
+	parser.add_argument('--logging')
+	args = parser.parse_args()
+	if args.logging:
+		if args.logging == "DEBUG":
+			loglevel=logging.DEBUG
+		if args.logging == "INFO":
+			loglevel=logging.INFO
+		if args.logging == "WARNING":
+			loglevel=logging.WARNING
+		if args.logging == "ERROR":
+			loglevel=logging.ERROR
+		if args.logging == "CRITICAL":
+			loglevel=logging.CRITICAL
+		logging.basicConfig(level=loglevel)
 
 def has_C_clef(staffGrp):
 	for staffDef in staffGrp.getChildren():
@@ -30,8 +48,7 @@ def get_descendants(MEI_tree, expr):
 							attr = MeiAttribute(name_val[0], name_val[1])
 							res.append(attr)
 						else:
-							if WARNING:
-								print "Warning: get_descendants(): invalid attribute specifier in expression: " + expr
+							logging.warning("get_descendants(): invalid attribute specifier in expression: " + expr)
 					return res
 				m = re.search("\[(.*)\]", token)
 				attrs_str = ""

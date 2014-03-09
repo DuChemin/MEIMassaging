@@ -2,6 +2,7 @@
 from constants import *
 from utilities import has_C_clef
 from pymei import MeiElement
+import logging
 
 def reg_clefs_choice(staffGrp_orig):
 	"""Returns <choice> tag with a <reg> and an <orig>.
@@ -103,8 +104,8 @@ def normalize(clef_group):
 			clef_group[i] = clef_group[i][0].upper() + clef_group[i][1]
 		return clef_group
 	except AssertionError or IndexError:
-		print("The clef information provided is invalid. "
-		      "Original clefs will not be provided.")
+		logging.warning("The clef information provided is invalid. "
+			"Original clefs will not be provided.")
 		return EMPTY_CLEFS
 
 def clefs(MEI_tree, orig_clefs):

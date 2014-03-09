@@ -1,4 +1,5 @@
 import sys
+import logging
 sys.path.insert(0, '..')
 
 from constants import *
@@ -9,11 +10,10 @@ def staff_list(MEI_tree):
 	all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
 	staff_list = []
 	if len(all_staffGrp) < 1:
-		print("Error: No staffGrp in file.")
+		logging.error("Error: No staffGrp in file.")
 	else:
 		if len(all_staffGrp) > 1:
-			if WARNING:
-				print("Warning: more than one <staffGrp>; using first occurrence.")
+			logging.warning("Warning: more than one <staffGrp>; using first occurrence.")
 		staffGrp = all_staffGrp[0]
 		for staffDef in staffGrp.getDescendantsByName('staffDef'):
 			staff_name = staffDef.getAttribute('label').getValue()
@@ -50,8 +50,8 @@ def alternates_list(staff_list):
 			staff_voice_n = n_of_voice(staff_voice, staff_list)
 			if (staff_voice_n):
 				res_item = (staff_n, staff_type, staff_voice_n, staff_source)
-			elif WARNING:
-				print("Cannot find corresponding staff for staff: " + str(staff_list_item))
+			else:
+				logging.error("Cannot find corresponding staff for staff: " + str(staff_list_item))
 		result.append(res_item)
 	return result
 

@@ -1,4 +1,5 @@
 import sys
+import argparse
 import unittest
 sys.path.insert(0, '..')
 
@@ -348,5 +349,7 @@ def suite():
 	return test_suite
     
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='MEI-Massage a single file.')
+    utilities.set_logging(parser)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite())

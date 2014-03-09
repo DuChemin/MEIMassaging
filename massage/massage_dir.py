@@ -2,17 +2,17 @@ import sys
 import os
 import argparse
 import re
+import logging
 
 from massage_mei import massage_mei
 
 def massage_file(args, file, in_dir, out_dir):
     try:
-        print "Massage file: " + os.path.join(in_dir, file)
+        logging.info("Massage file: " + os.path.join(in_dir, file))
         massage_mei(os.path.join(in_dir, file), os.path.join(out_dir, file + "_msg.mei"))
-        print "DONE."
+        logging.info("DONE.")
     except Exception as ex:
-        print ex
-        pass    
+        logging.critical(ex)
     
 
 if __name__ == "__main__":
@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_argument('--filter', dest='filter')
     parser.add_argument('-R', dest='recursive', action='store_true')
     parser.add_argument('--ignore', dest='filter_ignore')
+    set_logging(parser)
     args = parser.parse_args()
 
     if not args.out_dir:
