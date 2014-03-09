@@ -90,18 +90,6 @@ def dur_in_semibreves(elem):
 	else:
 		return 0
 
-def convert_to_semibreves(dur_attr):
-	"""Converts an MEI @dur value to its equivalent
-	in number of semibreves.
-	"""
-	print "dur_attr:" + str(dur_attr)
-	if dur_attr == 'breve':
-		return 2.0
-	elif dur_attr == 'long':
-		return 4.0
-	else:
-		return 1.0 / eval(dur_attr)
-
 def previous_measure_last_color(staff):
 	"""Returns the color of the last note in the previous measure,
 	in the same staff as that given.
@@ -176,16 +164,14 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 		rich_default_name = 'sic'
 
 	old_layer = staff.getChildrenByName('layer')[0]	
-	# TODO: Consider mRest!!!
-	layer_notes = get_descendants(old_layer, 'note rest space')
+	layer_notes = get_descendants(old_layer, 'note rest space mRest')
 	if skip not in wrapperlist:
 		rich_wrapper = MeiElement(rich_wrapper_name)
 		rich_default_elem = MeiElement(rich_default_name)
 		rich_wrapper.addChild(rich_default_elem)
 		skip__ = skip
 		for note in layer_notes:
-			dur_attr = note.getAttribute('dur').getValue()
-			dur_of_next_note = convert_to_semibreves(dur_attr)
+			dur_of_next_note = dur_in_semibreves(note)
 			# We haven't yet exhausted the skip;
 			if skip__ > 0 and dur_of_next_note <= skip__:
 				skip__ -= dur_of_next_note
@@ -231,18 +217,6 @@ def legal_overlapping(staff, skipdurs):
 	True if the variants either line up or do not overlap,
 	False if the variants overlap in an illegal way.
 	"""
-	"""
-	TODO: Consider mRest!
-		1. mRest in lemma
-			-> all the notes have to be colored (to one color), or in other words:
-			there must be one colored block, and that should be (0, length-of-measure)
-		2. mRest in one of the varinats!
-			-> a colored mRest's skip-dur is (0, lenght-of-measure) which is 
-				a) always legal with the lemma;
-				b) only legal with another skip-dur pair if that is also (0, lenght-of-measure)
-				(unless the the other skip>lenght-of-measure...)
-			
-	"""
 	def legal_with_lemma(staff, skip, dur):
 		"""Returns whether the given skip and dur work
 		with the given staff.
@@ -253,10 +227,9 @@ def legal_overlapping(staff, skipdurs):
 		if len(old_layers) == 0:
 			return False
 		old_layer = old_layers[0]
-		notelist = get_descendants(old_layer, 'note rest space')
+		notelist = get_descendants(old_layer, 'note rest space mRest')
 		for note in notelist:
-			dur_attr = note.getAttribute('dur').getValue()
-			dur_of_next_note = convert_to_semibreves(dur_attr)
+			dur_of_next_note = dur_in_semibreves(note)
 			# During the skip
 			if skip > 0:
 				if dur_of_next_note <= skip:
@@ -309,11 +282,7 @@ def get_colored_blocks(measure, lemma_n, vl, color_we_want):
 		if vl[0][2] == lemma_n:
 			staff = get_staff(measure, vl[0][0])
 			layer = staff.getChildrenByName('layer')[0]
-			notelist = get_descendants(layer, 'note rest space')
-			"""
-			TODO: consider mRest:
-				-> answer = [(staff, (0, lenght-of-measure))]
-			"""
+			notelist = get_descendants(layer, 'note rest space mRest')
 			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
@@ -330,7 +299,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 	dur = 0
 	colored_notes = []
 	for note in notelist:
-		note_dur = convert_to_semibreves(note.getAttribute('dur').getValue())
+		note_dur = dur_in_semibreves(note)
 		note_color = get_color(note)
 		if color_matches(note_color, color_we_want):
 			curr_color = note_color
