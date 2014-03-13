@@ -4,6 +4,14 @@ from pymei import MeiElement
 from utilities import get_descendants, Meter, effective_meter
 import logging
 
+class RichWrapperInsertError(Exception):
+	def __init__(self, staff, skip, duration, ALT_TYPE, rich_wrapper):
+		self.staff = staff
+		self.skip = skip
+		self.duration = duration
+		self.ALT_TYPE = ALT_TYPE
+		self.rich_wrapper = rich_wrapper
+
 def get_notes(measure, staff_n):
 	"""Return of all list of notes and rests in a given measure and staff."""
 	for staff in measure:
@@ -189,12 +197,9 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 				rich_default_elem.addChild(note)
 				duration -= dur_of_next_note	
 		if skip not in wrapperlist:
-			logging.warning("Coulnd't insert rich <" + rich_wrapper_name + "> into staff[n=" + \
-			 	staff.getAttribute('n').value + \
-				'] at skip=' + str(skip) + '; duration=' + str(duration))
-		return rich_wrapper
-	else:
-		return wrapperlist[skip]
+			raise RichWrapperInsertError(staff, skip, duration, ALT_TYPE, rich_wrapper)
+	return wrapperlist[skip]
+
 
 def wrap_whole_measure(staff, ALT_TYPE):
 	"""Enclose the entire contents of a staff in a measure
@@ -377,12 +382,17 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 					skip=cb[1]
 					dur=cb[2]
 					notelist=cb[3]
-					rich_wrapper = add_wrapper_to_staff(staff, skip, dur, wrapperlist, ALT_TYPE)
-					# add rdg elements with reference to notelist, but do not insert notelist yet.
-					rdg = MeiElement(rich_item_name)
-					rdg.addAttribute(rich_item_attr_name, sourceID)
-					rich_wrapper.addChild(rdg)
-					RDGs_to_fill.append((rdg, notelist))
+					try:
+						rich_wrapper = add_wrapper_to_staff(staff, skip, dur, wrapperlist, ALT_TYPE)
+						# add rdg elements with reference to notelist, but do not insert notelist yet.
+						rdg = MeiElement(rich_item_name)
+						rdg.addAttribute(rich_item_attr_name, sourceID)
+						rich_wrapper.addChild(rdg)
+						RDGs_to_fill.append((rdg, notelist))
+					except RichWrapperInsertError as er:
+						logging.warning("Coulnd't insert " + str(er.rich_wrapper) + " into measure:" + str(measure) + \
+							"/staff:" + str(er.staff) + \
+							'at skip=' + str(er.skip) + '; duration=' + str(er.duration))
 			# fill in rdg elements 
 			for rdgf in RDGs_to_fill:
 				for note in rdgf[1]:
