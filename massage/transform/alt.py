@@ -404,9 +404,11 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 			rich_wrapper = wrap_whole_measure(staff, ALT_TYPE)
 			# add rdg elements with reference to notelist, but do not insert notelist yet.
 			for cbs in colored_blocks:
+				logging.debug("colored block: " + str(cbs))
 				varstaff_n = cbs[0].getAttribute('n').getValue()
 				# TODO: look up source ID from staffDef
 				sourceID = '#' + source_of_variant(varstaff_n, alternates_list)
+				logging.debug("sourceID=" + sourceID)
 				rdg = MeiElement(rich_item_name)
 				rdg.addAttribute(rich_item_attr_name, sourceID)
 				rich_wrapper.addChild(rdg)
