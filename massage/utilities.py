@@ -144,6 +144,13 @@ class Meter:
 	def semibreves(self):
 		return float(self.count) / float(self.unit)
 
+def get_attribute_val(elem, attr_name, def_value=""):
+	"""Gets an attribute value or the supplied return value if the 
+	attribute isn't defined."""
+	if elem.hasAttribute(attr_name):
+		return elem.getAttribute(attr_name).getValue()
+	else:
+		return def_value
 
 def effective_meter(elem):
 	"""Gets the effective time signature at a given location under a 

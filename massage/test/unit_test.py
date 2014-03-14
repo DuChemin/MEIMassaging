@@ -102,6 +102,14 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(meter2.count, '3')
         self.assertEqual(meter2.unit, '2')
 
+    def test_getattributeval(self):
+        measure = MeiElement('measure')
+        staff = MeiElement('staff')
+        measure.addAttribute('n', '2')
+        
+        self.assertEqual(utilities.get_attribute_val(measure, 'n'), '2')
+        self.assertEqual(utilities.get_attribute_val(staff, 'n', '1'), '1')
+
 class AnalysisTest(unittest.TestCase):
     
     def test_analyze(self):
