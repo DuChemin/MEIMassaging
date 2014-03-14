@@ -1,7 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
-from utilities import get_descendants, Meter, effective_meter
+from utilities import get_descendants, Meter, effective_meter, get_attribute_val
 import logging
 
 class RichWrapperInsertError(Exception):
@@ -390,9 +390,9 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 						rich_wrapper.addChild(rdg)
 						RDGs_to_fill.append((rdg, notelist))
 					except RichWrapperInsertError as er:
-						logging.warning("Coulnd't insert " + str(er.rich_wrapper) + " into measure:" + str(measure) + \
-							"/staff:" + str(er.staff) + \
-							'at skip=' + str(er.skip) + '; duration=' + str(er.duration))
+						logging.warning("Coulnd't insert " + str(er.rich_wrapper) + " into measure:n=" + get_attribute_val(measure, "n", "N/A") + \
+							" staff:n=" + get_attribute_val(er.staff, "n", "N/A") + \
+							' at skip=' + str(er.skip) + '; duration=' + str(er.duration))
 			# fill in rdg elements 
 			for rdgf in RDGs_to_fill:
 				for note in rdgf[1]:
