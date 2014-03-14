@@ -360,9 +360,9 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 		if v[2] not in lemmas:
 			lemmas.append(v[2])
 	for L in lemmas:
+		logging.debug('Lemma no. ' + L)
 		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
 		staff = get_staff(measure, L)
-		logging.debug('Lemma no. ' + L)
 		logging.debug('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
 		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
 		#       Possibly do both at the same time...
