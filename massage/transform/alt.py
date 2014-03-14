@@ -296,8 +296,11 @@ def get_colored_blocks(measure, lemma_n, vl, color_we_want):
 	else:
 		if vl[0][2] == lemma_n:
 			staff = get_staff(measure, vl[0][0])
-			layer = staff.getChildrenByName('layer')[0]
-			notelist = get_descendants(layer, 'note rest space mRest')
+			layers = staff.getChildrenByName('layer')
+			if len(layers) > 0:
+				notelist = get_descendants(layers[0], 'note rest space mRest')
+			else:
+				notelist = []
 			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
