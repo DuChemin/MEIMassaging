@@ -215,7 +215,7 @@ def wrap_whole_measure(staff, ALT_TYPE):
 	notelist = []
 	if len(old_layers) > 0:
 		old_layer = staff.getChildrenByName('layer')[0]
-		notelist.extend(get_descendants(old_layer, 'note rest space'))
+		notelist.extend(get_descendants(old_layer, 'note rest space mRest'))
 		staff.removeChild(old_layer)
 	new_layer = MeiElement('layer')
 	rich_wrapper = MeiElement(rich_wrapper_name)
@@ -415,7 +415,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 				staves_of_measure = measure.getChildrenByName('staff')
 				for staff in staves_of_measure:
 					if staff.getAttribute('n').getValue() == varstaff_n:
-						notelist = get_descendants(staff, 'note rest space')
+						notelist = get_descendants(staff, 'note rest space mRest')
 						for note in notelist:
 							rdg.addChild(note)
 
