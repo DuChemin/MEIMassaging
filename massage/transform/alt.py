@@ -1,7 +1,7 @@
 
 from constants import *
 from pymei import MeiElement
-from utilities import get_descendants, Meter, effective_meter, get_attribute_val
+from utilities import *
 import logging
 
 class RichWrapperInsertError(Exception):
@@ -32,7 +32,7 @@ def get_color(note):
 
 def get_staff(measure, staff_n):
 	for staff in measure.getDescendantsByName('staff'):
-		if staff.getAttribute('n').getValue() == staff_n:
+		if get_attribute_val(staff, 'n', '1') == staff_n:
 			return staff
 	# If it doesn't exist, we return a null...
 	return None
