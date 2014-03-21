@@ -83,22 +83,6 @@ def color_matches(this_note_color, color_we_want):
 	else:
 		return this_note_color == color_we_want
 
-def dur_in_semibreves(elem):
-	
-	if elem.hasAttribute('dur'):
-		dur_attr = elem.getAttribute('dur').getValue()
-		if dur_attr == 'breve':
-			return 2.0
-		elif dur_attr == 'long':
-			return 4.0
-		else:
-			return 1.0 / eval(dur_attr)
-	elif elem.getName() == 'mRest':
-		meter = effective_meter(elem)
-		return meter.semibreves()
-	else:
-		return 0
-
 def previous_measure_last_color(staff):
 	"""Returns the color of the last note in the previous measure,
 	in the same staff as that given.
