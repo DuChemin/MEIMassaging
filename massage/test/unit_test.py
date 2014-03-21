@@ -110,6 +110,132 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(utilities.get_attribute_val(measure, 'n'), '2')
         self.assertEqual(utilities.get_attribute_val(staff, 'n', '1'), '1')
 
+    def test_dur_in_semibreves_notes(self):
+        music = MeiElement('music')
+        body = MeiElement('body')
+        mdiv = MeiElement('mdiv')
+        score = MeiElement('score')
+        section = MeiElement('section')
+
+        m1 = MeiElement('measure')
+        st1 = MeiElement('staff')
+        ly1 = MeiElement('layer')
+        nt1 = MeiElement('note')
+        nt2 = MeiElement('note')
+        nt3 = MeiElement('note')
+        nt4 = MeiElement('note')
+        nt5 = MeiElement('note')
+        nt6 = MeiElement('note')
+        nt7 = MeiElement('note')
+        nt8 = MeiElement('note')
+        nt9 = MeiElement('note')
+        nt1.addAttribute('dur', '1')
+        nt2.addAttribute('dur', '2')
+        nt3.addAttribute('dur', '4')
+        nt4.addAttribute('dur', '8')
+        nt5.addAttribute('dur', '16')
+        nt6.addAttribute('dur', '32')
+        nt7.addAttribute('dur', '64')
+        nt8.addAttribute('dur', 'breve')
+        nt9.addAttribute('dur', 'long')
+
+        music.addChild(body)
+        body.addChild(mdiv)
+        mdiv.addChild(score)
+        score.addChild(section)
+        section.addChild(m1)
+        m1.addChild(st1)
+        st1.addChild(ly1)
+        ly1.addChild(nt1)
+        ly1.addChild(nt2)
+        ly1.addChild(nt3)
+        ly1.addChild(nt4)
+        ly1.addChild(nt5)
+        ly1.addChild(nt6)
+        ly1.addChild(nt7)
+        ly1.addChild(nt8)
+        ly1.addChild(nt9)
+
+        self.assertEqual(utilities.dur_in_semibreves(nt1), 1.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt2), 1.0/2.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt3), 1.0/4.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt4), 1.0/8.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt5), 1.0/16.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt6), 1.0/32.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt7), 1.0/64.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt8), 2.0)
+        self.assertEqual(utilities.dur_in_semibreves(nt9), 4.0)
+
+    def test_dur_in_semibreves_mRests(self):
+        music = MeiElement('music')
+        body = MeiElement('body')
+        mdiv = MeiElement('mdiv')
+        score = MeiElement('score')
+        sctn = MeiElement('section')
+        scD1 = MeiElement('scoreDef')
+        scD2 = MeiElement('scoreDef')
+        stG1 = MeiElement('staffGrp')
+        stG2 = MeiElement('staffGrp')
+        stD1 = MeiElement('staffDef')
+        stD2 = MeiElement('staffDef')
+
+        m1 = MeiElement('measure')
+        m2 = MeiElement('measure')
+        l1 = MeiElement('layer')
+        l2 = MeiElement('layer')
+        s1 = MeiElement('staff')
+        s2 = MeiElement('staff')
+
+        mR1 = MeiElement('mRest')
+        mR2 = MeiElement('mRest')
+
+        scD1.addAttribute('meter.unit', '2')
+        stD1.addAttribute('meter.count', '2')
+        stD2.addAttribute('meter.count', '3')
+
+        s1.addAttribute('n', '1')
+
+        music.addChild(body)
+        body.addChild(mdiv)
+        mdiv.addChild(score)
+        score.addChild(sctn)
+
+        sctn.addChild(scD1)
+        scD1.addChild(stG1)
+        stG1.addChild(stD1)
+        sctn.addChild(m1)
+        m1.addChild(l1)
+        l1.addChild(s1)
+        s1.addChild(mR1)
+
+        sctn.addChild(scD2)
+        scD2.addChild(stG2)
+        stG2.addChild(stD2)
+        sctn.addChild(m2)
+        m2.addChild(l2)
+        l2.addChild(s2)
+        s2.addChild(mR2)
+
+        doc = MeiDocument()
+        doc.setRootElement(music)
+
+        self.assertEqual(doc.lookBack(body, 'music'), music)
+
+        self.assertEqual(utilities.dur_in_semibreves(mR1), 1)
+        self.assertEqual(utilities.dur_in_semibreves(mR2), 1.5)
+
+    def test_getnextmeasure(self):
+        section = MeiElement('section')
+        m1 = MeiElement('measure')
+        sb = MeiElement('sb')
+        m2 = MeiElement('measure')
+        
+        section.addChild(m1)
+        section.addChild(sb)
+        section.addChild(m2)
+        
+        self.assertEqual(utilities.get_next_measure(m1), m2)
+
 class AnalysisTest(unittest.TestCase):
     
     def test_analyze(self):

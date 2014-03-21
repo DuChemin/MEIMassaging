@@ -174,4 +174,53 @@ def effective_meter(elem):
 	return meter
 	
 	
+def get_next_measure(measure):
+	"""
+	Return the measure directly after the current measure, if any
+	"""
+	peer_measures = measure.parent.getDescendantsByName('measure')
+	measurefound = False
+	for m in peer_measures:
+		if measurefound:
+			return m
+		if m == measure:
+			measurefound = True
+	return None
+
+def dur_in_semibreves(elem):
+	
+	if elem.hasAttribute('dur'):
+		dur_attr = elem.getAttribute('dur').getValue()
+		if dur_attr == 'breve':
+			return 2.0
+		elif dur_attr == 'long':
+			return 4.0
+		else:
+			return 1.0 / eval(dur_attr)
+	elif elem.getName() == 'mRest':
+		meter = effective_meter(elem)
+		return meter.semibreves()
+	else:
+		return 0
+
+# def dur_of_event(elem):
+# 	
+# 	def dur_of_chord(chord):
+# 		for elem in chord.getChildren():
+# 			if 
+# 	
+# 	"""
+# 	Return the total duration of the element
+# 	It is the dur attribute if the elem has one.
+# 	'Compound' events such as beam, chord, or elements that can contain
+# 	events, such as <app> or <rdg> have different ways of defining their
+# 	duration
+# 	
+# 	TODO: how to define the duration of _any_ element (including <app>s and so on)
+# 	"""
+# 	tagname = elem.getName() 
+# 	if tagname in ['note', 'rest', 'space']:
+# 		return dur_of_simple_event(elem)
+# 	elif tagname == 'mRest': 
+# 		duration_
 	
