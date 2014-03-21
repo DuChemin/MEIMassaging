@@ -139,6 +139,22 @@ class UtilitiesTest(unittest.TestCase):
         nt8.addAttribute('dur', 'breve')
         nt9.addAttribute('dur', 'long')
 
+        b = MeiElement('beam')
+        nt10 = MeiElement('note')
+        nt11 = MeiElement('note')
+        nt10.addAttribute('dur', '4')
+        nt11.addAttribute('dur', '4')
+        b.addChild(nt10)
+        b.addChild(nt11)
+
+        c = MeiElement('chord')
+        nt12 = MeiElement('note')
+        nt13 = MeiElement('note')
+        nt12.addAttribute('dur', '4')
+        nt13.addAttribute('dur', '2')
+        c.addChild(nt12)
+        c.addChild(nt13)
+
         music.addChild(body)
         body.addChild(mdiv)
         mdiv.addChild(score)
@@ -155,6 +171,8 @@ class UtilitiesTest(unittest.TestCase):
         ly1.addChild(nt7)
         ly1.addChild(nt8)
         ly1.addChild(nt9)
+        ly1.addChild(b)
+        ly1.addChild(c)
 
         self.assertEqual(utilities.dur_in_semibreves(nt1), 1.0)
         self.assertEqual(utilities.dur_in_semibreves(nt2), 1.0/2.0)
@@ -165,6 +183,8 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(utilities.dur_in_semibreves(nt7), 1.0/64.0)
         self.assertEqual(utilities.dur_in_semibreves(nt8), 2.0)
         self.assertEqual(utilities.dur_in_semibreves(nt9), 4.0)
+        self.assertEqual(utilities.dur_in_semibreves(b), 0.5)
+        self.assertEqual(utilities.dur_in_semibreves(c), 0.5)
 
     def test_dur_in_semibreves_mRests(self):
         music = MeiElement('music')

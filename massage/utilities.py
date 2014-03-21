@@ -200,27 +200,18 @@ def dur_in_semibreves(elem):
 	elif elem.getName() == 'mRest':
 		meter = effective_meter(elem)
 		return meter.semibreves()
+	elif elem.getName() == 'beam':
+		total = 0
+		for e in elem.getChildren():
+			total += dur_in_semibreves(e)
+		return total
+	elif elem.getName() == 'chord':
+		max_dur = 0
+		for e in elem.getChildren():
+			D_e = dur_in_semibreves(e)
+			if D_e  > max_dur:
+				max_dur = D_e
+		return max_dur
 	else:
 		return 0
 
-# def dur_of_event(elem):
-# 	
-# 	def dur_of_chord(chord):
-# 		for elem in chord.getChildren():
-# 			if 
-# 	
-# 	"""
-# 	Return the total duration of the element
-# 	It is the dur attribute if the elem has one.
-# 	'Compound' events such as beam, chord, or elements that can contain
-# 	events, such as <app> or <rdg> have different ways of defining their
-# 	duration
-# 	
-# 	TODO: how to define the duration of _any_ element (including <app>s and so on)
-# 	"""
-# 	tagname = elem.getName() 
-# 	if tagname in ['note', 'rest', 'space']:
-# 		return dur_of_simple_event(elem)
-# 	elif tagname == 'mRest': 
-# 		duration_
-	
