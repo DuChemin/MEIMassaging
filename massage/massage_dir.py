@@ -5,6 +5,7 @@ import re
 import logging
 
 from massage_mei import massage_mei
+from utilities import set_logging
 
 def massage_file(args, file, in_dir, out_dir):
     try:
