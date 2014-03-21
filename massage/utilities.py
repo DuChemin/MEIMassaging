@@ -165,8 +165,10 @@ def effective_meter(elem):
 	meter = Meter()
 	for scD in all_scoreDefs:
 		meter.read(scD)
-		stD = get_descendants(scD, 'staffDef[n=' + staff_n + ']')[0]
-		meter.read(stD)
+		stDs = get_descendants(scD, 'staffDef[n=' + staff_n + ']')
+		if len(stDs) > 0: 
+			stD = stDs[0]
+			meter.read(stD)
 		if scD == last_scoreDef:
 			break
 	return meter
