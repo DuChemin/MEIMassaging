@@ -332,7 +332,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 			skip += note_dur
 	if dur>0:
 		skipdurs.append((curr_color, skip, dur, colored_notes))
-	logging.debug(skipdurs)
+	logging.debug("get_colored_blocks_from_notes(): skipdurs=" + str(skipdurs))
 	return skipdurs	
 
 def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
@@ -365,8 +365,8 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 	for L in lemmas:
 		logging.debug('Lemma no. ' + L)
 		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
-		staff = get_staff(measure, L)
 		logging.debug('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
+		staff = get_staff(measure, L)
 		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
 		#       Possibly do both at the same time...
 		logging.debug("add_rich_elems {a}")
