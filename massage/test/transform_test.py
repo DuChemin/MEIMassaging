@@ -204,6 +204,81 @@ class FunctionTest(unittest.TestCase):
 		annots = get_descendants(music, 'annot[type=appGrp]')
 		self.assertEqual(len(annots), 0)
 		
+	def test_correspondingapps(self):
+		app0 = MeiElement('app')
+		app1 = MeiElement('app')
+		app2 = MeiElement('app')
+		app3 = MeiElement('app')
+		app4 = MeiElement('app')
+		lem0 = MeiElement('lem')
+		lem1 = MeiElement('lem')
+		lem2 = MeiElement('lem')
+		lem3 = MeiElement('lem')
+		lem4 = MeiElement('lem')
+		rdg0_A = MeiElement('rdg')
+		rdg0_B = MeiElement('rdg')
+		rdg0_A.addAttribute('source', 'SRC-A')
+		rdg0_B.addAttribute('source', 'SRC-B')
+		
+		app0.addChild(lem0)
+		app0.addChild(rdg0_A)
+		app0.addChild(rdg0_B)
+
+		rdg2_1 = MeiElement('rdg')
+		rdg2_2 = MeiElement('rdg')
+		rdg3_1 = MeiElement('rdg')
+		rdg3_2 = MeiElement('rdg')
+
+		"""
+		app0 and app1 are corresponding
+		"""
+		rdg1_A = MeiElement('rdg')
+		rdg1_B = MeiElement('rdg')
+		rdg1_A.addAttribute('source', 'SRC-A')
+		rdg1_B.addAttribute('source', 'SRC-B')
+		app1.addChild(lem1)
+		app1.addChild(rdg1_A)
+		app1.addChild(rdg1_B)
+		
+		
+		"""
+		app0 and app2 aren't corresponding because
+		they don't have the same number of lems
+		"""
+		rdg2_A = MeiElement('rdg')
+		rdg2_B = MeiElement('rdg')
+		rdg2_A.addAttribute('source', 'SRC-A')
+		rdg2_B.addAttribute('source', 'SRC-B')
+		app2.addChild(rdg2_A)
+		app2.addChild(rdg2_B)
+
+		"""
+		app0 and app3 aren't corresponding because
+		they don't have the same number of rdgs
+		"""
+		rdg3_A = MeiElement('rdg')
+		rdg3_B = MeiElement('rdg')
+		rdg3_A.addAttribute('source', 'SRC-A')
+		app3.addChild(lem3)
+		app3.addChild(rdg3_A)
+
+		"""
+		app0 and app4 aren't corresponding because
+		their rdgs don't represent the same set of sources
+		"""
+		rdg4_A = MeiElement('rdg')
+		rdg4_C = MeiElement('rdg')
+		rdg4_A.addAttribute('source', 'SRC-A')
+		rdg4_C.addAttribute('source', 'SRC-C')
+		app4.addChild(lem1)
+		app4.addChild(rdg4_A)
+		app4.addChild(rdg4_C)
+		
+		self.assertEqual(corresponding_apps(app0, app1), True)
+		self.assertEqual(corresponding_apps(app0, app2), False)
+		self.assertEqual(corresponding_apps(app0, app3), False)
+		self.assertEqual(corresponding_apps(app0, app4), False)
+		
 class TransformTest(unittest.TestCase):
 	
 	def setUp(self):

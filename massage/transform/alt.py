@@ -446,6 +446,65 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 		add_rich_elems(measure, filtered_alternates_list, color_we_want, ALT_TYPE)
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)
+
+def corresponding_apps(app1, app2):
+	"""
+	Returns True if the two apps have the exact same set of sources
+	"""
+	
+	result = True
+	lem1s = app1.getChildrenByName('lem')
+	lem2s = app2.getChildrenByName('lem')
+	rdg1s = app1.getChildrenByName('rdg')
+	rdg2s = app2.getChildrenByName('rdg')
+	result = len(lem1s) == len(lem2s)
+	result = result and len(rdg1s) == len(rdg2s)
+	for rdg in rdg1s:
+		source = get_attribute_val(rdg, 'source', '')
+		result = result and source != '' and len(get_descendants(app2, 'rdg[source=' + source + ']')) == 1
+	return result
+	
+def find_connecting_app(app):
+	"""
+	Looks for a connecting app in the next measure
+	A connecting app in the next measure has the following properties:
+	1. it is on the same staff
+	2. it is at the beginning of the measure (no notes before)
+	3. it has the same set of sources than 'app' 
+
+	If the app is higher than staff level, than by definition
+	there is no connecting app.
+	"""
+	
+	staff = app.lookBack('staff')
+	if staff:
+		staff_n = get_attribute_val(staff, 'n', '1')
+		m = staff.lookBack('measure')
+		if m:
+			next_m = get_next_measure(m)
+			next_staff = get_staff(next_m, staff_n)
+			staff_children = next_staff.getChildren()
+			for elem in staff_Children:
+				if elem.getName() != 'app' and dur_in_semibreves(elem) > 0:
+					return None
+				elif elem.getName() == 'app' and corresponding_apps(app, elem):
+					return elem
+	"""No connecting app found:"""
+	return None
+
+def link_alternatives(MEI_tree):
+	"""Link together variants or emendations that span across measures 
+	using the <annot> elements	
+	"""
+	for app in get_descendants(MEI_tree, 'app'):
+		connecting_app = find_connecting_app(app)
+		if connecting_app:
+			#TODO: test find_connecting_app()
+			#TODO: add the connecting_app.getId() into the list which contains app.getId(). 
+			#if no such list exists, create one and add both IDs
+			pass
+	#TODO: for all lists created above:
+	#create one <annot> element, and add it to the MEI_tree
 	
 """
 To add in future:
