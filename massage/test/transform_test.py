@@ -12,95 +12,106 @@ import utilities
 
 class FunctionTest(unittest.TestCase):
 	
+	class ConnectingAppsObjects:
+		def __init__(self):	
+			"""
+			Setup some connecting apps.
+			Connecting apps are:
+			  1. they are in subsequent measures, 
+			  2. they are on the same staff,
+			  3. there isn't any notes or rests are in between them and
+			  4. their rdgs represent the exact same set of sources
+			Apps need to have xml:id. Only apps lower than <layer> level 
+			will be linked together.
+			"""
+			music = MeiElement('music')
+			body = MeiElement('body')
+			mdiv = MeiElement('mdiv')
+			score = MeiElement('score')
+			section = MeiElement('section')
+			m1 = MeiElement('measure')
+			m2 = MeiElement('measure')
+			s1 = MeiElement('staff')
+			s2 = MeiElement('staff')
+			l1 = MeiElement('layer')
+			l2 = MeiElement('layer')
+
+			app1 = MeiElement('app')
+			app2 = MeiElement('app')
+			app3 = MeiElement('app')
+			lem1 = MeiElement('lem')
+			lem2 = MeiElement('lem')
+			lem3 = MeiElement('lem')
+			rdg1_A = MeiElement('rdg')
+			rdg1_B = MeiElement('rdg')
+			rdg2_A = MeiElement('rdg')
+			rdg2_B = MeiElement('rdg')
+			rdg1_A.addAttribute('source', "SRC-A")
+			rdg1_B.addAttribute('source', "SRC-B")
+			rdg2_A.addAttribute('source', "SRC-A")
+			rdg2_B.addAttribute('source', "SRC-B")
+
+			music.addChild(body)
+			body.addChild(mdiv)
+			mdiv.addChild(score)
+			score.addChild(section)
+			section.addChild(m1)
+			m1.addChild(s1)
+			s1.addChild(l1)
+			section.addChild(m2)
+			m2.addChild(s2)
+			s2.addChild(l2)
+
+			"""
+			app1 and app2 are connecting apps in m1 and m2
+			"""
+			l1.addChild(app1)
+			app1.addChild(lem1)
+			app1.addChild(rdg1_A)
+			app1.addChild(rdg1_B)
+		
+			l2.addChild(app2)
+			app2.addChild(lem2)
+			app2.addChild(rdg2_A)
+			app2.addChild(rdg2_B)
+			
+			self.music =  music
+			self.app1 = app1
+			self.app2 = app2
+		
+			doc = MeiDocument()
+			doc.setRootElement(music)
+			
+		
 	def test_linkalternatives_connecting(self):
-		"""need apps that are connected
-		i.e.:
-		  1. they are in subsequent measures, 
-		  2. they are on the same staff,
-		  3. there isn't any notes or rests are in between them and
-		  4. their rdgs represent the exact same set of sources
-		Apps need to have xml:id. Only apps lower than <staff> level 
-		will be linked together.
 		"""
-
-		music = MeiElement('music')
-		body = MeiElement('body')
-		mdiv = MeiElement('mdiv')
-		score = MeiElement('score')
-		section = MeiElement('section')
-		m1 = MeiElement('measure')
-		m2 = MeiElement('measure')
-		m3 = MeiElement('measure')
-		s1 = MeiElement('staff')
-		s2 = MeiElement('staff')
-		s3 = MeiElement('staff')
-		s3.addAttribute('n', '2')
-
-		app1 = MeiElement('app')
-		app2 = MeiElement('app')
-		app3 = MeiElement('app')
-		lem1 = MeiElement('lem')
-		lem2 = MeiElement('lem')
-		lem3 = MeiElement('lem')
-		rdg1_A = MeiElement('rdg')
-		rdg1_B = MeiElement('rdg')
-		rdg2_A = MeiElement('rdg')
-		rdg2_B = MeiElement('rdg')
-		rdg1_A.addAttribute('source', "SRC-A")
-		rdg1_B.addAttribute('source', "SRC-B")
-		rdg2_A.addAttribute('source', "SRC-A")
-		rdg2_B.addAttribute('source', "SRC-B")
-
-		music.addChild(body)
-		body.addChild(mdiv)
-		mdiv.addChild(score)
-		score.addChild(section)
-		section.addChild(m1)
-		m1.addChild(s1)
-		section.addChild(m2)
-		m2.addChild(s2)
-
+		Testing whether connecting apps get linked together
+		For definition of 'connecting apps' see ConnectingAppsObjects
 		"""
-		app1 and app2 are connecting apps in m1 and m2
-		"""
-		s1.addChild(app1)
-		app1.addChild(lem1)
-		app1.addChild(rdg1_A)
-		app1.addChild(rdg1_B)
 		
-		s2.addChild(app2)
-		app2.addChild(lem2)
-		app2.addChild(rdg2_A)
-		app2.addChild(rdg2_B)
+		test_objects = self.ConnectingAppsObjects()
 
-		link_alternatives(music)
-		
+		link_alternatives(test_objects.music)
+
 		""""
 		This is to establish that the connecting apps
 		are linked together:
 		"""
-		annots = get_descendants(music, 'annot[type=appGrp]')
-		self.assertEqual(len(annots), 2)
+		annots = get_descendants(test_objects.music, 'annot[type=appGrp]')
+		self.assertEqual(len(annots), 1)
 		self.assertEqual(annots[0].hasAttribute('plist'), True)
 		plist = annots[0].getAttribute('plist').getValue()
-		appIDs = plist.split(',')
+		appIDs = plist.split(' ')
 		self.assertEqual(len(appIDs), 2)
-		self.assertEqual(appIds[0], "#" + app1.getId())
-		self.assertEqual(appIds[1], "#" + app2.getId())
+		self.assertEqual(appIDs[0], "#" + test_objects.app1.getId())
+		self.assertEqual(appIDs[1], "#" + test_objects.app2.getId())
 		
 		
 	def test_linkalternatives_nonconnecting(self):
-		"""need apps that are connected
-		(i.e.:
-		  1. they are in subsequent measures and no 
-		     more notes or rests are in between them.
-		  2. their rdgs have the exact same set of sources)
-		Apps need to have xml:id
-
-		This test is asserts whether some subsequent apps
-		that have different set of sources do not get linked
-		together.
 		"""
+		Testing that apps that aren't connected don't get linked.
+		"""
+		
 		music = MeiElement('music')
 		body = MeiElement('body')
 		mdiv = MeiElement('mdiv')
@@ -115,6 +126,10 @@ class FunctionTest(unittest.TestCase):
 		s3_2 = MeiElement('staff')
 		s3_1.addAttribute('n', '1')
 		s3_2.addAttribute('n', '2')
+		l1 = MeiElement('layer')
+		l2 = MeiElement('layer')
+		l3_1 = MeiElement('layer')
+		l3_2 = MeiElement('layer')
 
 		app1 = MeiElement('app')
 		app2 = MeiElement('app')
@@ -153,11 +168,15 @@ class FunctionTest(unittest.TestCase):
 		score.addChild(section)
 		section.addChild(m1)
 		m1.addChild(s1)
+		s1.addChild(l1)
 		section.addChild(m2)
 		m2.addChild(s2)
+		s2.addChild(l2)
 		section.addChild(m3)
 		m3.addChild(s3_1)
 		m3.addChild(s3_2)
+		s3_1.addChild(l3_1)
+		s3_2.addChild(l3_2)
 
 		s1.addChild(app1)
 		app1.addChild(lem1)
@@ -166,8 +185,6 @@ class FunctionTest(unittest.TestCase):
 
 		"""app1 doesn't connect with app2 because there's 
 		a note between the two"""
-		l2 = MeiElement('layer')
-		s2.addChild(l2)
 		l2.addChild(MeiElement('note'))
 		l2.addChild(app2)
 		app2.addChild(lem2)
@@ -176,20 +193,20 @@ class FunctionTest(unittest.TestCase):
 
 		"""app3_1 doesn't connect with app2 because it
 		has a different set of sources"""
-		s3_1.addChild(app3_1)
+		l3_1.addChild(app3_1)
 		app3_1.addChild(lem3_1)
 		app3_1.addChild(rdg3_1_A)
 		app3_1.addChild(rdg3_1_C)
 
 		"""app3_2 doesn't connect with app2 because it is
 		on a different staff"""
-		s3_2.addChild(app3_2)
+		l3_2.addChild(app3_2)
 		app3_2.addChild(lem3_2)
 		app3_2.addChild(rdg3_2_A)
 		app3_2.addChild(rdg3_2_B)
 
 		"""app3_3 doesn't connect with app2 because it is
-		at a higher level (not descendant of staff)"""
+		at a higher level (not descendant of layer)"""
 		m3.addChild(app3_3)
 		app3_3.addChild(lem3_3)
 		app3_3.addChild(rdg3_3_A)
@@ -278,6 +295,13 @@ class FunctionTest(unittest.TestCase):
 		self.assertEqual(corresponding_apps(app0, app2), False)
 		self.assertEqual(corresponding_apps(app0, app3), False)
 		self.assertEqual(corresponding_apps(app0, app4), False)
+		
+	def test_findconnectingapps(self):
+		
+		test_objects = self.ConnectingAppsObjects()
+		self.assertNotEqual(test_objects.app1.lookBack('staff'), None)
+		self.assertEqual(find_connecting_app(test_objects.app1), test_objects.app2)
+		self.assertEqual(find_connecting_app(test_objects.app2), None)
 		
 class TransformTest(unittest.TestCase):
 	
