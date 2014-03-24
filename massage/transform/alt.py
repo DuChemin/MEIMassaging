@@ -476,19 +476,30 @@ def find_connecting_app(app):
 	there is no connecting app.
 	"""
 	
-	staff = app.lookBack('staff')
-	if staff:
-		staff_n = get_attribute_val(staff, 'n', '1')
-		m = staff.lookBack('measure')
-		if m:
-			next_m = get_next_measure(m)
-			next_staff = get_staff(next_m, staff_n)
-			staff_children = next_staff.getChildren()
-			for elem in staff_Children:
-				if elem.getName() != 'app' and dur_in_semibreves(elem) > 0:
-					return None
-				elif elem.getName() == 'app' and corresponding_apps(app, elem):
-					return elem
+	layer = app.lookBack('layer')
+	if layer is None:
+		return None
+	layer_n = get_attribute_val(layer, 'n', '1')
+	staff = layer.lookBack('staff')
+	if staff is None:
+		return None
+	staff_n = get_attribute_val(layer, 'n', '1')
+	m = staff.lookBack('measure')
+	if m is None:
+		return None
+	next_m = get_next_measure(m)
+	if next_m is None:
+		return None
+	next_staff = get_staff(next_m, staff_n)
+	next_layers = get_descendants(next_staff, 'layer[n=' + layer_n + ']')
+	if len(next_layers) == 0:
+		return None
+	layer_children = next_layers[0].getChildren()
+	for elem in layer_children:
+		if elem.getName() != 'app' and dur_in_semibreves(elem) > 0:
+			return None
+		elif elem.getName() == 'app' and corresponding_apps(app, elem):
+			return elem
 	"""No connecting app found:"""
 	return None
 
