@@ -483,7 +483,7 @@ def find_connecting_app(app):
 	staff = layer.lookBack('staff')
 	if staff is None:
 		return None
-	staff_n = get_attribute_val(layer, 'n', '1')
+	staff_n = get_attribute_val(staff, 'n', '1')
 	m = staff.lookBack('measure')
 	if m is None:
 		return None
@@ -504,18 +504,50 @@ def find_connecting_app(app):
 	return None
 
 def link_alternatives(MEI_tree):
-	"""Link together variants or emendations that span across measures 
-	using the <annot> elements	
 	"""
+	Link together variants or emendations that span across measures 
+	using the <annot> elements
+	"""
+	
+	def group_ID_with_refID(id_groups, ref_id, new_id):
+		"""
+		add new_id to the lists that already contain ref_id
+		if no such list exist, create one and add both ids
+		"""
+		exists = False
+		for id_group in id_groups:
+			if ref_id in id_group:
+				id_group.append(new_id)
+				exists = True
+		if not exists:
+			id_groups.append([ref_id, new_id])
+	
+	def serialise_id_group(id_group):
+		result = ""
+		first_item = True
+		for ID in id_group:
+			result += ('',' ')[not first_item] + '#' + ID
+			if first_item: 
+				first_item = False
+		return result
+	
+	"""
+	annot_groups is a list of lists. Each list represents 
+	a set of IDs that belong together.
+	"""
+	annot_groups = []
 	for app in get_descendants(MEI_tree, 'app'):
+		logging.debug("searching for connecting apps of app: " + str(app))
 		connecting_app = find_connecting_app(app)
 		if connecting_app:
-			#TODO: test find_connecting_app()
-			#TODO: add the connecting_app.getId() into the list which contains app.getId(). 
-			#if no such list exists, create one and add both IDs
-			pass
-	#TODO: for all lists created above:
-	#create one <annot> element, and add it to the MEI_tree
+			logging.debug("connecting app found: " + str(connecting_app))
+			group_ID_with_refID(annot_groups, app.getId(), connecting_app.getId())
+	for annot_group in annot_groups:
+		annot = MeiElement('annot')
+		plist_val = serialise_id_group(annot_group)
+		annot.addAttribute('plist', plist_val)
+		annot.addAttribute('type', 'appGrp')
+		MEI_tree.addChild(annot)
 	
 """
 To add in future:
