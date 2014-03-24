@@ -68,7 +68,10 @@
 							</staff>
 							<staff n="3">
 								<layer n="1">
-									<mRest/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<rest dur="2" color="rgba(255,0,0,1)"/>
 								</layer>
 							</staff>
 						</measure>
@@ -91,7 +94,10 @@
 							</staff>
 							<staff n="3">
 								<layer n="1">
-									<mRest/>
+									<rest dur="2" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
 								</layer>
 							</staff>
 						</measure>

@@ -303,6 +303,42 @@ class FunctionTest(unittest.TestCase):
 		self.assertEqual(find_connecting_wrapper(test_objects.app1), test_objects.app2)
 		self.assertEqual(find_connecting_wrapper(test_objects.app2), None)
 		
+	def test_getcoloredblocks(self):
+		
+		def create_note(dur, pname, octave, color=None):
+			n = MeiElement('note')
+			n.addAttribute('dur', dur)
+			n.addAttribute('pname', pname)
+			n.addAttribute('oct', octave)
+			if color:
+				n.addAttribute('color', color)
+			return n
+		
+		m = MeiElement('measure')
+		s = MeiElement('staff')
+		l = MeiElement('layer')
+		
+		n1 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
+		n2 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
+		n3 = create_note('2', 'f', '3')
+		n4 = create_note('2', 'f', '3')
+		n5 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
+		n6 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
+		n7 = create_note('2', 'f', '3')
+		n8 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
+		n9 = create_note('2', 'f', '3')
+		
+		notelist = [n1, n2, n3, n4, n5, n6, n7, n8, n9]
+		colored_blocks = get_colored_blocks_from_notes(notelist, ANYCOLOR)
+		self.assertEqual(len(colored_blocks), 3)
+		logging.info(str(colored_blocks))
+		self.assertEqual(colored_blocks[0][1], 0)
+		self.assertEqual(colored_blocks[0][2], 1)
+		self.assertEqual(colored_blocks[1][1], 2)
+		self.assertEqual(colored_blocks[1][2], 1)
+		self.assertEqual(colored_blocks[2][1], 3.5)
+		self.assertEqual(colored_blocks[2][2], 0.5)
+		
 class TransformTest(unittest.TestCase):
 	
 	def setUp(self):
@@ -455,14 +491,19 @@ class TransformTest(unittest.TestCase):
 		transformed_mei_doc = TransformTestCase(name, mei_file, transform_data).Run()
 		MEI_tree = transformed_mei_doc.getRootElement()
 		annots = utilities.get_descendants(MEI_tree, 'annot')
-		self.assertEqual(len(annots), 1)
+		self.assertEqual(len(annots), 2)
 		choices = get_descendants(MEI_tree, 'choice')
-		self.assertEqual(len(choices), 6)
+		self.assertEqual(len(choices), 8)
 
 		idtokens = get_attribute_val(annots[0], 'plist').split(' ')
 		self.assertEqual(len(idtokens), 2)
 		self.assertEqual(idtokens[0], '#' + choices[0].getId())
 		self.assertEqual(idtokens[1], '#' + choices[1].getId())
+
+		idtokens = get_attribute_val(annots[1], 'plist').split(' ')
+		self.assertEqual(len(idtokens), 2)
+		self.assertEqual(idtokens[0], '#' + choices[2].getId())
+		self.assertEqual(idtokens[1], '#' + choices[3].getId())
 
 	def test_reconstructions_tworeconstructedvoices(self):
 		name = 'TC_Reconstructions.01 - Two reconstructed voices'
