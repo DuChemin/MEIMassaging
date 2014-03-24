@@ -412,6 +412,21 @@ class TransformTest(unittest.TestCase):
 		transformed_mei = TransformTestCase(name, mei_file, transform_data).Run()
 		# TODO: do some asserts	on transformed_mei
 
+	def test_variants_continuous(self):
+		name = 'TC_Variants.04 - Continuos variant'
+		mei_file = 'dat/TC.Variants.04.mei'
+		transform_data = TransformData()
+		transform_data.editorial_resp = 'ZK'
+		transform_data.alternates_list = [
+				('1', VARIANT, '1', ''),
+				('2', VARIANT, '1', 'SourceA 1552/01'),
+				]
+		transformed_mei_doc = TransformTestCase(name, mei_file, transform_data).Run()
+		MEI_tree = transformed_mei_doc.getRootElement()
+		annots = utilities.get_descendants(MEI_tree, 'annot')
+		self.assertEqual(len(annots), 1)
+		self.assertEqual(len(get_attribute_val(annots[0], 'plist').split(' ')), 4)
+		
 
 	def test_emendations_01(self):
 		name = 'TC_Emendations.01'
@@ -502,6 +517,7 @@ class TransformTest(unittest.TestCase):
 				('7', VARIANT, '7', ''),
 				('8', EMENDATION, '7', 'Komives'), 
 				('9', VARIANT, '9', ''),
+				('10', VARIANT, '9', 'Source-A'),
 				]
 		transformed_mei = TransformTestCase(name, mei_file, transform_data).Run()
 		# TODO: do some asserts	on transformed_mei
@@ -509,6 +525,7 @@ class TransformTest(unittest.TestCase):
 
 def suite():
 	test_suite = unittest.TestSuite()
+	test_suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_incipit_noincipit'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_incipit_simple'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_incipit_extrastavesandincipit'))
@@ -516,12 +533,12 @@ def suite():
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_threesources'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_wholemeasureapps'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_multipleblocks'))
+	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_continuous'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_emendations_01'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_reconstructions_tworeconstructedvoices'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_01'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_colors'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_reconvariantforsamevoice'))
-	test_suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
 	return test_suite
     
 if __name__ == "__main__":
