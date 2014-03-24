@@ -255,6 +255,7 @@ class UtilitiesTest(unittest.TestCase):
         section.addChild(m2)
         
         self.assertEqual(utilities.get_next_measure(m1), m2)
+        self.assertEqual(utilities.get_next_measure(m2), None)
 
 class AnalysisTest(unittest.TestCase):
     
