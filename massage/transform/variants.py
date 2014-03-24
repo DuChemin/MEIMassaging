@@ -16,4 +16,4 @@ def variants(MEI_tree, alternates_list, color_we_want):
 		link_variants(sections[0])
 
 def link_variants(section):
-	link_alternatives(section)
+	link_alternatives(section, VARIANT)

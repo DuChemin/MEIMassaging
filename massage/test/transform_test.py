@@ -91,7 +91,7 @@ class FunctionTest(unittest.TestCase):
 		
 		test_objects = self.ConnectingAppsObjects()
 
-		link_alternatives(test_objects.music)
+		link_alternatives(test_objects.music, VARIANT)
 
 		""""
 		This is to establish that the connecting apps
@@ -212,7 +212,7 @@ class FunctionTest(unittest.TestCase):
 		app3_3.addChild(rdg3_3_A)
 		app3_3.addChild(rdg3_3_B)
 
-		link_alternatives(music)
+		link_alternatives(music, VARIANT)
 		
 		""""
 		This is to establish that the non-connecting apps
@@ -221,7 +221,7 @@ class FunctionTest(unittest.TestCase):
 		annots = get_descendants(music, 'annot[type=appGrp]')
 		self.assertEqual(len(annots), 0)
 		
-	def test_correspondingapps(self):
+	def test_correspondingwrappers(self):
 		app0 = MeiElement('app')
 		app1 = MeiElement('app')
 		app2 = MeiElement('app')
@@ -291,17 +291,17 @@ class FunctionTest(unittest.TestCase):
 		app4.addChild(rdg4_A)
 		app4.addChild(rdg4_C)
 		
-		self.assertEqual(corresponding_apps(app0, app1), True)
-		self.assertEqual(corresponding_apps(app0, app2), False)
-		self.assertEqual(corresponding_apps(app0, app3), False)
-		self.assertEqual(corresponding_apps(app0, app4), False)
+		self.assertEqual(corresponding_wrappers(app0, app1), True)
+		self.assertEqual(corresponding_wrappers(app0, app2), False)
+		self.assertEqual(corresponding_wrappers(app0, app3), False)
+		self.assertEqual(corresponding_wrappers(app0, app4), False)
 		
-	def test_findconnectingapps(self):
+	def test_findconnectingwrappers(self):
 		
 		test_objects = self.ConnectingAppsObjects()
 		self.assertNotEqual(test_objects.app1.lookBack('staff'), None)
-		self.assertEqual(find_connecting_app(test_objects.app1), test_objects.app2)
-		self.assertEqual(find_connecting_app(test_objects.app2), None)
+		self.assertEqual(find_connecting_wrapper(test_objects.app1), test_objects.app2)
+		self.assertEqual(find_connecting_wrapper(test_objects.app2), None)
 		
 class TransformTest(unittest.TestCase):
 	
@@ -442,6 +442,28 @@ class TransformTest(unittest.TestCase):
 		transformed_mei = TransformTestCase(name, mei_file, transform_data).Run()
 		# TODO: do some asserts	on transformed_mei
 
+	def test_emendations_02(self):
+		name = 'TC_Emendations.02 - Emendations across barlines'
+		mei_file = 'dat/TC.Emendations.02.mei'
+		transform_data = TransformData()
+		transform_data.editorial_resp = 'ZK'
+		transform_data.alternates_list = [
+				('1', VARIANT, '1', ''),
+				('2', EMENDATION, '1', 'Editor1'),
+				('3', EMENDATION, '1', 'Editor2'),
+				]
+		transformed_mei_doc = TransformTestCase(name, mei_file, transform_data).Run()
+		MEI_tree = transformed_mei_doc.getRootElement()
+		annots = utilities.get_descendants(MEI_tree, 'annot')
+		self.assertEqual(len(annots), 1)
+		choices = get_descendants(MEI_tree, 'choice')
+		self.assertEqual(len(choices), 6)
+
+		idtokens = get_attribute_val(annots[0], 'plist').split(' ')
+		self.assertEqual(len(idtokens), 2)
+		self.assertEqual(idtokens[0], '#' + choices[0].getId())
+		self.assertEqual(idtokens[1], '#' + choices[1].getId())
+
 	def test_reconstructions_tworeconstructedvoices(self):
 		name = 'TC_Reconstructions.01 - Two reconstructed voices'
 		mei_file = 'dat/TC.Reconstructions.01.mei'
@@ -535,6 +557,7 @@ def suite():
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_multipleblocks'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_variants_continuous'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_emendations_01'))
+	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_emendations_02'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_reconstructions_tworeconstructedvoices'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_01'))
 	test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_colors'))

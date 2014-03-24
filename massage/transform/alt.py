@@ -447,26 +447,33 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)
 
-def corresponding_apps(app1, app2):
+def corresponding_wrappers(rich_wrapper1, rich_wrapper2):
 	"""
 	Returns True if the two apps have the exact same set of sources
 	"""
-	
+	rich_default_name = 'lem'
+	rich_item_name = 'rdg'
+	rich_attr_name = 'source'
+	if rich_wrapper1.getName() == 'choice':
+		rich_default_name = 'sic'
+		rich_item_name = 'corr'
+		rich_attr_name = 'resp'
 	result = True
-	lem1s = app1.getChildrenByName('lem')
-	lem2s = app2.getChildrenByName('lem')
-	rdg1s = app1.getChildrenByName('rdg')
-	rdg2s = app2.getChildrenByName('rdg')
+	lem1s = rich_wrapper1.getChildrenByName(rich_default_name)
+	lem2s = rich_wrapper2.getChildrenByName(rich_default_name)
+	rdg1s = rich_wrapper1.getChildrenByName(rich_item_name)
+	rdg2s = rich_wrapper2.getChildrenByName(rich_item_name)
 	result = len(lem1s) == len(lem2s)
 	result = result and len(rdg1s) == len(rdg2s)
-	for rdg in rdg1s:
-		source = get_attribute_val(rdg, 'source', '')
-		result = result and source != '' and len(get_descendants(app2, 'rdg[source=' + source + ']')) == 1
+	for rich_item in rdg1s:
+		rich_attr_val = get_attribute_val(rich_item, rich_attr_name, '')
+		result = result and rich_attr_val != '' and len(get_descendants(rich_wrapper2, rich_item_name + '[' + rich_attr_name + '=' + rich_attr_val + ']')) == 1
 	return result
 	
-def find_connecting_app(app):
+def find_connecting_wrapper(rich_wrapper):
 	"""
-	Looks for a connecting app in the next measure
+	If there's no more note after this app in this measure, then
+	look for a connecting app in the next measure
 	A connecting app in the next measure has the following properties:
 	1. it is on the same staff
 	2. it is at the beginning of the measure (no notes before)
@@ -476,34 +483,55 @@ def find_connecting_app(app):
 	there is no connecting app.
 	"""
 	
-	layer = app.lookBack('layer')
+	layer = rich_wrapper.lookBack('layer')
 	if layer is None:
+		logging.debug('No layer')
 		return None
+	
+	"""check if there's more notes after this rich wrapper"""
+	layer_descendants = layer.getDescendants()
+	found = False
+	for elem in layer_descendants:
+		if not found and elem == rich_wrapper:
+			found = True
+		elif found:
+			if not elem in rich_wrapper.getDescendants() and dur_in_semibreves(elem) > 0:
+				logging.debug('note after wrapper')
+				return None
+	
 	layer_n = get_attribute_val(layer, 'n', '1')
 	staff = layer.lookBack('staff')
 	if staff is None:
+		logging.debug('No staff')
 		return None
 	staff_n = get_attribute_val(staff, 'n', '1')
 	m = staff.lookBack('measure')
 	if m is None:
+		logging.debug('No measure')
 		return None
 	next_m = get_next_measure(m)
 	if next_m is None:
+		logging.debug('No next measure')
 		return None
 	next_staff = get_staff(next_m, staff_n)
 	next_layers = get_descendants(next_staff, 'layer[n=' + layer_n + ']')
 	if len(next_layers) == 0:
+		logging.debug('No next layer')
 		return None
+	logging.debug('next_layers[0]:' + str(next_layers[0]))
 	layer_children = next_layers[0].getChildren()
 	for elem in layer_children:
-		if elem.getName() != 'app' and dur_in_semibreves(elem) > 0:
+		logging.debug('elem:' + str(elem))
+		rich_wrapper_name = rich_wrapper.getName()
+		if elem.getName() != rich_wrapper_name and dur_in_semibreves(elem) > 0:
+			logging.debug('elem.getName():' + elem.getName() + ' and dur_in_semibreves(elem) > 0: ' + str(dur_in_semibreves(elem)) )
 			return None
-		elif elem.getName() == 'app' and corresponding_apps(app, elem):
+		elif elem.getName() == rich_wrapper_name and corresponding_wrappers(rich_wrapper, elem):
 			return elem
 	"""No connecting app found:"""
 	return None
 
-def link_alternatives(MEI_tree):
+def link_alternatives(MEI_tree, ALT_TYPE):
 	"""
 	Link together variants or emendations that span across measures 
 	using the <annot> elements
@@ -531,22 +559,25 @@ def link_alternatives(MEI_tree):
 				first_item = False
 		return result
 	
+	rich_wrapper_name = 'app'
+	if ALT_TYPE == EMENDATION:
+		rich_wrapper_name = 'choice'
 	"""
 	annot_groups is a list of lists. Each list represents 
 	a set of IDs that belong together.
 	"""
 	annot_groups = []
-	for app in get_descendants(MEI_tree, 'app'):
-		logging.debug("searching for connecting apps of app: " + str(app))
-		connecting_app = find_connecting_app(app)
-		if connecting_app:
-			logging.debug("connecting app found: " + str(connecting_app))
-			group_ID_with_refID(annot_groups, app.getId(), connecting_app.getId())
+	for rich_wrapper in get_descendants(MEI_tree, rich_wrapper_name):
+		logging.debug("searching for connecting apps of app: " + str(rich_wrapper))
+		connecting_wrapper = find_connecting_wrapper(rich_wrapper)
+		if connecting_wrapper:
+			logging.debug("connecting app found: " + str(connecting_wrapper))
+			group_ID_with_refID(annot_groups, rich_wrapper.getId(), connecting_wrapper.getId())
 	for annot_group in annot_groups:
 		annot = MeiElement('annot')
 		plist_val = serialise_id_group(annot_group)
 		annot.addAttribute('plist', plist_val)
-		annot.addAttribute('type', 'appGrp')
+		annot.addAttribute('type', rich_wrapper_name + 'Grp')
 		MEI_tree.addChild(annot)
 	
 """
