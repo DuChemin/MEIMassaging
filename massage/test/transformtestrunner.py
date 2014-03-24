@@ -29,3 +29,4 @@ class TransformTestCase:
 			pass
 		else:
 			logging.error("Transformation failed")
+		return new_MEI_doc
