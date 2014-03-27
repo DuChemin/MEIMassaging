@@ -1,4 +1,4 @@
-
+import logging
 from constants import *
 from pymei import MeiElement
 from utilities import chain_elems, get_descendants
@@ -87,9 +87,8 @@ def orig_clefs(MEI_tree, alternates_list):
 		for p in peers:
 			if p == scoreDef:
 				if n > k:
-					if WARNING:
-						print "WARNING: there are more measures before scoreDef than expected (" + \
-							str(k) + "). scoreDef: " + str(scoreDef)
+					logging.warning("there are more measures before scoreDef than expected (" + \
+							str(k) + "). scoreDef: " + str(scoreDef))
 					return False
 				else:
 					return True
@@ -149,14 +148,13 @@ def orig_clefs(MEI_tree, alternates_list):
 			staff = clef.getAncestor('staff')
 			clef_in_staff = True
 		
-		if WARNING:
-			if not clef_in_measure: 
-				print "WARNING: <clef> is only valid under the first <measure>."
-				continue
+		if not clef_in_measure: 
+			logging.warning("<clef> is only valid under the first <measure>.")
+			continue
 
-			if not clef_in_staff: 
-				print "WARNING: <clef> is only valid under a <staff>."
-				continue
+		if not clef_in_staff: 
+			logging.warning("<clef> is only valid under a <staff>.")
+			continue
 
 		if staff.hasAttribute('n'):
 			clef_staff_n = staff.getAttribute('n').getValue()

@@ -1,17 +1,29 @@
 
 from constants import *
 from pymei import MeiElement
-from utilities import get_descendants
+from utilities import *
+import logging
+
+class RichWrapperInsertError(Exception):
+	def __init__(self, staff, skip, duration, ALT_TYPE, rich_wrapper):
+		self.staff = staff
+		self.skip = skip
+		self.duration = duration
+		self.ALT_TYPE = ALT_TYPE
+		self.rich_wrapper = rich_wrapper
 
 def get_notes(measure, staff_n):
 	"""Return of all list of notes and rests in a given measure and staff."""
 	for staff in measure:
 		if staff.getAttribute('n').getValue():
-			return staff.getDescendantsByName('note rest')
+			return staff.getDescendantsByName('note rest space')
 
 def get_color(note):
 		# If there is a note color attribute, save it;
 		# default to black if the attribute doesn't exist
+		# <space> cannot have color attribute, but we assume they are colored.
+		if note.getName() == 'space':
+			return ANYCOLOR
 		if not note.hasAttribute('color'):
 			this_note_color = BLACK
 		else:
@@ -20,7 +32,7 @@ def get_color(note):
 
 def get_staff(measure, staff_n):
 	for staff in measure.getDescendantsByName('staff'):
-		if staff.getAttribute('n').getValue() == staff_n:
+		if get_attribute_val(staff, 'n', '1') == staff_n:
 			return staff
 	# If it doesn't exist, we return a null...
 	return None
@@ -71,98 +83,6 @@ def color_matches(this_note_color, color_we_want):
 	else:
 		return this_note_color == color_we_want
 
-def convert_to_semibreves(dur_attr):
-	"""Converts an MEI @dur value to its equivalent
-	in number of semibreves.
-	"""
-	if dur_attr == 'breve':
-		return 2.0
-	elif dur_attr == 'long':
-		return 4.0
-	else:
-		return 1.0 / eval(dur_attr)
-
-def semibreves_before(notelist, color_we_want=ANYCOLOR):
-	"""Gives the number of semibreves before the first occurrence
-	either of the given color, or of any color if none is given.
-
-	>>> semibreve_black = MeiElement('note')
-	>>> semibreve_black.addAttribute('dur', '1')
-	>>> minim_black = MeiElement('note')
-	>>> minim_black.addAttribute('dur', '2')
-	>>> minim_red = MeiElement('note')
-	>>> minim_red.addAttribute('dur', '2')
-	>>> minim_red.addAttribute('color', RED)
-	>>> breve_blue = MeiElement('note')
-	>>> breve_blue.addAttribute('dur', 'breve')
-	>>> breve_blue.addAttribute('color', BLUE)
-	>>> notelist = [semibreve_black, minim_black, minim_red, breve_blue]
-	>>> semibreves_before(notelist)
-	1.5
-
-	>>> semibreves_before(notelist, RED)
-	1.5
-
-	>>> semibreves_before(notelist, BLUE)
-	2.0
-
-	"""
-	if notelist == []:
-		return 0
-	else:
-		this_note = notelist[0]
-		dur_attr = this_note.getAttribute('dur').getValue()
-		this_duration = convert_to_semibreves(dur_attr)
-		this_note_color = get_color(this_note)
-		if color_matches(this_note_color, color_we_want):
-			return 0
-		else:
-			return (this_duration +
-					semibreves_before(notelist[1:], color_we_want))
-
-def duration_of_color(notelist, color_we_want=ANYCOLOR, begun_color=False):
-	"""Gives the duration of the notes in the current layer
-	with the given color, or any color if none is given.
-	Only the first set of contiguous notes will be included.
-
-	>>> semibreve_black = MeiElement('note')
-	>>> semibreve_black.addAttribute('dur', '1')
-	>>> minim_black = MeiElement('note')
-	>>> minim_black.addAttribute('dur', '2')
-	>>> minim_red = MeiElement('note')
-	>>> minim_red.addAttribute('dur', '2')
-	>>> minim_red.addAttribute('color', RED)
-	>>> breve_blue = MeiElement('note')
-	>>> breve_blue.addAttribute('dur', 'breve')
-	>>> breve_blue.addAttribute('color', BLUE)
-	>>> notelist = [semibreve_black, minim_black, minim_red, breve_blue]
-	>>> duration_of_color(notelist)
-	0.5
-
-	>>> duration_of_color(notelist, RED)
-	0.5
-
-	>>> duration_of_color(notelist, BLUE)
-	2.0
-
-	"""
-	if notelist == []:
-		return (0, [])
-	else:
-		this_note = notelist[0]
-		# Find duration of this note
-		dur_attr = this_note.getAttribute('dur').getValue()
-		this_duration = convert_to_semibreves(dur_attr)
-		this_note_color = get_color(this_note)
-		if not color_matches(this_note_color, color_we_want):
-			if begun_color:
-				return (0, [])
-			else:
-				return duration_of_color(notelist[1:], color_we_want)
-		else:
-			sub_total = duration_of_color(notelist[1:], color_we_want, True)
-			return (sub_total[0] + this_duration, sub_total[1] + [this_note])
-
 def previous_measure_last_color(staff):
 	"""Returns the color of the last note in the previous measure,
 	in the same staff as that given.
@@ -200,7 +120,7 @@ def previous_measure_last_color(staff):
 		return last_note.getAttribute('color').getValue()
 
 def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
-	# print('add_wrapper_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
+	logging.debug('add_wrapper_to_staff(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(duration))
 	"""
 	When ALT_TYPE == VARIANTS the method modifies the <staff> element 
 	by wrapping the specified section of notes into an <app><lem/></app> 
@@ -235,30 +155,35 @@ def add_wrapper_to_staff(staff, skip, duration, wrapperlist, ALT_TYPE):
 	if ALT_TYPE == EMENDATION:
 		rich_wrapper_name = 'choice'	
 		rich_default_name = 'sic'
-
 	old_layer = staff.getChildrenByName('layer')[0]	
-	layer_notes = get_descendants(old_layer, 'note rest')
+	
+	layer_notes = get_descendants(old_layer, 'note rest space mRest')
 	if skip not in wrapperlist:
+		logging.debug("There isn't any wrapper at position " + str(skip) + " yet. Creating wrapper.")
 		rich_wrapper = MeiElement(rich_wrapper_name)
 		rich_default_elem = MeiElement(rich_default_name)
 		rich_wrapper.addChild(rich_default_elem)
 		skip__ = skip
+		logging.debug("Skipping notes in lemma that are before position " + str(skip) + ":")
 		for note in layer_notes:
-			dur_attr = note.getAttribute('dur').getValue()
-			dur_of_next_note = convert_to_semibreves(dur_attr)
+			dur_of_next_note = dur_in_semibreves(note)
 			# We haven't yet exhausted the skip;
 			if skip__ > 0 and dur_of_next_note <= skip__:
 				skip__ -= dur_of_next_note
 			# If the skip has been exhausted, begin the duration:
 			elif duration > 0:
 				if skip not in wrapperlist:
-					# print('adding new rich_wrapper at SKIP' + str(skip))
+					logging.debug('adding new rich_wrapper at SKIP' + str(skip))
 					wrappers_in_layer = old_layer.getChildrenByName(rich_wrapper_name)
 					note.getParent().addChildBefore(note, rich_wrapper)
 					wrapperlist[skip] = rich_wrapper
 				note.getParent().removeChild(note)
 				rich_default_elem.addChild(note)
 				duration -= dur_of_next_note	
+		if skip not in wrapperlist:
+			raise RichWrapperInsertError(staff, skip, duration, ALT_TYPE, rich_wrapper)
+	return wrapperlist[skip]
+
 
 def wrap_whole_measure(staff, ALT_TYPE):
 	"""Enclose the entire contents of a staff in a measure
@@ -270,8 +195,12 @@ def wrap_whole_measure(staff, ALT_TYPE):
 	if ALT_TYPE == EMENDATION:
 		rich_wrapper_name = 'choice'	
 		rich_default_name = 'sic'
-	old_layer = staff.getChildrenByName('layer')[0]
-	notelist = get_descendants(old_layer, 'note rest')
+	old_layers = staff.getChildrenByName('layer')
+	notelist = []
+	if len(old_layers) > 0:
+		old_layer = staff.getChildrenByName('layer')[0]
+		notelist.extend(get_descendants(old_layer, 'note rest space mRest'))
+		staff.removeChild(old_layer)
 	new_layer = MeiElement('layer')
 	rich_wrapper = MeiElement(rich_wrapper_name)
 	rich_default_elem = MeiElement(rich_default_name)
@@ -279,7 +208,6 @@ def wrap_whole_measure(staff, ALT_TYPE):
 		rich_default_elem.addChild(note)
 	rich_wrapper.addChild(rich_default_elem)
 	new_layer.addChild(rich_wrapper)
-	staff.removeChild(old_layer)
 	staff.addChild(new_layer)
 	return rich_wrapper
 
@@ -292,12 +220,15 @@ def legal_overlapping(staff, skipdurs):
 		"""Returns whether the given skip and dur work
 		with the given staff.
 		"""
-		# print('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
-		old_layer = staff.getChildrenByName('layer')[0]
-		notelist = get_descendants(old_layer, 'note rest')
+		logging.debug("legal_with_lemma(" + str(staff) + ", " + str(skip) + ", " + str(dur) +")")
+		logging.debug('legal_with_lemma(): ' + staff.getAttribute('n').value + ', s' + str(skip) + 'd' + str(dur))
+		old_layers = staff.getChildrenByName('layer')
+		if len(old_layers) == 0:
+			return False
+		old_layer = old_layers[0]
+		notelist = get_descendants(old_layer, 'note rest space mRest')
 		for note in notelist:
-			dur_attr = note.getAttribute('dur').getValue()
-			dur_of_next_note = convert_to_semibreves(dur_attr)
+			dur_of_next_note = dur_in_semibreves(note)
 			# During the skip
 			if skip > 0:
 				if dur_of_next_note <= skip:
@@ -326,16 +257,16 @@ def legal_overlapping(staff, skipdurs):
 		elif durA == 0 or durB == 0:
 			return True
 		else:
-			# print('Not legal with each-other: s' + str(skipA) + 'd' + str(durA) + ', and ' + 's' + str(skipB) + 'd' + str(durB))
+			logging.debug('Not legal with each-other: s' + str(skipA) + 'd' + str(durA) + ', and ' + 's' + str(skipB) + 'd' + str(durB))
 			return False
 
 	for sdA in skipdurs:
 		if not legal_with_lemma(staff, sdA[1], sdA[2]):
-			# print('not legal with lemma')
+			logging.debug('not legal with lemma')
 			return False
 		for sdB in skipdurs:
 			if not legal_with_each_other(sdA[1], sdA[2], sdB[1], sdB[2]):
-				# print('not legal with each-other')
+				logging.debug('not legal with each-other')
 				return False
 	return True
 	
@@ -349,8 +280,11 @@ def get_colored_blocks(measure, lemma_n, vl, color_we_want):
 	else:
 		if vl[0][2] == lemma_n:
 			staff = get_staff(measure, vl[0][0])
-			layer = staff.getChildrenByName('layer')[0]
-			notelist = get_descendants(layer, 'note rest')
+			layers = staff.getChildrenByName('layer')
+			if len(layers) > 0:
+				notelist = get_descendants(layers[0], 'note rest space mRest')
+			else:
+				notelist = []
 			answer = [(staff, get_colored_blocks_from_notes(notelist, color_we_want))]
 		else:
 			answer = []
@@ -367,7 +301,7 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 	dur = 0
 	colored_notes = []
 	for note in notelist:
-		note_dur = convert_to_semibreves(note.getAttribute('dur').getValue())
+		note_dur = dur_in_semibreves(note)
 		note_color = get_color(note)
 		if color_matches(note_color, color_we_want):
 			curr_color = note_color
@@ -376,13 +310,12 @@ def get_colored_blocks_from_notes(notelist, color_we_want=ANYCOLOR):
 		else:
 			if dur>0:
 				skipdurs.append((curr_color, skip, dur, colored_notes))
-				skip = 0
+				skip += dur
 				dur = 0
 				colored_notes = []
 			skip += note_dur
 	if dur>0:
 		skipdurs.append((curr_color, skip, dur, colored_notes))
-	# print(skipdurs)
 	return skipdurs	
 
 def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
@@ -407,20 +340,23 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 		
 	# Determine if each variant group is legally lined up.
 	# Get list of distinct lemma staff @n values:
-	# print('M' + str(measure.getAttribute('n').value))
+	logging.debug('M' + str(measure.getAttribute('n').value))
 	lemmas = []
 	for v in alternates_list:
 		if v[2] not in lemmas:
 			lemmas.append(v[2])
 	for L in lemmas:
+		logging.debug('Lemma no. ' + L)
 		colored_blocks = get_colored_blocks(measure, L, alternates_list, color_we_want)
+		logging.debug('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
 		staff = get_staff(measure, L)
-		# print('Lemma no. ' + L)
-		# print('All colored blocks for Lemma ' + str(L) + ': ' + str(colored_blocks))
 		# TODO: merge sources where they coincide! -- HERE? or after having looked up source IDs? 
 		#       Possibly do both at the same time...
+		logging.debug("add_rich_elems {a}")
 		flat_list_of_colored_blocks = flatten_all_colored_blocks(colored_blocks)
+		logging.debug("add_rich_elems {b}")
 		if legal_overlapping(staff, flat_list_of_colored_blocks):
+			logging.debug("add_rich_elems {c.1}")
 			wrapperlist = dict()
 			RDGs_to_fill = []
 			for cbs in colored_blocks:
@@ -428,37 +364,44 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
 				# TODO: look up source ID from staffDef
 				sourceID = '#' + source_of_variant(varstaff_n, alternates_list)
 				for cb in cbs[1]:
-					# print("add_rich_elems() {A}: cb=" + str(cb))
+					logging.debug("add_rich_elems() {A}: cb=" + str(cb))
 					skip=cb[1]
 					dur=cb[2]
 					notelist=cb[3]
-					add_wrapper_to_staff(staff, skip, dur, wrapperlist, ALT_TYPE)
-					rich_wrapper = wrapperlist[skip]
-					# add rdg elements with reference to notelist, but do not insert notelist yet.
-					rdg = MeiElement(rich_item_name)
-					rdg.addAttribute(rich_item_attr_name, sourceID)
-					rich_wrapper.addChild(rdg)
-					RDGs_to_fill.append((rdg, notelist))
+					try:
+						rich_wrapper = add_wrapper_to_staff(staff, skip, dur, wrapperlist, ALT_TYPE)
+						# add rdg elements with reference to notelist, but do not insert notelist yet.
+						rdg = MeiElement(rich_item_name)
+						rdg.addAttribute(rich_item_attr_name, sourceID)
+						rich_wrapper.addChild(rdg)
+						RDGs_to_fill.append((rdg, notelist))
+					except RichWrapperInsertError as er:
+						logging.warning("Coulnd't insert " + str(er.rich_wrapper) + " into measure:n=" + get_attribute_val(measure, "n", "N/A") + \
+							" staff:n=" + get_attribute_val(er.staff, "n", "N/A") + \
+							' at skip=' + str(er.skip) + '; duration=' + str(er.duration))
 			# fill in rdg elements 
 			for rdgf in RDGs_to_fill:
 				for note in rdgf[1]:
-					# print('adding child to rdg:')
-					# print(rdgf[0])
+					logging.debug('adding child to rdg:')
+					logging.debug(rdgf[0])
 					rdgf[0].addChild(note)
 		else:
+			logging.debug("add_rich_elems {c.2}")
 			rich_wrapper = wrap_whole_measure(staff, ALT_TYPE)
 			# add rdg elements with reference to notelist, but do not insert notelist yet.
 			for cbs in colored_blocks:
+				logging.debug("colored block: " + str(cbs))
 				varstaff_n = cbs[0].getAttribute('n').getValue()
 				# TODO: look up source ID from staffDef
 				sourceID = '#' + source_of_variant(varstaff_n, alternates_list)
+				logging.debug("sourceID=" + sourceID)
 				rdg = MeiElement(rich_item_name)
 				rdg.addAttribute(rich_item_attr_name, sourceID)
 				rich_wrapper.addChild(rdg)
 				staves_of_measure = measure.getChildrenByName('staff')
 				for staff in staves_of_measure:
 					if staff.getAttribute('n').getValue() == varstaff_n:
-						notelist = get_descendants(staff, 'note rest')
+						notelist = get_descendants(staff, 'note rest space mRest')
 						for note in notelist:
 							rdg.addChild(note)
 
@@ -493,14 +436,148 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
 	and reorganize the MEI file so that the alternate readings are
 	grouped together with the lemma.
 	"""
-	# print('Transforming ' + ALT_TYPE)
+	logging.debug('Transforming ' + ALT_TYPE)
 	# See transform.py for documentation for the alternates_list object.
 	filtered_alternates_list = [i for i in alternates_list
 			if i[1] == ALT_TYPE and i[0] != i[2]]
 	for measure in MEI_tree.getDescendantsByName('measure'):
+		logging.debug('measure: ' + measure.getAttribute('n').getValue())
 		add_rich_elems(measure, filtered_alternates_list, color_we_want, ALT_TYPE)
 		remove_measure_staves(measure, filtered_alternates_list)
 	delete_staff_def(MEI_tree, filtered_alternates_list)
+
+def corresponding_wrappers(rich_wrapper1, rich_wrapper2):
+	"""
+	Returns True if the two apps have the exact same set of sources
+	"""
+	rich_default_name = 'lem'
+	rich_item_name = 'rdg'
+	rich_attr_name = 'source'
+	if rich_wrapper1.getName() == 'choice':
+		rich_default_name = 'sic'
+		rich_item_name = 'corr'
+		rich_attr_name = 'resp'
+	result = True
+	lem1s = rich_wrapper1.getChildrenByName(rich_default_name)
+	lem2s = rich_wrapper2.getChildrenByName(rich_default_name)
+	rdg1s = rich_wrapper1.getChildrenByName(rich_item_name)
+	rdg2s = rich_wrapper2.getChildrenByName(rich_item_name)
+	result = len(lem1s) == len(lem2s)
+	result = result and len(rdg1s) == len(rdg2s)
+	for rich_item in rdg1s:
+		rich_attr_val = get_attribute_val(rich_item, rich_attr_name, '')
+		result = result and rich_attr_val != '' and len(get_descendants(rich_wrapper2, rich_item_name + '[' + rich_attr_name + '=' + rich_attr_val + ']')) == 1
+	return result
+	
+def find_connecting_wrapper(rich_wrapper):
+	"""
+	If there's no more note after this app in this measure, then
+	look for a connecting app in the next measure
+	A connecting app in the next measure has the following properties:
+	1. it is on the same staff
+	2. it is at the beginning of the measure (no notes before)
+	3. it has the same set of sources than 'app' 
+
+	If the app is higher than staff level, than by definition
+	there is no connecting app.
+	"""
+	
+	layer = rich_wrapper.lookBack('layer')
+	if layer is None:
+		logging.debug('No layer')
+		return None
+	
+	"""check if there's more notes after this rich wrapper"""
+	layer_descendants = layer.getDescendants()
+	found = False
+	for elem in layer_descendants:
+		if not found and elem == rich_wrapper:
+			found = True
+		elif found:
+			if not elem in rich_wrapper.getDescendants() and dur_in_semibreves(elem) > 0:
+				logging.debug('note after wrapper')
+				return None
+	
+	layer_n = get_attribute_val(layer, 'n', '1')
+	staff = layer.lookBack('staff')
+	if staff is None:
+		logging.debug('No staff')
+		return None
+	staff_n = get_attribute_val(staff, 'n', '1')
+	m = staff.lookBack('measure')
+	if m is None:
+		logging.debug('No measure')
+		return None
+	next_m = get_next_measure(m)
+	if next_m is None:
+		logging.debug('No next measure')
+		return None
+	next_staff = get_staff(next_m, staff_n)
+	next_layers = get_descendants(next_staff, 'layer[n=' + layer_n + ']')
+	if len(next_layers) == 0:
+		logging.debug('No next layer')
+		return None
+	logging.debug('next_layers[0]:' + str(next_layers[0]))
+	layer_children = next_layers[0].getChildren()
+	for elem in layer_children:
+		logging.debug('elem:' + str(elem))
+		rich_wrapper_name = rich_wrapper.getName()
+		if elem.getName() != rich_wrapper_name and dur_in_semibreves(elem) > 0:
+			logging.debug('elem.getName():' + elem.getName() + ' and dur_in_semibreves(elem) > 0: ' + str(dur_in_semibreves(elem)) )
+			return None
+		elif elem.getName() == rich_wrapper_name and corresponding_wrappers(rich_wrapper, elem):
+			return elem
+	"""No connecting app found:"""
+	return None
+
+def link_alternatives(MEI_tree, ALT_TYPE):
+	"""
+	Link together variants or emendations that span across measures 
+	using the <annot> elements
+	"""
+	
+	def group_ID_with_refID(id_groups, ref_id, new_id):
+		"""
+		add new_id to the lists that already contain ref_id
+		if no such list exist, create one and add both ids
+		"""
+		exists = False
+		for id_group in id_groups:
+			if ref_id in id_group:
+				id_group.append(new_id)
+				exists = True
+		if not exists:
+			id_groups.append([ref_id, new_id])
+	
+	def serialise_id_group(id_group):
+		result = ""
+		first_item = True
+		for ID in id_group:
+			result += ('',' ')[not first_item] + '#' + ID
+			if first_item: 
+				first_item = False
+		return result
+	
+	rich_wrapper_name = 'app'
+	if ALT_TYPE == EMENDATION:
+		rich_wrapper_name = 'choice'
+	"""
+	annot_groups is a list of lists. Each list represents 
+	a set of IDs that belong together.
+	"""
+	annot_groups = []
+	for rich_wrapper in get_descendants(MEI_tree, rich_wrapper_name):
+		logging.debug("searching for connecting apps of app: " + str(rich_wrapper))
+		connecting_wrapper = find_connecting_wrapper(rich_wrapper)
+		if connecting_wrapper:
+			logging.debug("connecting app found: " + str(connecting_wrapper))
+			group_ID_with_refID(annot_groups, rich_wrapper.getId(), connecting_wrapper.getId())
+	for annot_group in annot_groups:
+		annot = MeiElement('annot')
+		plist_val = serialise_id_group(annot_group)
+		annot.addAttribute('plist', plist_val)
+		annot.addAttribute('type', rich_wrapper_name + 'Grp')
+		MEI_tree.addChild(annot)
 	
 """
 To add in future:

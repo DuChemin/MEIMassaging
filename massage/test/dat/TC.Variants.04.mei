@@ -28,71 +28,60 @@
 						<measure n="1">
 							<staff n="1">
 								<layer n="1">
-									<rest dur="2"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
+									<mRest/>
 								</layer>
 							</staff>
 							<staff n="2">
 								<layer n="1">
 									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 								</layer>
 							</staff>
 						</measure>
 						<measure n="2">
 							<staff n="1">
 								<layer n="1">
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
-									<note dur="2" oct="4" pname="f"/>
+									<mRest/>
 								</layer>
 							</staff>
 							<staff n="2">
 								<layer n="1">
-									<note dur="2" oct="4" pname="f"/>
-									<rest dur="1" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 								</layer>
 							</staff>
 						</measure>
 						<measure n="3">
 							<staff n="1">
 								<layer n="1">
-									<note dur="2" oct="4" pname="a"/>
-									<note dur="2" oct="4" pname="b"/>
-									<note dur="2" oct="4" pname="c"/>
-									<note dur="2" oct="4" pname="d"/>
+									<mRest/>
 								</layer>
 							</staff>
 							<staff n="2">
 								<layer n="1">
-									<note dur="2" oct="4" pname="a"/>
-									<note dur="2" oct="4" pname="b"/>
-									<note dur="2" oct="4" pname="c"/>
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 								</layer>
 							</staff>
 						</measure>
 						<measure n="4">
 							<staff n="1">
 								<layer n="1">
-									<note dur="2" oct="4" pname="a"/>
-									<note dur="2" oct="4" pname="b"/>
-									<note dur="2" oct="4" pname="c"/>
-									<note dur="2" oct="4" pname="d"/>
+									<mRest/>
 								</layer>
 							</staff>
 							<staff n="2">
 								<layer n="1">
-									<note dur="2" oct="4" pname="g" color="rgba(255,0,0,1)"/>
-									<note dur="2" oct="4" pname="b"/>
-									<note dur="2" oct="4" pname="c"/>
-									<note dur="2" oct="4" pname="d"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
 								</layer>
 							</staff>
 						</measure>

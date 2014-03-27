@@ -74,6 +74,59 @@
 								</layer>
 							</staff>
 						</measure>
+						<measure n="3">
+							<staff n="1">
+								<layer n="1">
+									<note dur="1" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+									<note dur="2" oct="4" pname="f"/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="1" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<mRest/>
+								</layer>
+							</staff>
+						</measure>
+						<measure n="4">
+							<staff n="1"/>
+							<staff n="2">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="1" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer/>
+							</staff>
+						</measure>
+						<measure n="5">
+							<staff n="1">
+								<layer n="1">
+									<mRest/>
+								</layer>
+							</staff>
+							<staff n="2">
+								<layer n="1">
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="2" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+									<note dur="1" oct="4" pname="f" color="rgba(255,0,0,1)"/>
+								</layer>
+							</staff>
+							<staff n="3">
+								<layer n="1">
+									<mRest/>
+								</layer>
+							</staff>
+						</measure>
 					</section>
 				</score>
 			</mdiv>
