@@ -1,9 +1,11 @@
 MEIMassaging
 ============
 
-MEIMassaging is a Django/Python-powered web app. Its purpose
-is to transform ("massage") the raw MEI files that have been created
-by the sibmei plugin in to a file with more meaningful file.
+MEIMassaging is a set of Python files using [libmei](https://github.com/DDMAL/libmei)
+which transform ("massage") the raw MEI files that have been created
+by [sibmei](https://github.com/DuChemin/sibmei) to make them more suitable for
+a particular use—for example, to make them more compatible with
+[MEItoVexFlow](https://github.com/ironchicken/MEItoVexFlow).
 
 More specifically: Sibelius files that include variant readings or
 reconstructions have these annotations included as extra staves
