@@ -11,6 +11,7 @@ from emendations import emendations
 from reconstructions import reconstructions
 from ignored import ignored
 from cut_time import double_cut_time
+from syllables import remove_empty_syllables
 
 from constants import *
 from utilities import source_name2NCName
@@ -28,6 +29,7 @@ class TransformData:
 			color_for_variants=ANYCOLOR,
 			color_for_emendations=ANYCOLOR
 			double_cut_time=True,
+			remove_empty_syllables=True,
 		):
 		# The alternates_list field contains information about variants,
 		# emendations and reconstructions. It is a list of 4-tuples.
@@ -48,6 +50,7 @@ class TransformData:
 		self.color_for_variants = color_for_variants
 		self.color_for_emendations = color_for_emendations
 		self.double_cut_time = double_cut_time
+		self.remove_empty_syllables = remove_empty_syllables
 	
 def validate_ncnames(alternates_list):
 	res_list = []
@@ -78,6 +81,8 @@ def transform(MEI_doc, data=TransformData()):
 		longa(MEI_tree)
 	if data.double_cut_time:
 		double_cut_time(MEI_tree)
+	if data.remove_empty_syllables:
+		remove_empty_syllables(MEI_tree)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources_and_editors(MEI_tree, data.alternates_list)
