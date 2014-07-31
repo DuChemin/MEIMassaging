@@ -32,6 +32,7 @@ class TransformData:
 			double_cut_time=True,
 			eliminate_bad_beams=True,
 			remove_empty_syllables=True,
+			remove_annot_brackets=True,
 		):
 		# The alternates_list field contains information about variants,
 		# emendations and reconstructions. It is a list of 4-tuples.
@@ -54,6 +55,7 @@ class TransformData:
 		self.double_cut_time = double_cut_time
 		self.eliminate_bad_beams = eliminate_bad_beams
 		self.remove_empty_syllables = remove_empty_syllables
+		self.remove_annot_brackets = remove_annot_brackets
 	
 def validate_ncnames(alternates_list):
 	res_list = []
@@ -88,6 +90,8 @@ def transform(MEI_doc, data=TransformData()):
 		eliminate_bad_beams(MEI_tree)
 	if data.remove_empty_syllables:
 		remove_empty_syllables(MEI_tree)
+	if data.remove_annot_brackets:
+		remove_annot_brackets(MEI_tree)
 	responsibility(MEI_tree, data.editorial_resp)
 	# Only now should we do the tricky stuff.
 	sources_and_editors(MEI_tree, data.alternates_list)
