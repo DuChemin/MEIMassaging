@@ -13,6 +13,7 @@ from ignored import ignored
 from cut_time import double_cut_time
 from beams import eliminate_bad_beams
 from syllables import remove_empty_syllables
+from annot import remove_annot_brackets
 
 from constants import *
 from utilities import source_name2NCName
