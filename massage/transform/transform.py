@@ -28,7 +28,7 @@ class TransformData:
 			editorial_resp='',
 			replace_longa=False,
 			color_for_variants=ANYCOLOR,
-			color_for_emendations=ANYCOLOR
+			color_for_emendations=ANYCOLOR,
 			double_cut_time=True,
 			eliminate_bad_beams=True,
 			remove_empty_syllables=True,
