@@ -11,4 +11,4 @@ def double_cut_time(MEI_tree):
         meter_count = scoredef.getAttribute('meter.count').getValue()
         meter_unit = scoredef.getAttribute('meter.unit').getValue()
         if meter_count == '2' and meter_unit == '2':
-            meter_count.addAttribute('meter.count', '4')
+            scoredef.addAttribute('meter.count', '4')
