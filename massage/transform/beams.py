@@ -1,4 +1,4 @@
-from libmei import MeiFactory
+from pymei import MeiFactory
 
 def eliminate_bad_beams(MEI_tree):
     """Removes all beams that contain a single note.
