@@ -80,6 +80,7 @@ def transform(MEI_doc, data=TransformData()):
 	# compiled back to the main scoreDef!
 	scoreDef = MEI_tree.getDescendantsByName('scoreDef')[0]
 	number_of_measures_to_remove = number_of_initial_measures(scoreDef)
+	print number_of_measures_to_remove
 	if data.obliterate_incipit:
 		for i in range(number_of_measures_to_remove):
 			obliterate_incipit(MEI_tree)
