@@ -43,5 +43,5 @@ def eliminate_bad_beams(MEI_tree):
         # Now that we have the complete new layer, we remove the old
         # one from its parent and add the new one.
         staff = layer.getParent()
-        staff.deleteAllChildren(layer)
+        staff.deleteAllChildren()
         staff.addChild(new_layer)
