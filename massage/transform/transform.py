@@ -2,7 +2,7 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-from incipit import obliterate_incipit, renumber_measures, orig_clefs
+from incipit import obliterate_incipit, renumber_measures, orig_clefs, number_of_initial_measures
 from responsibility import responsibility
 from longa import longa
 from sources import sources_and_editors
