@@ -9,6 +9,17 @@ def obliterate_incipit(MEI_tree):
 		if measure.getAttribute('n').getValue() == '1':
 			measure.getParent().removeChild(measure)
 
+def number_of_initial_measures(scoreDef):
+	"""Return the number of measures before the first scoreDef"""
+	peers = scoreDef.getPeers()
+	n = 0
+	for p in peers:
+		if p == scoreDef:
+			return n
+		elif p.getName() == 'measure':
+			n += 1
+	return n
+
 def renumber_measures(MEI_tree):
 	all_measures = get_descendants(MEI_tree, 'measure')
 	for measure in all_measures:
@@ -79,28 +90,12 @@ def orig_clefs(MEI_tree, alternates_list):
 		mergeAttr('key.accid')
 		mergeAttr('key.mode')
 		mergeAttr('key.sig.mixed')
-		
-	def assert_position(scoreDef, k):
-		# check if there's no more than 'k' measures before this scoreDef
-		peers = scoreDef.getPeers()
-		n = 0
-		for p in peers:
-			if p == scoreDef:
-				if n > k:
-					logging.warning("there are more measures before scoreDef than expected (" + \
-							str(k) + "). scoreDef: " + str(scoreDef))
-					return False
-				else:
-					return True
-				break
-			if p.getName() == 'measure':
-				n += 1
-		
-				
+
+
 	# copy initial scoreDef to meiHead/workDesc/work/incip/score/
 	scoreDefs = get_descendants(MEI_tree, 'scoreDef')
 	# make a copy of the main scoreDef
-	mainScoreDef = MeiElement(scoreDefs[0])	
+	mainScoreDef = MeiElement(scoreDefs[0]) 
 	# remove unwanted staves:
 	#  - Reconstructed (placeholder) staves
 	#  - Reconstruction (actual reconstruction) staves
@@ -126,18 +121,20 @@ def orig_clefs(MEI_tree, alternates_list):
 
 	music = get_descendants(MEI_tree, 'music')[0]
 	section = music.getDescendantsByName('section')[0]
-	
+
 	mainScoreDef = music.getDescendantsByName('scoreDef')[0]
 	i = 0
 	for scoreDef in music.getDescendantsByName('scoreDef'):
-		if i>0 and assert_position(scoreDef, 1):
+		# Choosing 3 as a convenient value for a measure early
+		# in the piece, hence unlikely to give false positives,
+		# with a little wiggle room
+		if i > 0 and number_of_initial_measures(scoreDef) < 3:
 			mergeScoreDefAttributes(mainScoreDef, scoreDef)
 			scoreDef.getParent().removeChild(scoreDef)
 		i += 1
-		
+
 	clefs = section.getDescendantsByName('clef')
 	for clef in clefs:
-		clef_valid = False
 		clef_in_measure = False
 		clef_in_staff = False
 		if clef.hasAncestor('measure'): 
@@ -147,14 +144,14 @@ def orig_clefs(MEI_tree, alternates_list):
 		if clef.hasAncestor('staff'):
 			staff = clef.getAncestor('staff')
 			clef_in_staff = True
-		
+
 		if not clef_in_measure: 
 			logging.warning("<clef> is only valid under the first <measure>.")
-			continue
+			# continue
 
 		if not clef_in_staff: 
 			logging.warning("<clef> is only valid under a <staff>.")
-			continue
+			# continue
 
 		if staff.hasAttribute('n'):
 			clef_staff_n = staff.getAttribute('n').getValue()
@@ -166,6 +163,3 @@ def orig_clefs(MEI_tree, alternates_list):
 			staff_n = staffDef.getAttribute('n').getValue()
 			if (staff_n == clef_staff_n):
 				mergeClefAttributes(staffDef, clef)
-		
-			
-	
