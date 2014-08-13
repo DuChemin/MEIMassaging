@@ -1,4 +1,4 @@
-from libmei.MeiFactory import createInstance
+from libmei import MeiFactory
 
 def eliminate_bad_beams(MEI_tree):
     """Removes all beams that contain a single note.
@@ -24,7 +24,7 @@ def eliminate_bad_beams(MEI_tree):
     all_layers = MEI_tree.getDescendantsByName('layer')
     for layer in all_layers:
         old_layer_items = layer.getChildren()
-        new_layer = createInstance('layer')
+        new_layer = MeiFactory.createInstance('layer')
         for item in old_layer_items:
             # If the item in the list is a singleton beam, then
             # we should not add the beam to the new layer; instead,
