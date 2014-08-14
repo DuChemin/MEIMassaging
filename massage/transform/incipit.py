@@ -4,7 +4,7 @@ from pymei import MeiElement
 from utilities import chain_elems, get_descendants
 
 
-def number_of_incipit_measures(scoreDef):
+def number_of_incipit_measures(MEI_tree):
     """Calculate the number of incipit measures by finding the first
     measure with a `label` attribute and comparing that attribute
     with its logical number. The difference between the two numbers
