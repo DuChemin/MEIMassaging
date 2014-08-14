@@ -21,6 +21,18 @@ def number_of_incipit_measures(scoreDef):
     return 0
 
 
+def measures_before_element(element):
+    """Return the number of measures before this element"""
+    peers = element.getPeers()
+    n = 0
+    for p in peers:
+        if p == element:
+            return n
+        elif p.getName() == 'measure':
+            n += 1
+    return n
+
+
 def obliterate_incipit(MEI_tree, iterations=1):
     all_measures = get_descendants(MEI_tree, 'measure')
 
@@ -64,7 +76,9 @@ def orig_clefs(MEI_tree, alternates_list):
         #  * dis.place
         def mergeAttr(attr_name):
             if (clef.hasAttribute(attr_name)):
-                staffDef.addAttribute('clef.' + attr_name, clef.getAttribute(attr_name).getValue())
+                staffDef.addAttribute('clef.' + attr_name,
+                                      clef.getAttribute(attr_name).getValue()
+                                      )
         mergeAttr('shape')
         mergeAttr('line')
         mergeAttr('oct')
@@ -73,8 +87,8 @@ def orig_clefs(MEI_tree, alternates_list):
 
     def mergeScoreDefAttributes(scoreDef1, scoreDef2):
         # merge the following attributes:
-        #  * meter.count 
-        #  * meter.unit 
+        #  * meter.count
+        #  * meter.unit
         #  * meter.sym
         #  * clef.line
         #  * clef.shape
@@ -138,7 +152,7 @@ def orig_clefs(MEI_tree, alternates_list):
         # Choosing 3 as a convenient value for a measure early
         # in the piece, hence unlikely to give false positives,
         # with a little wiggle room
-        if i > 0 and number_of_initial_measures(scoreDef) < 3:
+        if i > 0 and measures_before_element(scoreDef) < 3:
             mergeScoreDefAttributes(mainScoreDef, scoreDef)
             scoreDef.getParent().removeChild(scoreDef)
         i += 1
