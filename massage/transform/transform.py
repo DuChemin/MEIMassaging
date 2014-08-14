@@ -84,9 +84,9 @@ def transform(MEI_doc, data=TransformData()):
     orig_clefs(MEI_tree, data.alternates_list)
     # Important : measure renumbering must be done after the
     # transcription clef info is compiled back into the main scoreDef
-    scoreDef = MEI_tree.getDescendantsByName('scoreDef')[0]
-    number_of_measures_to_remove = number_of_incipit_measures(scoreDef)
-    print number_of_measures_to_remove
+    number_of_measures_to_remove = number_of_incipit_measures(MEI_tree)
+    logging.warning(str(number_of_measures_to_remove) +
+                    " measures will be removed from the start of the piece")
     if data.obliterate_incipit:
         for i in range(number_of_measures_to_remove):
             obliterate_incipit(MEI_tree)
