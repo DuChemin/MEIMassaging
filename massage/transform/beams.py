@@ -8,7 +8,7 @@ def eliminate_bad_beams(MEI_tree):
 
     def is_singleton_beam(element):
         """Function returns True iff an MEI element is
-        a beam AND the element has no more than one note/rest
+        a beam AND the element has no more than one note/rest.
         """
         if element.getName() == 'beam':
             notes_inside = element.getDescendantsByName('note')
@@ -25,6 +25,8 @@ def eliminate_bad_beams(MEI_tree):
     for layer in all_layers:
         old_layer_items = layer.getChildren()
         new_layer = MeiElement('layer')
+        for attribute in layer.getAttributes():
+            new_layer.addAttribute(attribute)
         for item in old_layer_items:
             # If the item in the list is a singleton beam, then
             # we should not add the beam to the new layer; instead,
