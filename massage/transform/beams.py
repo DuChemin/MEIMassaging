@@ -35,12 +35,10 @@ def eliminate_bad_beams(MEI_tree):
             if is_singleton_beam(item):
                 beam_children = item.getChildren()
                 for child in beam_children:
-                    child.getParent().removeChild(child)
                     new_layer.addChild(child)
             # If the item in the list is anything other than a
             # singleton beam, we simply add it to our new layer.
             else:
-                item.getParent().removeChild(item)
                 new_layer.addChild(item)
         # Now that we have the complete new layer, we remove the old
         # one from its parent and add the new one.
