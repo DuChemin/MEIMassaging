@@ -21,32 +21,38 @@ def number_of_initial_measures(scoreDef):
     return n
 
 def renumber_measures(MEI_tree):
+
+
+def renumber_measures(MEI_tree, difference=1):
     all_measures = get_descendants(MEI_tree, 'measure')
     for measure in all_measures:
         # Get measure number attribute
-        attr_measure_number = measure.getAttribute('n')
-        val_measure_number = attr_measure_number.getValue()
+        attr_mnumber = measure.getAttribute('n')
+        val_mnumber = attr_measure_number.getValue()
         # Reduce number by one
-        attr_measure_number.setValue(str(eval(val_measure_number) - 1))
+        attr_mnumber.setValue(str(eval(val_mnumber) - difference))
+
 
 def orig_clefs(MEI_tree, alternates_list):
     def is_placeholder(staff_n, alternates_list):
-        """a staff is PLACEHOLDER if there's at least one other staff that is a RECONSTRUCTION of it."""
+        """A staff is PLACEHOLDER if there's at least
+        one other staff that is a RECONSTRUCTION of it.
+        """
         for a in alternates_list:
             # if a is RECONSTRUCTION of alt_list_item:
             if a[2] == staff_n and a[1] == RECONSTRUCTION:
                 return True
         return False
-        
+
     def staff_role(staff_n, alternates_list):
         for a in alternates_list:
             if a[0] == staff_n:
                 return a[1]
-    
+
     def mergeClefAttributes(staffDef, clef):
         # merge the following attributes:
-        #  * shape 
-        #  * line 
+        #  * shape
+        #  * line
         #  * oct
         #  * dis
         #  * dis.place
@@ -91,31 +97,29 @@ def orig_clefs(MEI_tree, alternates_list):
         mergeAttr('key.mode')
         mergeAttr('key.sig.mixed')
 
-
     # copy initial scoreDef to meiHead/workDesc/work/incip/score/
     scoreDefs = get_descendants(MEI_tree, 'scoreDef')
     # make a copy of the main scoreDef
-    mainScoreDef = MeiElement(scoreDefs[0]) 
+    mainScoreDef = MeiElement(scoreDefs[0])
     # remove unwanted staves:
     #  - Reconstructed (placeholder) staves
     #  - Reconstruction (actual reconstruction) staves
     #  - Emendation staves
     staffDefs = get_descendants(mainScoreDef, 'staffDef')
     for staffDef in staffDefs:
-        staff_n = staffDef.getAttribute('n').getValue() 
-        if (is_placeholder(staff_n, alternates_list) or 
+        staff_n = staffDef.getAttribute('n').getValue()
+        if (is_placeholder(staff_n, alternates_list) or
                 staff_role(staff_n, alternates_list) == RECONSTRUCTION or
                 staff_role(staff_n, alternates_list) == EMENDATION):
             staffDef.parent.removeChild(staffDef)
     meiHead = get_descendants(MEI_tree, 'meiHead')[0]
-    
-    workDesc = MeiElement('workDesc')
+
     head_score = chain_elems(meiHead, ['workDesc', 'work', 'incip', 'score'])
     head_score.addChild(mainScoreDef)
 
     # remove the milestone scoreDef and update the
     # main scoreDef accordingly, and:
-    #  1. find <clef> elements (they should be in the first measure: 
+    #  1. find <clef> elements (they should be in the first measure:
     #     assert this, and signal warning if it's not the case)
     #  2. update main scoreDef according to <clef>s
 
@@ -137,19 +141,20 @@ def orig_clefs(MEI_tree, alternates_list):
     for clef in clefs:
         clef_in_measure = False
         clef_in_staff = False
-        if clef.hasAncestor('measure'): 
+        if clef.hasAncestor('measure'):
             measure = clef.getAncestor('measure')
-            if (measure.hasAttribute('n') and measure.getAttribute('n').getValue() == '1'):
+            if (measure.hasAttribute('n') and
+                    measure.getAttribute('n').getValue() == '1'):
                 clef_in_measure = True
         if clef.hasAncestor('staff'):
             staff = clef.getAncestor('staff')
             clef_in_staff = True
 
-        if not clef_in_measure: 
+        if not clef_in_measure:
             logging.warning("<clef> is only valid under the first <measure>.")
             # continue
 
-        if not clef_in_staff: 
+        if not clef_in_staff:
             logging.warning("<clef> is only valid under a <staff>.")
             # continue
 
