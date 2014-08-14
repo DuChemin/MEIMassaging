@@ -3,24 +3,30 @@ from constants import *
 from pymei import MeiElement
 from utilities import chain_elems, get_descendants
 
-def obliterate_incipit(MEI_tree):
+
+def number_of_incipit_measures(scoreDef):
+    """Calculate the number of incipit measures by finding the first
+    measure with a `label` attribute and comparing that attribute
+    with its logical number. The difference between the two numbers
+    is the number of measures we will need to remove and also the
+    value by which we will need to renumber.
+    """
     all_measures = get_descendants(MEI_tree, 'measure')
     for measure in all_measures:
-        if measure.getAttribute('n').getValue() == '1':
-            measure.getParent().removeChild(measure)
+        # If @label doesn't exist, the variable will have the value None.
+        label = measure.getAttribute('label')
+        if label:
+            return measure.getAttribute('n') - label
+    # If no measure with 'label' exists, there may not be any incipit measures.
+    return 0
 
-def number_of_initial_measures(scoreDef):
-    """Return the number of measures before the first scoreDef"""
-    peers = scoreDef.getPeers()
-    n = 0
-    for p in peers:
-        if p == scoreDef:
-            return n
-        elif p.getName() == 'measure':
-            n += 1
-    return n
 
-def renumber_measures(MEI_tree):
+def obliterate_incipit(MEI_tree, iterations=1):
+    all_measures = get_descendants(MEI_tree, 'measure')
+
+    for i in range(iterations):
+        measure_to_remove = all_measures[i]
+        measure_to_remove.getParent().removeChild(measure_to_remove)
 
 
 def renumber_measures(MEI_tree, difference=1):
