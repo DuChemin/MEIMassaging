@@ -21,11 +21,12 @@ from utilities import source_name2NCName
 import logging
 # logging.basicConfig(filename=(MEDIA + 'transform.log'),level=logging.DEBUG)
 
+
 class TransformData:
     def __init__(self,
             alternates_list=[],
             arranger_to_editor=False,
-            obliterate_incipit=False,
+            remove_incipit=True,
             editorial_resp='',
             replace_longa=False,
             color_for_variants=ANYCOLOR,
@@ -48,7 +49,7 @@ class TransformData:
         # The last element represents source or responsibility.
         self.alternates_list = alternates_list
         self.arranger_to_editor = arranger_to_editor
-        self.obliterate_incipit = obliterate_incipit
+        self.remove_incipit = remove_incipit
         self.replace_longa = replace_longa
         self.editorial_resp = editorial_resp
         self.color_for_variants = color_for_variants
@@ -74,7 +75,7 @@ def validate_ncnames(alternates_list):
 def transform(MEI_doc, data=TransformData()):
     logging.info('alternates_list: ' + str(data.alternates_list))
     logging.info('arranger_to_editor: ' + str(data.arranger_to_editor))
-    logging.info('obliterate_incipit: ' + str(data.obliterate_incipit))
+    logging.info('remove_incipit: ' + str(data.remove_incipit))
     logging.info('replace_longa: ' + str(data.replace_longa))
     logging.info('editorial_resp: ' + str(data.editorial_resp))
     logging.info('color_for_variants: ' + str(data.color_for_variants))
@@ -87,7 +88,7 @@ def transform(MEI_doc, data=TransformData()):
     number_of_measures_to_remove = number_of_incipit_measures(MEI_tree)
     logging.warning(str(number_of_measures_to_remove) +
                     " measures will be removed from the start of the piece")
-    if data.obliterate_incipit:
+    if data.remove_incipit:
         obliterate_incipit(MEI_tree, number_of_measures_to_remove)
         renumber_measures(MEI_tree, number_of_measures_to_remove)
     if data.arranger_to_editor:
