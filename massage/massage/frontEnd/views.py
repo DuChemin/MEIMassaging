@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-
 from analyze.analyze import analyze as make_analysis
 from transform.transform import TransformData
 from transform.transform import transform as transform_mei
@@ -14,13 +12,14 @@ from massage.frontEnd.models import Document
 from massage.frontEnd.forms import DocumentForm
 from pymei import XmlImport, XmlExport
 
+
 def list(request):
     def process(request):
         def write_transformation(file_path, data=TransformData()):
             old_MEI_doc = XmlImport.documentFromFile(file_path)
             new_MEI_doc = transform_mei(old_MEI_doc, data)
             XmlExport.meiDocumentToFile(new_MEI_doc, file_path)
-            
+
         if request.method == 'POST':
             MEI_filename = request.POST.get('MEI_filename')
             arranger_to_editor = request.POST.get('arranger_to_editor')
@@ -57,7 +56,7 @@ def list(request):
                 doc_set[0].delete()
         elif request.POST.get('action') == 'Process':
                 process(request)
-      
+
     form = DocumentForm() # A empty, unbound form
     items = Document.objects.all() # Load documents for the list page
 
@@ -82,11 +81,9 @@ def metadata(request):
 
     return render_to_response('frontEnd/metadata.html',
             {'MEI_filename': MEI_filename,
-                    'first_measure_empty': analysis.first_measure_empty,
                     'has_editor_element': analysis.has_editor_element,
                     'has_arranger_element': analysis.has_arranger_element,
                     'editor_name': analysis.editor_name,
                     'staff_list': analysis.staff_list
             },
             context_instance=RequestContext(request))
-

@@ -3,21 +3,21 @@ import argparse
 import unittest
 sys.path.insert(0, '..')
 
-from pymei import MeiElement, MeiAttribute, XmlImport, XmlExport, MeiDocument
+from pymei import MeiElement, MeiDocument
 import utilities
 from analyze.analyze import analyze
+
 
 class UtilitiesTest(unittest.TestCase):
 
     def test_get_descendants(self):
-
         measure = MeiElement('measure')
-        layer   = MeiElement('layer')
-        note1   = MeiElement('note')
-        note2   = MeiElement('note')
-        note3   = MeiElement('note')
-        rest1   = MeiElement('rest')
-        rest2   = MeiElement('rest')
+        layer = MeiElement('layer')
+        note1 = MeiElement('note')
+        note2 = MeiElement('note')
+        note3 = MeiElement('note')
+        rest1 = MeiElement('rest')
+        rest2 = MeiElement('rest')
 
         note1.addAttribute('pname', 'c')
         note1.addAttribute('oct', '4')
@@ -43,34 +43,33 @@ class UtilitiesTest(unittest.TestCase):
         self.assertEqual(4, len(utilities.get_descendants(measure, 'note[pname=d,dur=1] note[pname=c,oct=4,dur=breve] rest[dur=2] layer')))
 
     def test_effective_meter(self):
-        music   = MeiElement('music')
-        body    = MeiElement('body')
-        mdiv    = MeiElement('mdiv')
-        score   = MeiElement('score')
-        sctn    = MeiElement('section')
-        scD1    = MeiElement('scoreDef')
-        scD2    = MeiElement('scoreDef')
-        stG1    = MeiElement('staffGrp')
-        stG2    = MeiElement('staffGrp')
-        stD1    = MeiElement('staffDef')
-        stD2    = MeiElement('staffDef')
+        music = MeiElement('music')
+        body = MeiElement('body')
+        mdiv = MeiElement('mdiv')
+        score = MeiElement('score')
+        sctn = MeiElement('section')
+        scD1 = MeiElement('scoreDef')
+        scD2 = MeiElement('scoreDef')
+        stG1 = MeiElement('staffGrp')
+        stG2 = MeiElement('staffGrp')
+        stD1 = MeiElement('staffDef')
+        stD2 = MeiElement('staffDef')
 
-        m1      = MeiElement('measure')
-        m2      = MeiElement('measure')
-        l1      = MeiElement('layer')
-        l2      = MeiElement('layer')
-        s1      = MeiElement('staff')
-        s2      = MeiElement('staff')
+        m1 = MeiElement('measure')
+        m2 = MeiElement('measure')
+        l1 = MeiElement('layer')
+        l2 = MeiElement('layer')
+        s1 = MeiElement('staff')
+        s2 = MeiElement('staff')
 
-        mR1     = MeiElement('mRest')
-        mR2     = MeiElement('mRest')
+        mR1 = MeiElement('mRest')
+        mR2 = MeiElement('mRest')
 
         scD1.addAttribute('meter.unit', '2')
         stD1.addAttribute('meter.count', '2')
         stD2.addAttribute('meter.count', '3')
 
         s1.addAttribute('n', '1')
-        
         music.addChild(body)
         body.addChild(mdiv)
         mdiv.addChild(score)
@@ -94,8 +93,8 @@ class UtilitiesTest(unittest.TestCase):
         doc = MeiDocument()
         doc.setRootElement(music)
 
-        meter1  = utilities.effective_meter(mR1)
-        meter2  = utilities.effective_meter(mR2)
+        meter1 = utilities.effective_meter(mR1)
+        meter2 = utilities.effective_meter(mR2)
 
         self.assertEqual(meter1.count, '2')
         self.assertEqual(meter1.unit, '2')
@@ -106,7 +105,7 @@ class UtilitiesTest(unittest.TestCase):
         measure = MeiElement('measure')
         staff = MeiElement('staff')
         measure.addAttribute('n', '2')
-        
+
         self.assertEqual(utilities.get_attribute_val(measure, 'n'), '2')
         self.assertEqual(utilities.get_attribute_val(staff, 'n', '1'), '1')
 
@@ -249,20 +248,19 @@ class UtilitiesTest(unittest.TestCase):
         m1 = MeiElement('measure')
         sb = MeiElement('sb')
         m2 = MeiElement('measure')
-        
+
         section.addChild(m1)
         section.addChild(sb)
         section.addChild(m2)
-        
+
         self.assertEqual(utilities.get_next_measure(m1), m2)
         self.assertEqual(utilities.get_next_measure(m2), None)
 
 class AnalysisTest(unittest.TestCase):
-    
+
     def test_analyze(self):
         analysis = analyze('../test/dat/DC0909E.mei')
-        
-        self.assertEqual(True, analysis.first_measure_empty)
+
         self.assertEqual(False, analysis.has_editor_element)
         self.assertEqual(False, analysis.has_arranger_element)
         self.assertEqual('', analysis.editor_name)
@@ -278,23 +276,25 @@ class AnalysisTest(unittest.TestCase):
              ('Bassus_Variant_1554/22', 'Bassus', 'variant', 'RISM1554-22', '9'),
         ])
         self.assertListEqual(analysis.alternates_list,
-            [('1', 'variant', '1', ''), 
-             ('2', 'variant', '1', 'RISM1554-22'), 
-             ('3', 'variant', '3', ''), 
-             ('4', 'emendation', '3', 'Tanguy'), 
-             ('5', 'variant', '3', 'RISM1554-22'), 
-             ('6', 'variant', '6', ''), 
-             ('7', 'variant', '6', 'RISM1554-22'), 
-             ('8', 'variant', '8', ''), 
+            [('1', 'variant', '1', ''),
+             ('2', 'variant', '1', 'RISM1554-22'),
+             ('3', 'variant', '3', ''),
+             ('4', 'emendation', '3', 'Tanguy'),
+             ('5', 'variant', '3', 'RISM1554-22'),
+             ('6', 'variant', '6', ''),
+             ('7', 'variant', '6', 'RISM1554-22'),
+             ('8', 'variant', '8', ''),
              ('9', 'variant', '8', 'RISM1554-22'),
         ])
+
 
 def suite():
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(UtilitiesTest, 'test'))
     test_suite.addTest(unittest.makeSuite(AnalysisTest, 'test'))
     return test_suite
-    
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MEI-Massage a single file.')
     utilities.set_logging(parser)
