@@ -88,9 +88,8 @@ def transform(MEI_doc, data=TransformData()):
     logging.warning(str(number_of_measures_to_remove) +
                     " measures will be removed from the start of the piece")
     if data.obliterate_incipit:
-        for i in range(number_of_measures_to_remove):
-            obliterate_incipit(MEI_tree)
-            renumber_measures(MEI_tree)
+        obliterate_incipit(MEI_tree, number_of_measures_to_remove)
+        renumber_measures(MEI_tree, number_of_measures_to_remove)
     if data.arranger_to_editor:
         arranger(MEI_tree)
     if data.replace_longa:
