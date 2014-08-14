@@ -26,7 +26,7 @@ def eliminate_bad_beams(MEI_tree):
         old_layer_items = layer.getChildren()
         new_layer = MeiElement('layer')
         for attribute in layer.getAttributes():
-            new_layer.addAttribute(attribute)
+            new_layer.addAttribute(attribute.getName(), attribute.getValue())
         for item in old_layer_items:
             # If the item in the list is a singleton beam, then
             # we should not add the beam to the new layer; instead,
