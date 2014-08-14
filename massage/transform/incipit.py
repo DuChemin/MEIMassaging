@@ -13,16 +13,16 @@ def number_of_incipit_measures(MEI_tree):
     """
     all_measures = get_descendants(MEI_tree, 'measure')
     for measure in all_measures:
-        # If @label doesn't exist, the variable will have the value None.
-        label = measure.getAttribute('label')
-        if label:
-            return measure.getAttribute('n') - label
+        if measure.getAttribute('label'):
+            label_number = eval(measure.getAttribute('label').getValue())
+            measure_number = eval(measure.getAttribute('n').getValue())
+            return measure_number - label_number
     # If no measure with 'label' exists, there may not be any incipit measures.
     return 0
 
 
 def measures_before_element(element):
-    """Return the number of measures before this element"""
+    """Returns the number of measures before this element"""
     peers = element.getPeers()
     n = 0
     for p in peers:
@@ -35,7 +35,6 @@ def measures_before_element(element):
 
 def obliterate_incipit(MEI_tree, iterations=1):
     all_measures = get_descendants(MEI_tree, 'measure')
-
     for i in range(iterations):
         measure_to_remove = all_measures[i]
         measure_to_remove.getParent().removeChild(measure_to_remove)
@@ -45,10 +44,11 @@ def renumber_measures(MEI_tree, difference=1):
     all_measures = get_descendants(MEI_tree, 'measure')
     for measure in all_measures:
         # Get measure number attribute
-        attr_mnumber = measure.getAttribute('n')
-        val_mnumber = attr_measure_number.getValue()
+        measure_n_attr = measure.getAttribute('n')
+        # Get its value, as a number
+        measure_number = eval(measure_n_attr.getValue())
         # Reduce number by one
-        attr_mnumber.setValue(str(eval(val_mnumber) - difference))
+        measure_n_attr.setValue(str(measure_number - difference))
 
 
 def orig_clefs(MEI_tree, alternates_list):
