@@ -12,7 +12,7 @@ def massage_mei(in_file, out_file):
         analysis = make_analysis(in_file)
         MEI_instructions = TransformData(
             arranger_to_editor=True,
-            obliterate_incipit=analysis.first_measure_empty,
+            remove_incipit=analysis.first_measure_empty,
             replace_longa=True,
             editorial_resp=analysis.has_arranger_element,
             alternates_list=analysis.alternates_list)    
