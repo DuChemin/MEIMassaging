@@ -6,6 +6,7 @@ from constants import *
 from re import split
 from utilities import source_name2NCName
 
+
 def staff_list(MEI_tree):
     all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
     staff_list = []
@@ -23,27 +24,34 @@ def staff_list(MEI_tree):
             staff_voice = staff_name_split[0]
             staff_type = VARIANT
             staff_source = ''
-            if len(staff_name_split)>1:
+            if len(staff_name_split) > 1:
                 staff_type = staff_role(staff_name_split[1])
-                if len(staff_name_split)>2:
+                if len(staff_name_split) > 2:
                     staff_source = staff_name_split[2]
-            staff_list.append((staff_name, staff_voice, staff_type, source_name2NCName(staff_source), staff_n))
+            staff_list.append((
+                staff_name,
+                staff_voice,
+                staff_type,
+                source_name2NCName(staff_source),
+                staff_n)
+            )
     return staff_list
 
+
 def alternates_list(staff_list):
-    
+
     def n_of_voice(staff_voice, staff_list):
         for sli in staff_list:
             if sli[0] == staff_voice:
                 return sli[4]
-    
+
     result = []
     for staff_list_item in staff_list:
-        staff_name =   staff_list_item[0]
-        staff_voice =  staff_list_item[1]
-        staff_type =   staff_list_item[2]
+        staff_name = staff_list_item[0]
+        staff_voice = staff_list_item[1]
+        staff_type = staff_list_item[2]
         staff_source = staff_list_item[3]
-        staff_n =      staff_list_item[4]
+        staff_n = staff_list_item[4]
         if staff_voice == staff_name:
             res_item = (staff_n, VARIANT, staff_n, staff_source)
         else:
@@ -51,9 +59,11 @@ def alternates_list(staff_list):
             if (staff_voice_n):
                 res_item = (staff_n, staff_type, staff_voice_n, staff_source)
             else:
-                logging.error("Cannot find corresponding staff for staff: " + str(staff_list_item))
+                logging.error("Cannot find corresponding staff for staff: " +
+                              str(staff_list_item))
         result.append(res_item)
     return result
+
 
 def staff_role(s):
     if 'recon' in s.lower():

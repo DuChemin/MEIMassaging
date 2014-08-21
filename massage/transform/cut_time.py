@@ -1,5 +1,5 @@
 from constants import *
-# from pymei import MeiElement
+
 
 def double_cut_time(MEI_tree):
     """Changes all 2/2 time signatures to 4/2, as might be desired

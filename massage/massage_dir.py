@@ -14,7 +14,7 @@ def massage_file(args, file, in_dir, out_dir):
         logging.info("DONE.")
     except Exception as ex:
         logging.critical(ex)
-    
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MEI-Massage all matching files in the input directory.')
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     if args.filter_ignore:
         prog_ignore = re.compile(args.filter_ignore)
-        
+
     if args.recursive:
         for root, dirs, files in os.walk(args.in_dir):
             for file in files:

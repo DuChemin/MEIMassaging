@@ -4,6 +4,7 @@ from utilities import has_C_clef
 from pymei import MeiElement
 import logging
 
+
 def reg_clefs_choice(staffGrp_orig):
     """Returns <choice> tag with a <reg> and an <orig>.
     The <orig> tag contains the <staffGrp> of original
@@ -28,6 +29,7 @@ def reg_clefs_choice(staffGrp_orig):
     for staffDef in staffGrp_orig.getChildren():
         staffGrp_reg.addChild(regularize_clef(staffDef))
     return choice
+
 
 def regularize_clef(staffDef_orig):
     """Produces a single staffDef with a regularized clef
@@ -58,6 +60,7 @@ def regularize_clef(staffDef_orig):
             staffDef_reg.addAttribute(attr.getName(), attr.getValue())
     return staffDef_reg
 
+
 def orig_clefs_choice(staffGrp_reg, orig_clefs):
     """Returns <choice> tag with a <reg> and an <orig>.
     The <reg> tag contains the <staffGrp> of regularized
@@ -83,6 +86,7 @@ def orig_clefs_choice(staffGrp_reg, orig_clefs):
         staffGrp_orig.addChild(staffDef)
     return choice
 
+
 def normalize(clef_group):
     """Makes sure clefs are in correct format, such as 'C3'."""
     try:
@@ -105,8 +109,9 @@ def normalize(clef_group):
         return clef_group
     except AssertionError or IndexError:
         logging.warning("The clef information provided is invalid. "
-            "Original clefs will not be provided.")
+                        "Original clefs will not be provided.")
         return EMPTY_CLEFS
+
 
 def clefs(MEI_tree, orig_clefs):
     """Finds the clefs in a document, adds regularized clefs
@@ -126,5 +131,3 @@ def clefs(MEI_tree, orig_clefs):
                 parent.removeChild(staffGrp)
             else:
                 pass
-
-

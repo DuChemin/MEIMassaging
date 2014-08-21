@@ -2,23 +2,24 @@
 from pymei import MeiElement, MeiAttribute
 import re
 import logging
-import argparse
+
 
 def set_logging(parser):
     parser.add_argument('--logging')
     args = parser.parse_args()
     if args.logging:
         if args.logging == "DEBUG":
-            loglevel=logging.DEBUG
+            loglevel = logging.DEBUG
         if args.logging == "INFO":
-            loglevel=logging.INFO
+            loglevel = logging.INFO
         if args.logging == "WARNING":
-            loglevel=logging.WARNING
+            loglevel = logging.WARNING
         if args.logging == "ERROR":
-            loglevel=logging.ERROR
+            loglevel = logging.ERROR
         if args.logging == "CRITICAL":
-            loglevel=logging.CRITICAL
+            loglevel = logging.CRITICAL
         logging.basicConfig(level=loglevel)
+
 
 def has_C_clef(staffGrp):
     for staffDef in staffGrp.getChildren():
@@ -26,17 +27,15 @@ def has_C_clef(staffGrp):
             return True
     return False
 
+
 def get_all_staves(MEI_tree):
     return MEI_tree.getDescendantsByName('staff')
 
-def get_descendants(MEI_tree, expr):    
 
-    def parse_tokens(tokens):   
-        
+def get_descendants(MEI_tree, expr):
+    def parse_tokens(tokens):
         def parse_token(token):
-            
             def parse_attrs(token):
-                
                 def parse_attrs_str(attrs_str):
                     res = []
                     attr_pairs = attrs_str.split(",")
@@ -44,7 +43,7 @@ def get_descendants(MEI_tree, expr):
                         if attr_pair == '':
                             continue
                         name_val = attr_pair.split("=")
-                        if len(name_val)>1:
+                        if len(name_val) > 1:
                             attr = MeiAttribute(name_val[0], name_val[1])
                             res.append(attr)
                         else:
@@ -52,7 +51,7 @@ def get_descendants(MEI_tree, expr):
                     return res
                 m = re.search("\[(.*)\]", token)
                 attrs_str = ""
-                if m != None:
+                if m is not None:
                     attrs_str = m.group(1)
                 return parse_attrs_str(attrs_str)
 
@@ -62,12 +61,12 @@ def get_descendants(MEI_tree, expr):
             for attr in attrs:
                 elem.addAttribute(attr)
             return elem
-            
+
         elems = []
         for t in tokens:
             elems.append(parse_token(t))
         return elems
-    
+
     def match_elems(elems2match, el):
         tagname = el.getName()
         for e2m in elems2match:
@@ -75,14 +74,16 @@ def get_descendants(MEI_tree, expr):
                 match = True
                 for atr in e2m.getAttributes():
                     if atr.getName() == "n" and atr.getValue() == "1":
-                        if el.hasAttribute("n") and el.getAttribute("n").getValue() != "1":
+                        if (el.hasAttribute("n") and
+                                el.getAttribute("n").getValue() != "1"):
                             match = False
-                    elif not el.hasAttribute(atr.getName()) or el.getAttribute(atr.getName()).getValue() != atr.getValue():
+                    elif (not el.hasAttribute(atr.getName()) or
+                          el.getAttribute(atr.getName()).getValue() != atr.getValue()):
                         match = False
                 if match:
                     return True
         return False
-        
+
     res = []
     descendants = MEI_tree.getDescendants()
     tokens = expr.split(" ")
@@ -91,24 +92,28 @@ def get_descendants(MEI_tree, expr):
         if (match_elems(elems2match, el)):
             res.append(el)
     return res
-    
-    
+
+
 def get_descendants_with_attribute_value(MEI_tree, names, attr, value):
     res = []
     descendants = MEI_tree.getDescendantsByName(names)
     for elem in descendants:
-        if elem.hasAttribute(attr) and elem.getAttribute(attr).getValue() == value:
+        if (elem.hasAttribute(attr) and
+                elem.getAttribute(attr).getValue() == value):
             res.append(elem)
     return res
+
 
 def get_children_with_attribute_value(MEI_tree, names, attr, value):
     res = []
     children = MEI_tree.getChildrenByName(names)
     for elem in children:
-        if elem.hasAttribute(attr) and elem.getAttribute(attr).getValue() == value:
+        if (elem.hasAttribute(attr) and
+                elem.getAttribute(attr).getValue() == value):
             res.append(elem)
     return res
-    
+
+
 def chain_elems(start_elem, elems):
     def getOrAddChild(mei_elem, child_name):
         children = mei_elem.getChildrenByName(child_name)
@@ -121,6 +126,7 @@ def chain_elems(start_elem, elems):
         return start_elem
     children = getOrAddChild(start_elem, elems[0])
     return chain_elems(children[0], elems[1:])
+
 
 def source_name2NCName(source_name, prefix="RISM"):
     # replace illegal characters:
@@ -136,16 +142,19 @@ def source_name2NCName(source_name, prefix="RISM"):
 class Meter:
     count = None
     unit = None
+
     def read(self, sDef):
         if sDef.hasAttribute('meter.count'):
             self.count = sDef.getAttribute('meter.count').getValue()
         if sDef.hasAttribute('meter.unit'):
             self.unit = sDef.getAttribute('meter.unit').getValue()
+
     def semibreves(self):
         return float(self.count) / float(self.unit)
 
+
 def get_attribute_val(elem, attr_name, def_value=""):
-    """Gets an attribute value or the supplied return value if the 
+    """Gets an attribute value or the supplied return value if the
     attribute isn't defined."""
     if elem.hasAttribute(attr_name):
         return elem.getAttribute(attr_name).getValue()
@@ -153,7 +162,7 @@ def get_attribute_val(elem, attr_name, def_value=""):
         return def_value
 
 def effective_meter(elem):
-    """Gets the effective time signature at a given location under a 
+    """Gets the effective time signature at a given location under a
     <staff> element that is a descendent of the <music> element.
     """
     staff_n = '1'
@@ -166,14 +175,14 @@ def effective_meter(elem):
     for scD in all_scoreDefs:
         meter.read(scD)
         stDs = get_descendants(scD, 'staffDef[n=' + staff_n + ']')
-        if len(stDs) > 0: 
+        if len(stDs) > 0:
             stD = stDs[0]
             meter.read(stD)
         if scD == last_scoreDef:
             break
     return meter
-    
-    
+
+
 def get_next_measure(measure):
     """
     Return the measure directly after the current measure, if any
@@ -187,8 +196,8 @@ def get_next_measure(measure):
             measurefound = True
     return None
 
+
 def dur_in_semibreves(elem):
-    
     if elem.hasAttribute('dur'):
         dur_attr = elem.getAttribute('dur').getValue()
         if dur_attr == 'breve':
@@ -209,9 +218,8 @@ def dur_in_semibreves(elem):
         max_dur = 0
         for e in elem.getChildren():
             D_e = dur_in_semibreves(e)
-            if D_e  > max_dur:
+            if D_e > max_dur:
                 max_dur = D_e
         return max_dur
     else:
         return 0
-

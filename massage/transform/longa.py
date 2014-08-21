@@ -1,6 +1,5 @@
-
 from constants import *
-# from pymei import MeiElement
+
 
 def longa(MEI_tree):
     """Changes duration of final note in each part to a longa."""

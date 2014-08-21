@@ -11,17 +11,17 @@ from pymei import MeiElement, MeiDocument, MeiAttribute
 import utilities
 
 class FunctionTest(unittest.TestCase):
-    
+
     class ConnectingAppsObjects:
-        def __init__(self): 
+        def __init__(self):
             """
             Setup some connecting apps.
             Connecting apps are:
-              1. they are in subsequent measures, 
+              1. they are in subsequent measures,
               2. they are on the same staff,
               3. there isn't any notes or rests are in between them and
               4. their rdgs represent the exact same set of sources
-            Apps need to have xml:id. Only apps lower than <layer> level 
+            Apps need to have xml:id. Only apps lower than <layer> level
             will be linked together.
             """
             music = MeiElement('music')
@@ -105,13 +105,9 @@ class FunctionTest(unittest.TestCase):
         self.assertEqual(len(appIDs), 2)
         self.assertEqual(appIDs[0], "#" + test_objects.app1.getId())
         self.assertEqual(appIDs[1], "#" + test_objects.app2.getId())
-        
-        
+
     def test_linkalternatives_nonconnecting(self):
-        """
-        Testing that apps that aren't connected don't get linked.
-        """
-        
+        """Testing that apps that aren't connected don't get linked."""
         music = MeiElement('music')
         body = MeiElement('body')
         mdiv = MeiElement('mdiv')
@@ -183,44 +179,42 @@ class FunctionTest(unittest.TestCase):
         app1.addChild(rdg1_A)
         app1.addChild(rdg1_B)
 
-        """app1 doesn't connect with app2 because there's 
-        a note between the two"""
+        #app1 doesn't connect with app2
+        # because there's a note between the two.
         l2.addChild(MeiElement('note'))
         l2.addChild(app2)
         app2.addChild(lem2)
         app2.addChild(rdg2_A)
         app2.addChild(rdg2_B)
 
-        """app3_1 doesn't connect with app2 because it
-        has a different set of sources"""
+        #app3_1 doesn't connect with app2
+        # because it has a different set of sources.
         l3_1.addChild(app3_1)
         app3_1.addChild(lem3_1)
         app3_1.addChild(rdg3_1_A)
         app3_1.addChild(rdg3_1_C)
 
-        """app3_2 doesn't connect with app2 because it is
-        on a different staff"""
+        #app3_2 doesn't connect with app2
+        # because it is on a different staff
         l3_2.addChild(app3_2)
         app3_2.addChild(lem3_2)
         app3_2.addChild(rdg3_2_A)
         app3_2.addChild(rdg3_2_B)
 
-        """app3_3 doesn't connect with app2 because it is
-        at a higher level (not descendant of layer)"""
+        # app3_3 doesn't connect with app2 because it is
+        # at a higher level (not descendant of layer)
         m3.addChild(app3_3)
         app3_3.addChild(lem3_3)
         app3_3.addChild(rdg3_3_A)
         app3_3.addChild(rdg3_3_B)
 
         link_alternatives(music, VARIANT)
-        
-        """"
-        This is to establish that the non-connecting apps
-        aren't linked together:
-        """
+
+        # This is to establish that the non-connecting apps
+        # aren't linked together:
         annots = get_descendants(music, 'annot[type=appGrp]')
         self.assertEqual(len(annots), 0)
-        
+
     def test_correspondingwrappers(self):
         app0 = MeiElement('app')
         app1 = MeiElement('app')
@@ -229,26 +223,24 @@ class FunctionTest(unittest.TestCase):
         app4 = MeiElement('app')
         lem0 = MeiElement('lem')
         lem1 = MeiElement('lem')
-        lem2 = MeiElement('lem')
-        lem3 = MeiElement('lem')
-        lem4 = MeiElement('lem')
+        # lem2 = MeiElement('lem')
+        # lem3 = MeiElement('lem')
+        # lem4 = MeiElement('lem')
         rdg0_A = MeiElement('rdg')
         rdg0_B = MeiElement('rdg')
         rdg0_A.addAttribute('source', 'SRC-A')
         rdg0_B.addAttribute('source', 'SRC-B')
-        
+
         app0.addChild(lem0)
         app0.addChild(rdg0_A)
         app0.addChild(rdg0_B)
 
-        rdg2_1 = MeiElement('rdg')
-        rdg2_2 = MeiElement('rdg')
-        rdg3_1 = MeiElement('rdg')
-        rdg3_2 = MeiElement('rdg')
+        # rdg2_1 = MeiElement('rdg')
+        # rdg2_2 = MeiElement('rdg')
+        # rdg3_1 = MeiElement('rdg')
+        # rdg3_2 = MeiElement('rdg')
 
-        """
-        app0 and app1 are corresponding
-        """
+        # app0 and app1 are corresponding
         rdg1_A = MeiElement('rdg')
         rdg1_B = MeiElement('rdg')
         rdg1_A.addAttribute('source', 'SRC-A')
@@ -256,12 +248,9 @@ class FunctionTest(unittest.TestCase):
         app1.addChild(lem1)
         app1.addChild(rdg1_A)
         app1.addChild(rdg1_B)
-        
-        
-        """
-        app0 and app2 aren't corresponding because
-        they don't have the same number of lems
-        """
+
+        # app0 and app2 aren't corresponding because
+        # they don't have the same number of lems
         rdg2_A = MeiElement('rdg')
         rdg2_B = MeiElement('rdg')
         rdg2_A.addAttribute('source', 'SRC-A')
@@ -269,20 +258,16 @@ class FunctionTest(unittest.TestCase):
         app2.addChild(rdg2_A)
         app2.addChild(rdg2_B)
 
-        """
-        app0 and app3 aren't corresponding because
-        they don't have the same number of rdgs
-        """
+        # app0 and app3 aren't corresponding because
+        # they don't have the same number of rdgs
         rdg3_A = MeiElement('rdg')
-        rdg3_B = MeiElement('rdg')
+        # rdg3_B = MeiElement('rdg')
         rdg3_A.addAttribute('source', 'SRC-A')
         app3.addChild(lem3)
         app3.addChild(rdg3_A)
 
-        """
-        app0 and app4 aren't corresponding because
-        their rdgs don't represent the same set of sources
-        """
+        # app0 and app4 aren't corresponding because
+        # their rdgs don't represent the same set of sources
         rdg4_A = MeiElement('rdg')
         rdg4_C = MeiElement('rdg')
         rdg4_A.addAttribute('source', 'SRC-A')
@@ -290,21 +275,20 @@ class FunctionTest(unittest.TestCase):
         app4.addChild(lem1)
         app4.addChild(rdg4_A)
         app4.addChild(rdg4_C)
-        
+
         self.assertEqual(corresponding_wrappers(app0, app1), True)
         self.assertEqual(corresponding_wrappers(app0, app2), False)
         self.assertEqual(corresponding_wrappers(app0, app3), False)
         self.assertEqual(corresponding_wrappers(app0, app4), False)
-        
+
     def test_findconnectingwrappers(self):
-        
         test_objects = self.ConnectingAppsObjects()
         self.assertNotEqual(test_objects.app1.lookBack('staff'), None)
         self.assertEqual(find_connecting_wrapper(test_objects.app1), test_objects.app2)
         self.assertEqual(find_connecting_wrapper(test_objects.app2), None)
-        
+
     def test_getcoloredblocks(self):
-        
+
         def create_note(dur, pname, octave, color=None):
             n = MeiElement('note')
             n.addAttribute('dur', dur)
@@ -313,11 +297,11 @@ class FunctionTest(unittest.TestCase):
             if color:
                 n.addAttribute('color', color)
             return n
-        
-        m = MeiElement('measure')
-        s = MeiElement('staff')
-        l = MeiElement('layer')
-        
+
+        # m = MeiElement('measure')
+        # s = MeiElement('staff')
+        # l = MeiElement('layer')
+
         n1 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
         n2 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
         n3 = create_note('2', 'f', '3')
@@ -327,7 +311,7 @@ class FunctionTest(unittest.TestCase):
         n7 = create_note('2', 'f', '3')
         n8 = create_note('2', 'f', '3', 'rgba(255,0,0,1)')
         n9 = create_note('2', 'f', '3')
-        
+
         notelist = [n1, n2, n3, n4, n5, n6, n7, n8, n9]
         colored_blocks = get_colored_blocks_from_notes(notelist, ANYCOLOR)
         self.assertEqual(len(colored_blocks), 3)
@@ -338,9 +322,10 @@ class FunctionTest(unittest.TestCase):
         self.assertEqual(colored_blocks[1][2], 1)
         self.assertEqual(colored_blocks[2][1], 3.5)
         self.assertEqual(colored_blocks[2][2], 0.5)
-        
+
+
 class TransformTest(unittest.TestCase):
-    
+
     def setUp(self):
         pass
 
@@ -604,7 +589,7 @@ def suite():
     test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_colors'))
     test_suite.addTest(unittest.TestLoader().loadTestsFromName('transform_test.TransformTest.test_canonical_reconvariantforsamevoice'))
     return test_suite
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MEI-Massage a single file.')
     utilities.set_logging(parser)

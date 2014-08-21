@@ -1,6 +1,6 @@
-
 from constants import *
 from pymei import MeiElement
+
 
 def change_arranger_element(MEI_tree):
     """Changes all occurrence of the <arranger> tag to <editor>"""
@@ -16,6 +16,7 @@ def change_arranger_element(MEI_tree):
         parent.addChild(editor)
         parent.removeChild(arranger)
 
+
 def change_arranger_role(MEI_tree):
     """Changes all occurrences of 'arranger' as a @role
     in the element <persName> to 'editor'.
@@ -26,7 +27,8 @@ def change_arranger_role(MEI_tree):
                 persName.getAttribute('role').getValue() == 'arranger'):
             persName.addAttribute('role', 'editor')
 
+
 def arranger(MEI_tree):
     """Reinterprets arranger as editor in all occurrences."""
     change_arranger_element(MEI_tree)
-    change_arranger_role(MEI_tree)  
+    change_arranger_role(MEI_tree)

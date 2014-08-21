@@ -1,4 +1,3 @@
-import sys
 import argparse
 import logging
 from analyze.analyze import analyze as make_analysis
@@ -7,7 +6,8 @@ from transform.transform import transform as transform_mei
 from pymei import XmlImport, XmlExport
 from utilities import set_logging
 
-def massage_mei(in_file, out_file): 
+
+def massage_mei(in_file, out_file):
     try:
         analysis = make_analysis(in_file)
         MEI_instructions = TransformData(
@@ -15,7 +15,7 @@ def massage_mei(in_file, out_file):
             remove_incipit=True,
             replace_longa=True,
             editorial_resp=analysis.has_arranger_element,
-            alternates_list=analysis.alternates_list)    
+            alternates_list=analysis.alternates_list)
         old_MEI_doc = XmlImport.documentFromFile(in_file)
         new_MEI_doc = transform_mei(old_MEI_doc, MEI_instructions)
         XmlExport.meiDocumentToFile(new_MEI_doc, out_file)
