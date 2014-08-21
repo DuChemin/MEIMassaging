@@ -15,6 +15,7 @@ LONGA = 'long'
 VARIANT = 'variant'
 EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
+CONCORDANCE = 'concordance'
 IGNORED = '0'
 
 # Color data
