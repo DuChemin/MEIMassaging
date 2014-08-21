@@ -73,7 +73,7 @@ def metadata(request):
         newdoc.save()
         MEI_filename = newdoc.docfile.path
         analysis = make_analysis(str(MEI_filename))
-        # "variant" or "reconstruction"
+        # "variant" or "reconstruction" or "concordance"
         processType = request.POST.get('processType')
     else:
         html = "<html><body>No file selected</body></html>"

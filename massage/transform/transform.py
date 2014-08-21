@@ -45,9 +45,10 @@ class TransformData:
         #      ('3', VARIANT, '3', ''), ('4', VARIANT, '4', '')]
         # The first element represents the number of the derivative staff
         # under consideration. Other possible values for the middle element
-        # are EMENDATION and RECONSTRUCTION. The third element represents
-        # the number of the parent staff. The tuple ('5', RECONSTRUCTION, '2', '')
-        # can be read as "staff 5 is a reconstruction of staff 2".
+        # are EMENDATION, RECONSTRUCTION and CONCORDANCE. The third element
+        # represents the number of the parent staff. The tuple
+        # ('5', RECONSTRUCTION, '2', '') can be read as
+        # "staff 5 is a reconstruction of staff 2".
         # The last element represents source or responsibility.
         self.alternates_list = alternates_list
         self.arranger_to_editor = arranger_to_editor
@@ -114,7 +115,8 @@ def transform(MEI_doc, data=TransformData()):
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
-    reconstructions(MEI_tree, data.alternates_list)
+    reconstructions(MEI_tree, data.alternates_list, RECONSTRUCTION)
+    reconstructions(MEI_tree, data.alternates_list, CONCORDANCE)
     ignored(MEI_tree, data.alternates_list)
 
     # To do: remove ties from removed staves

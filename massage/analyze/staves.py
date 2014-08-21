@@ -62,6 +62,8 @@ def staff_role(s):
         return EMENDATION
     elif 'variant' in s.lower():
         return VARIANT
+    elif 'concord' in s.lower():
+        return CONCORDANCE
     else:
         return 'UNKNOWN'
 

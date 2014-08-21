@@ -53,12 +53,12 @@ def renumber_measures(MEI_tree, difference=1):
 
 def orig_clefs(MEI_tree, alternates_list):
     def is_placeholder(staff_n, alternates_list):
-        """A staff is PLACEHOLDER if there's at least
-        one other staff that is a RECONSTRUCTION of it.
+        """A staff is PLACEHOLDER if there's at least one other
+        staff that is a reconstruction or concordance of it.
         """
         for a in alternates_list:
-            # if a is RECONSTRUCTION of alt_list_item:
-            if a[2] == staff_n and a[1] == RECONSTRUCTION:
+            # if a is reconstruction of alt_list_item:
+            if a[2] == staff_n and a[1] in (RECONSTRUCTION, CONCORDANCE):
                 return True
         return False
 
@@ -129,8 +129,7 @@ def orig_clefs(MEI_tree, alternates_list):
     for staffDef in staffDefs:
         staff_n = staffDef.getAttribute('n').getValue()
         if (is_placeholder(staff_n, alternates_list) or
-                staff_role(staff_n, alternates_list) == RECONSTRUCTION or
-                staff_role(staff_n, alternates_list) == EMENDATION):
+                staff_role(staff_n, alternates_list) in (RECONSTRUCTION, EMENDATION, CONCORDANCE)):
             staffDef.parent.removeChild(staffDef)
     meiHead = get_descendants(MEI_tree, 'meiHead')[0]
 
