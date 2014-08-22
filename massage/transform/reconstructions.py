@@ -17,8 +17,8 @@ def get_original_staves(MEI_tree, alternates_list, original_staves_NUM):
     return original_staves
 
 
-def get_original_staves_NUM(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
-    """Get numbers of all reconstructed staevs."""
+def get_original_staves_NUM(MEI_tree, alternates_list, var_type):
+    """Get numbers of all reconstructed staves."""
     original_staves_NUM = []
     for i in alternates_list:
         if i[2] not in original_staves_NUM and i[1] == var_type:
@@ -26,8 +26,8 @@ def get_original_staves_NUM(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
     return original_staves_NUM
 
 
-def get_recon_staves_NUM(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
-    """Get numbers of all reconstructed staevs."""
+def get_recon_staves_NUM(MEI_tree, alternates_list, var_type):
+    """Get numbers of all reconstructed staves."""
     recon_staves_NUM = []
     for i in alternates_list:
         if i[0] not in recon_staves_NUM and i[1] == var_type:
@@ -35,7 +35,7 @@ def get_recon_staves_NUM(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
     return recon_staves_NUM
 
 
-def get_recon_staves(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
+def get_recon_staves(MEI_tree, alternates_list, var_type):
     """Returns a list of all staff objects that are reconstructions of
     other staves, and should be moved inside the <app> of those staves.
     """
@@ -51,7 +51,7 @@ def get_recon_staves(MEI_tree, alternates_list, var_type=RECONSTRUCTION):
     return recon_staves
 
 
-def make_orig_app(MEI_tree, original_staves, var_type=RECONSTRUCTION):
+def make_orig_app(MEI_tree, original_staves, var_type):
     """Based on the list of original staves, replace them
     with empty <app> elements. and remove the placeholder
     staff elements.
@@ -80,6 +80,7 @@ def move_recon_staves(recon_staves, al, var_type):
     """Move reconstructed staves to their proper place within the <app>
     element created in place of the original (placeholder) staff.
     """
+
     def orig(staff_n, alternates_list):
         """Return the number of staff that the given staff
         is a reconstruction of.
