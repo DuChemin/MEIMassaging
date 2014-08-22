@@ -110,6 +110,7 @@ def move_recon_staves(recon_staves, al, var_type):
                     new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
                 elif var_type == CONCORDANCE:
                     new_rdg.addAttribute('source', '#' + resp(staff_n, al))
+                new_rdg.addAttribute('type', var_type)
                 app.addChild(new_rdg)
                 new_rdg.addChild(staff)
                 parent_measure.removeChild(staff)
