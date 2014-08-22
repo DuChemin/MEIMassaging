@@ -76,7 +76,7 @@ def make_orig_app(MEI_tree, original_staves, var_type=RECONSTRUCTION):
             parent_measure.addChild(staff)
 
 
-def move_recon_staves(recon_staves, al):
+def move_recon_staves(recon_staves, al, var_type):
     """Move reconstructed staves to their proper place within the <app>
     element created in place of the original (placeholder) staff.
     """
@@ -106,7 +106,10 @@ def move_recon_staves(recon_staves, al):
                 # Number <rdg> with old staff number
                 new_rdg.addAttribute('n', staff_n)
                 # Add responsibility to new reading element
-                new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
+                if var_type == RECONSTRUCTION:
+                    new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
+                elif var_type == CONCORDANCE:
+                    new_rdg.addAttribute('source', '#' + resp(staff_n, al))
                 app.addChild(new_rdg)
                 new_rdg.addChild(staff)
                 parent_measure.removeChild(staff)
@@ -140,5 +143,5 @@ def reconstructions(MEI_tree, alternates_list, var_type):
     recon_staves = get_recon_staves(MEI_tree, alternates_list, var_type)
 
     make_orig_app(MEI_tree, original_staves, var_type)
-    move_recon_staves(recon_staves, alternates_list)
+    move_recon_staves(recon_staves, alternates_list, var_type)
     adjust_staff_group(MEI_tree, original_staves_NUM)
