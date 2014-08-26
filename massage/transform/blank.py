@@ -1,4 +1,4 @@
-from libmei import MeiElement
+from pymei import MeiElement
 from constants import *
 
 
