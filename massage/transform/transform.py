@@ -116,6 +116,12 @@ def transform(MEI_doc, data=TransformData()):
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
     reconstructions(MEI_tree, data.alternates_list, RECONSTRUCTION)
     reconstructions(MEI_tree, data.alternates_list, CONCORDANCE)
+    reconstructions(MEI_tree, data.alternates_list, BLANK)
+
+    # Blank out empty staves. Must be done after the above
+    # reconstruction() calls.
+    empty_staves(MEI_tree)
+
     ignored(MEI_tree, data.alternates_list)
 
     # To do: remove ties from removed staves

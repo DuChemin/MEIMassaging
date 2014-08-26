@@ -7,6 +7,22 @@ from re import split
 from utilities import source_name2NCName
 
 
+def is_empty(MEI_tree, staff_n):
+    """Returns True if there are no notes associated with staves
+    with n=staff_num; False otherwise.
+    """
+    all_staff = MEI_tree.getDescendantsByName('staff')
+    for staff in all_staff:
+        try:
+            if staff.getAttribute('n').getValue() == str(staff_n):
+                all_notes = staff.getDescendantsByName('note')
+                if len(all_notes) > 0:
+                    return False
+        except:
+            pass
+    return True
+
+
 def staff_list(MEI_tree):
     all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
     staff_list = []
@@ -24,16 +40,23 @@ def staff_list(MEI_tree):
             staff_voice = staff_name_split[0]
             staff_type = VARIANT
             staff_source = ''
+            # If it's a special staff (variant, reconstruction, etc.)
             if len(staff_name_split) > 1:
                 staff_type = staff_role(staff_name_split[1])
                 if len(staff_name_split) > 2:
                     staff_source = staff_name_split[2]
-            staff_list.append((
-                staff_name,
-                staff_voice,
-                staff_type,
-                source_name2NCName(staff_source),
-                staff_n)
+            # If it's an empty staff
+            if is_empty(MEI_tree, staff_n):
+                staff_type = BLANK
+                staff_source = staff_name
+
+            staff_list.append(
+                (staff_name,
+                 staff_voice,
+                 staff_type,
+                 source_name2NCName(staff_source),
+                 staff_n,
+                 )
             )
     return staff_list
 
@@ -53,7 +76,7 @@ def alternates_list(staff_list):
         staff_source = staff_list_item[3]
         staff_n = staff_list_item[4]
         if staff_voice == staff_name:
-            res_item = (staff_n, VARIANT, staff_n, staff_source)
+            res_item = (staff_n, staff_type, staff_n, staff_source)
         else:
             staff_voice_n = n_of_voice(staff_voice, staff_list)
             if (staff_voice_n):

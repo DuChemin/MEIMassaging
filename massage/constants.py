@@ -16,6 +16,7 @@ VARIANT = 'variant'
 EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
 CONCORDANCE = 'concordance'
+BLANK = 'blank'
 IGNORED = '0'
 
 # Color data
