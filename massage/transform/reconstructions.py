@@ -65,7 +65,6 @@ def make_orig_app(MEI_tree, original_staves, var_type):
         if staff in original_staves:
             new_app = MeiElement('app')
             new_app.addAttribute('n', old_staff_n)
-            new_app.addAttribute('type', var_type)
             # Add <app> where <staff> was, and delete the latter
             parent_measure.removeChild(staff)
             parent_measure.addChild(new_app)
