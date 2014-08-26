@@ -13,10 +13,11 @@ from reconstructions import reconstructions
 from ignored import ignored
 from cut_time import double_cut_time
 from beams import eliminate_bad_beams
-from remove_elements import remove_annot_brackets
+# from remove_elements import remove_annot_brackets
+# from remove_elements import remove_metersig
 from remove_elements import remove_empty_syllables
 from remove_elements import remove_empty_persname
-from remove_elements import remove_metersig
+from blank import empty_staves
 
 from constants import *
 from utilities import source_name2NCName
@@ -103,9 +104,10 @@ def transform(MEI_doc, data=TransformData()):
         eliminate_bad_beams(MEI_tree)
     if data.cleanup:
         remove_empty_syllables(MEI_tree)
-        remove_annot_brackets(MEI_tree)
-        remove_metersig(MEI_tree)
         remove_empty_persname(MEI_tree)
+    ## The following not needed because they are handled by mei-filter.js
+    # remove_annot_brackets(MEI_tree)
+    # remove_metersig(MEI_tree)
     responsibility(MEI_tree, data.editorial_resp)
 
     # Only now should we do the tricky stuff.
