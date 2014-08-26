@@ -12,7 +12,7 @@ def sources_and_editors(MEI_tree, alternates_data):
         if not existing:
             source = MeiElement('source')
             source.id = adi[3]
-            source.type = adi[1]
+            source.addAttribute('type', adi[1])
             sourceDesc.addChild(source)
 
     def add_editor(titleStmt, ali):
@@ -20,7 +20,8 @@ def sources_and_editors(MEI_tree, alternates_data):
         if not existing:
             editor = MeiElement('editor')
             editor.id = ali[3]
-            editor.type = ali[1]
+            # Using 'replace' simply to have more natural name for a person
+            editor.addAttribute('type', adi[1].replace('ction', 'ctor'))
             titleStmt.addChild(editor)
 
     for adi in alternates_data:
