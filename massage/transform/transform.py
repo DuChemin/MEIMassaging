@@ -2,7 +2,8 @@ import sys
 sys.path.insert(0, '..')
 
 from arranger import arranger
-from incipit import obliterate_incipit, renumber_measures, orig_clefs, number_of_incipit_measures
+from incipit import orig_clefs, number_of_incipit_measures
+from incipit import obliterate_incipit, renumber_measures
 from responsibility import responsibility
 from longa import longa
 from sources import sources_and_editors
@@ -12,9 +13,10 @@ from reconstructions import reconstructions
 from ignored import ignored
 from cut_time import double_cut_time
 from beams import eliminate_bad_beams
-from syllables import remove_empty_syllables
-from annot import remove_annot_brackets
-from metersig import remove_metersig
+from remove_elements import remove_annot_brackets
+from remove_elements import remove_empty_syllables
+from remove_elements import remove_empty_persname
+from remove_elements import remove_metersig
 
 from constants import *
 from utilities import source_name2NCName
@@ -34,9 +36,7 @@ class TransformData:
             color_for_emendations=ANYCOLOR,
             double_cut_time=True,
             eliminate_bad_beams=True,
-            remove_empty_syllables=True,
-            remove_annot_brackets=True,
-            remove_metersig=True,
+            cleanup=True,
         ):
         # The alternates_list field contains information about variants,
         # emendations and reconstructions. It is a list of 4-tuples.
@@ -59,9 +59,7 @@ class TransformData:
         self.color_for_emendations = color_for_emendations
         self.double_cut_time = double_cut_time
         self.eliminate_bad_beams = eliminate_bad_beams
-        self.remove_empty_syllables = remove_empty_syllables
-        self.remove_annot_brackets = remove_annot_brackets
-        self.remove_metersig = remove_metersig
+        self.cleanup = cleanup
 
 
 def validate_ncnames(alternates_list):
@@ -107,8 +105,10 @@ def transform(MEI_doc, data=TransformData()):
         remove_empty_syllables(MEI_tree)
     if data.remove_annot_brackets:
         remove_annot_brackets(MEI_tree)
-    if data.remove_metersig:
+    if data.cleanup:
         remove_metersig(MEI_tree)
+    if data.remove_empty_persname:
+        remove_empty_persname(MEI_tree)
     responsibility(MEI_tree, data.editorial_resp)
 
     # Only now should we do the tricky stuff.
