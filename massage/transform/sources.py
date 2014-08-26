@@ -12,6 +12,7 @@ def sources_and_editors(MEI_tree, alternates_data):
         if not existing:
             source = MeiElement('source')
             source.id = adi[3]
+            source.type = adi[1]
             sourceDesc.addChild(source)
 
     def add_editor(titleStmt, ali):
@@ -19,10 +20,17 @@ def sources_and_editors(MEI_tree, alternates_data):
         if not existing:
             editor = MeiElement('editor')
             editor.id = ali[3]
+            editor.type = ali[1]
             titleStmt.addChild(editor)
 
     for adi in alternates_data:
-        if adi[1] in (RECONSTRUCTION, EMENDATION):
+        if adi[1] == RECONSTRUCTION:
             add_editor(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'titleStmt']), adi)
-        if (adi[1] == CONCORDANCE) or (adi[0] != adi[2] and adi[1] == VARIANT):
+        elif adi[1] == EMENDATION:
+            add_editor(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'titleStmt']), adi)
+        elif adi[1] == CONCORDANCE:
             add_source(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'sourceDesc']), adi)
+        elif adi[0] != adi[2] and adi[1] == VARIANT:
+            add_source(chain_elems(MEI_tree, ['meiHead', 'fileDesc', 'sourceDesc']), adi)
+        else:
+            pass
