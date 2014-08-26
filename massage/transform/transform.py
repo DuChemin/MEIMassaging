@@ -101,13 +101,10 @@ def transform(MEI_doc, data=TransformData()):
         double_cut_time(MEI_tree)
     if data.eliminate_bad_beams:
         eliminate_bad_beams(MEI_tree)
-    if data.remove_empty_syllables:
-        remove_empty_syllables(MEI_tree)
-    if data.remove_annot_brackets:
-        remove_annot_brackets(MEI_tree)
     if data.cleanup:
+        remove_empty_syllables(MEI_tree)
+        remove_annot_brackets(MEI_tree)
         remove_metersig(MEI_tree)
-    if data.remove_empty_persname:
         remove_empty_persname(MEI_tree)
     responsibility(MEI_tree, data.editorial_resp)
 
