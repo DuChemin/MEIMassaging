@@ -145,4 +145,5 @@ def reconstructions(MEI_tree, alternates_list, var_type):
 
     make_orig_app(MEI_tree, original_staves, var_type)
     move_recon_staves(recon_staves, alternates_list, var_type)
-    adjust_staff_group(MEI_tree, original_staves_NUM)
+    # Don't get rid of old staffDef information! Commented out
+    # adjust_staff_group(MEI_tree, original_staves_NUM)
