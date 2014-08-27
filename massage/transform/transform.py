@@ -17,7 +17,7 @@ from beams import eliminate_bad_beams
 # from remove_elements import remove_metersig
 from remove_elements import remove_empty_syllables
 from remove_elements import remove_empty_persname
-from blank import empty_staves
+from invisible import make_invisible_space
 
 from constants import *
 from utilities import source_name2NCName
@@ -37,6 +37,7 @@ class TransformData:
             color_for_emendations=ANYCOLOR,
             double_cut_time=True,
             eliminate_bad_beams=True,
+            make_invisible_space=True,
             cleanup=True,
         ):
         # The alternates_list field contains information about variants,
@@ -60,6 +61,7 @@ class TransformData:
         self.color_for_emendations = color_for_emendations
         self.double_cut_time = double_cut_time
         self.eliminate_bad_beams = eliminate_bad_beams
+        self.make_invisible_space = make_invisible_space
         self.cleanup = cleanup
 
 
@@ -102,6 +104,8 @@ def transform(MEI_doc, data=TransformData()):
         double_cut_time(MEI_tree)
     if data.eliminate_bad_beams:
         eliminate_bad_beams(MEI_tree)
+    if data.make_invisible_space:
+        make_invisible_space(MEI_tree)
     if data.cleanup:
         remove_empty_syllables(MEI_tree)
         remove_empty_persname(MEI_tree)
@@ -114,13 +118,9 @@ def transform(MEI_doc, data=TransformData()):
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
+    reconstructions(MEI_tree, data.alternates_list, BLANK)
     reconstructions(MEI_tree, data.alternates_list, RECONSTRUCTION)
     reconstructions(MEI_tree, data.alternates_list, CONCORDANCE)
-    reconstructions(MEI_tree, data.alternates_list, BLANK)
-
-    # Blank out empty staves. Must be done after the above
-    # reconstruction() calls.
-    empty_staves(MEI_tree)
 
     ignored(MEI_tree, data.alternates_list)
 
