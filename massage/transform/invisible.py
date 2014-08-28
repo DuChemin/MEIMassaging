@@ -10,7 +10,8 @@ def make_invisible_space(MEI_tree):
     rests = MEI_tree.getDescendantsByName('rest')
     mRests = MEI_tree.getDescendantsByName('mRest')
 
-    for list_of_elements in [notes, rests, mRests]:
+    # Replace notes and rests with spaces
+    for list_of_elements in [notes, rests]:
         for item in list_of_elements:
             try:
                 if item.getAttribute('visible').getValue() == 'false':
@@ -22,5 +23,12 @@ def make_invisible_space(MEI_tree):
                     parent = item.getParent()
                     parent.removeChild(item)
                     parent.addChild(space)
-            except:
+            except:  # doesn't have attribute `visible`
                 pass
+    # Replace mRests with nothing -- just remove them
+    for item in mRests:
+        try:
+            if item.getAttribute('visible').getValue() == 'false':
+                item.getParent().removeChild(item)
+        except:  # doesn't have attribute `visible`
+            pass
