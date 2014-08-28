@@ -112,11 +112,11 @@ def move_supplied_staves(supplied_staves, al):
                 # Number <rdg> with old staff number
                 new_rdg.addAttribute('n', staff_n)
                 # Add responsibility to new reading element
-                if staff_type(staff_n) == RECONSTRUCTION:
+                if staff_type(staff_n, al) == RECONSTRUCTION:
                     new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
-                elif staff_type(staff_n) == CONCORDANCE:
+                elif staff_type(staff_n, al) == CONCORDANCE:
                     new_rdg.addAttribute('source', '#' + resp(staff_n, al))
-                new_rdg.addAttribute('type', staff_type(staff_n))
+                new_rdg.addAttribute('type', staff_type(staff_n, al))
                 app.addChild(new_rdg)
                 new_rdg.addChild(staff)
                 parent_measure.removeChild(staff)
@@ -147,9 +147,7 @@ def supplied_staves(MEI_tree, alternates_list, var_type_list):
                                           alternates_list,
                                           original_staves_NUM,
                                           )
-    supplied_staves = get_supplied_staves(MEI_tree, alternates_list, var_type)
+    supplied_staves = get_supplied_staves(MEI_tree, alternates_list, var_type_list)
 
     make_orig_app(MEI_tree, original_staves)
-    move_supplied_staves(supplied_staves, alternates_list, var_type)
-    # Don't get rid of old staffDef information! Commented out
-    # adjust_staff_group(MEI_tree, original_staves_NUM)
+    move_supplied_staves(supplied_staves, alternates_list)
