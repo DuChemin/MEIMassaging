@@ -1,7 +1,7 @@
-
 from constants import *
 from alt import local_alternatives, link_alternatives
 # from pymei import MeiElement
+
 
 def emendations(MEI_tree, alternates_list, color_we_want):
     """Uses the list of alternate readings to find the emendations,
@@ -13,6 +13,6 @@ def emendations(MEI_tree, alternates_list, color_we_want):
     if len(sections) > 0:
         link_emendations(sections[0])
 
+
 def link_emendations(section):
     link_alternatives(section, EMENDATION)
-

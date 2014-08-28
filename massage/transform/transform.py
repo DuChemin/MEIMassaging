@@ -9,7 +9,7 @@ from longa import longa
 from sources import sources_and_editors
 from variants import variants
 from emendations import emendations
-from reconstructions import reconstructions
+from supplied import supplied_staves
 from ignored import ignored
 from cut_time import double_cut_time
 from beams import eliminate_bad_beams
@@ -118,9 +118,12 @@ def transform(MEI_doc, data=TransformData()):
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
-    reconstructions(MEI_tree, data.alternates_list, BLANK)
-    reconstructions(MEI_tree, data.alternates_list, RECONSTRUCTION)
-    reconstructions(MEI_tree, data.alternates_list, CONCORDANCE)
+    supplied_staves(MEI_tree,
+                    data.alternates_list,
+                    [BLANK,
+                     RECONSTRUCTION,
+                     CONCORDANCE]
+                    )
 
     ignored(MEI_tree, data.alternates_list)
 

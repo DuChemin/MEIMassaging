@@ -5,7 +5,7 @@ from utilities import get_all_staves
 
 def get_original_staves(MEI_tree, alternates_list, original_staves_NUM):
     """Returns a list of all staff objects of which other staff objects
-    are marked as supplied staves; i.e. the ones whose staff information
+    are marked as reconstructions; i.e. the ones whose staff information
     should be removed, though their place in the staff group will be held.
     """
     # Now get list of actuall staff objects
@@ -18,7 +18,7 @@ def get_original_staves(MEI_tree, alternates_list, original_staves_NUM):
 
 
 def get_original_staves_NUM(MEI_tree, alternates_list, var_type_list):
-    """Get numbers of all supplied staves."""
+    """Get numbers of all reconstructed staves."""
     original_staves_NUM = []
     for i in alternates_list:
         if i[2] not in original_staves_NUM and i[1] in var_type_list:
@@ -26,29 +26,29 @@ def get_original_staves_NUM(MEI_tree, alternates_list, var_type_list):
     return original_staves_NUM
 
 
-def get_supplied_staves_NUM(MEI_tree, alternates_list, var_type_list):
-    """Get numbers of all supplied staves."""
-    supplied_staves_NUM = []
+def get_recon_staves_NUM(MEI_tree, alternates_list, var_type_list):
+    """Get numbers of all reconstructed staves."""
+    recon_staves_NUM = []
     for i in alternates_list:
-        if i[0] not in supplied_staves_NUM and i[1] in var_type_list:
-            supplied_staves_NUM.append(i[0])
-    return supplied_staves_NUM
+        if i[0] not in recon_staves_NUM and i[1] in var_type_list:
+            recon_staves_NUM.append(i[0])
+    return recon_staves_NUM
 
 
-def get_supplied_staves(MEI_tree, alternates_list, var_type_list):
-    """Returns a list of all staff objects that substitute for
+def get_recon_staves(MEI_tree, alternates_list, var_type_list):
+    """Returns a list of all staff objects that are reconstructions of
     other staves, and should be moved inside the <app> of those staves.
     """
-    supplied_staves_NUM = get_supplied_staves_NUM(MEI_tree,
-                                                  alternates_list,
-                                                  var_type_list)
+    recon_staves_NUM = get_recon_staves_NUM(MEI_tree,
+                                            alternates_list,
+                                            var_type_list)
     # Now get list of actual staff objects
     all_staves = get_all_staves(MEI_tree)
-    supplied_staves = []
+    recon_staves = []
     for staff in all_staves:
-        if staff.getAttribute('n').getValue() in supplied_staves_NUM:
-            supplied_staves.append(staff)
-    return supplied_staves
+        if staff.getAttribute('n').getValue() in recon_staves_NUM:
+            recon_staves.append(staff)
+    return recon_staves
 
 
 def make_orig_app(MEI_tree, original_staves):
@@ -75,42 +75,48 @@ def make_orig_app(MEI_tree, original_staves):
             parent_measure.addChild(staff)
 
 
-def move_supplied_staves(supplied_staves, al, var_type):
+def move_recon_staves(recon_staves, al):
     """Move supplied staves to their proper place within the <app>
     element created in place of the original (placeholder) staff.
     """
 
     def orig(staff_n, alternates_list):
         """Return the number of staff that the given staff
-        is substituting for.
+        is a reconstruction of.
         """
         for i in alternates_list:
             if i[0] == staff_n:
                 return i[2]
+
+    def staff_type(staff_n, alternates_list):
+        """Return the type of alternate a given staff belongs to."""
+        for i in alternates_list:
+            if i[0] == staff_n:
+                return i[1]
 
     def resp(staff_n, alternates_list):
         for i in alternates_list:
             if i[0] == staff_n:
                 return i[3]
 
-    for staff in supplied_staves:
+    for staff in recon_staves:
         staff_n = staff.getAttribute('n').getValue()
         parent_measure = staff.getParent()
         sibling_apps = parent_measure.getChildrenByName('app')
         for app in sibling_apps:
             # If it's the right <app> element -- that is,
             # the number matches with the original staff
-            # for this supplied staff
+            # for this reconstruction
             if orig(staff_n, al) == app.getAttribute('n').getValue():
                 new_rdg = MeiElement('rdg')
                 # Number <rdg> with old staff number
                 new_rdg.addAttribute('n', staff_n)
                 # Add responsibility to new reading element
-                if var_type == RECONSTRUCTION:
+                if staff_type(staff_n) == RECONSTRUCTION:
                     new_rdg.addAttribute('resp', '#' + resp(staff_n, al))
-                elif var_type == CONCORDANCE:
+                elif staff_type(staff_n) == CONCORDANCE:
                     new_rdg.addAttribute('source', '#' + resp(staff_n, al))
-                new_rdg.addAttribute('type', var_type)
+                new_rdg.addAttribute('type', staff_type(staff_n))
                 app.addChild(new_rdg)
                 new_rdg.addChild(staff)
                 parent_measure.removeChild(staff)
@@ -132,7 +138,7 @@ def adjust_staff_group(MEI_tree, original_staves_NUM):
             removeAttributes_Except(staff_def, ['n', 'label', 'xml:id'])
 
 
-def supplied_staves(MEI_tree, alternates_list, var_type_list):
+def reconstructions(MEI_tree, alternates_list, var_type_list):
     original_staves_NUM = get_original_staves_NUM(MEI_tree,
                                                   alternates_list,
                                                   var_type_list,
@@ -141,12 +147,9 @@ def supplied_staves(MEI_tree, alternates_list, var_type_list):
                                           alternates_list,
                                           original_staves_NUM,
                                           )
-    supplied_staves = get_supplied_staves(MEI_tree,
-                                          alternates_list,
-                                          var_type
-                                          )
+    recon_staves = get_recon_staves(MEI_tree, alternates_list, var_type)
 
     make_orig_app(MEI_tree, original_staves)
-    move_supplied_staves(supplied_staves, alternates_list, var_type)
+    move_recon_staves(recon_staves, alternates_list, var_type)
     # Don't get rid of old staffDef information! Commented out
     # adjust_staff_group(MEI_tree, original_staves_NUM)
