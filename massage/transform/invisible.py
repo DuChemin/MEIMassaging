@@ -19,7 +19,7 @@ def make_invisible_space(MEI_tree):
                     attributes = item.getAttributes()
                     for attr in attributes:
                         # Don't add octave or pitch attributes to space
-                        if attr.getName() not in ('oct', 'pname'):
+                        if attr.getName() not in ['oct', 'pname']:
                             space.addAttribute(attr)
                     # If mRest, need to calculate duration here...
                     parent = item.getParent()
