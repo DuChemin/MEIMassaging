@@ -111,9 +111,6 @@ def transform(MEI_doc, data=TransformData()):
         make_invisible_space(MEI_tree)
     if data.copyright_text:
         use_restrict(MEI_tree, copyright_text)
-    if data.cleanup:
-        remove_empty_syllables(MEI_tree)
-        remove_empty_persname(MEI_tree)
     ## The following not needed because they are handled by mei-filter.js
     # remove_annot_brackets(MEI_tree)
     # remove_metersig(MEI_tree)
@@ -131,6 +128,12 @@ def transform(MEI_doc, data=TransformData()):
                     )
 
     ignored(MEI_tree, data.alternates_list)
+
+    # Finally, clean up unwanted elements
+
+    if data.cleanup:
+        remove_empty_syllables(MEI_tree)
+        remove_empty_persname(MEI_tree)
 
     # To do: remove ties from removed staves
 
