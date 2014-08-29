@@ -16,7 +16,8 @@ def number_of_incipit_measures(MEI_tree):
         if measure.getAttribute('label'):
             label_number = eval(measure.getAttribute('label').getValue())
             measure_number = eval(measure.getAttribute('n').getValue())
-            return measure_number - label_number
+            if label_number != measure_number:
+                return measure_number - label_number
     # If no measure with 'label' exists, there may not be any incipit measures.
     return 0
 
