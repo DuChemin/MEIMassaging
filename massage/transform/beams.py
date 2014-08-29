@@ -18,30 +18,17 @@ def eliminate_bad_beams(MEI_tree):
             return False
 
     # Get all layers in the MEI file, and get its children as a
-    # list. We will go through this list one by one and add them
-    # to our new layer. Before adding each element to the new
-    # layer, we remove it from the old one.
+    # list. We will go through this list and if we find a singleton
+    # beam, we will add its children to the layer at the location
+    # of the beam. Then we will remove the beam.
     all_layers = MEI_tree.getDescendantsByName('layer')
     for layer in all_layers:
-        old_layer_items = layer.getChildren()
-        new_layer = MeiElement('layer')
-        for attribute in layer.getAttributes():
-            new_layer.addAttribute(attribute.getName(), attribute.getValue())
-        for item in old_layer_items:
-            # If the item in the list is a singleton beam, then
-            # we should not add the beam to the new layer; instead,
-            # we should add the beam's children, of which there is
-            # probably only one.
+        for item in layer.getChildren():
             if is_singleton_beam(item):
+                # Add the children to the layer
                 beam_children = item.getChildren()
                 for child in beam_children:
-                    new_layer.addChild(child)
-            # If the item in the list is anything other than a
-            # singleton beam, we simply add it to our new layer.
-            else:
-                new_layer.addChild(item)
-        # Now that we have the complete new layer, we remove the old
-        # one from its parent and add the new one.
-        staff = layer.getParent()
-        staff.deleteAllChildren()
-        staff.addChild(new_layer)
+                    item.removeChild(child)
+                    layer.addChildBefore(item, child)
+                # Remove the beam from the layer
+                layer.removeChild(item)
