@@ -431,9 +431,28 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
                 staves_of_measure = measure.getChildrenByName('staff')
                 for staff in staves_of_measure:
                     if staff.getAttribute('n').getValue() == varstaff_n:
-                        notelist = get_descendants(staff, 'note rest space mRest')
+                        notelist = get_descendants(staff,
+                                                   'note rest space mRest')
                         for note in notelist:
                             rdg.addChild(note)
+
+
+def put_beam_inside_app(MEI_tree):
+    all_app = MEI_tree.getDescendantsByName('app')
+    for app in all_app:
+        if (app.getParent().getName() == 'beam'
+                and len(app.getPeers()) == 1):
+            # Assign names to the objects we will be operating on
+            beam = app.getParent()
+            beam_parent = beam.getParent()
+            # First we detach the app from the beam and
+            # add it before the beam element
+            beam.removeChild(app)
+            beam_parent.addChildBefore(beam, app)
+            # Detach beam from its parent and put it
+            # under the app
+            beam_parent.removeChild(beam)
+            app.addChild(beam)
 
 
 def merge_identical_colored_blocks(all_colored_blocks):
@@ -487,6 +506,9 @@ def local_alternatives(MEI_tree, alternates_list, color_we_want, ALT_TYPE):
                        color_we_want, ALT_TYPE)
         remove_measure_staves(measure, filtered_alternates_list)
     delete_staff_def(MEI_tree, filtered_alternates_list)
+    # If we have put an app inside a beam such that the app is the
+    # only element in the beam, then place the beam inside the app.
+    put_beam_inside_app(MEI_tree)
 
 
 def corresponding_wrappers(rich_wrapper1, rich_wrapper2):
