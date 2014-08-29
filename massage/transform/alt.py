@@ -404,7 +404,7 @@ def add_rich_elems(measure, alternates_list, color_we_want, ALT_TYPE):
                         rich_wrapper.addChild(rdg)
                         RDGs_to_fill.append((rdg, notelist))
                     except RichWrapperInsertError as er:
-                        logging.warning("Coulnd't insert " + str(er.rich_wrapper) +
+                        logging.warning("Couldn't insert " + str(er.rich_wrapper) +
                                 " into measure:n=" + get_attribute_val(measure, "n", "N/A") +
                                 " staff:n=" + get_attribute_val(er.staff, "n", "N/A") +
                                 ' at skip=' + str(er.skip) + '; duration=' + str(er.duration))

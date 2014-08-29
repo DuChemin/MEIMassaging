@@ -10,9 +10,9 @@ def remove_incipit_meter(MEI_tree):
     """Remove meter.count and meter.unit from <scoreDef>
     elements inside an incipit.
     """
-    all_incipit = MEI_tree.getDescendantsByName('incipit')
-    for incipit in all_incipit:
-        scoreDefs = incipit.getDescendantsByName('scoreDef')
+    all_incip = MEI_tree.getDescendantsByName('incip')
+    for incip in all_incip:
+        scoreDefs = incip.getDescendantsByName('scoreDef')
         for element in scoreDefs:
             if element.hasAttribute('meter.count'):
                 element.removeAttribute('meter.count')
