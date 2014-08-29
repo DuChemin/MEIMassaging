@@ -7,7 +7,7 @@ from pymei import XmlImport, XmlExport
 from utilities import set_logging
 
 
-COPYRIGHT = "Copyright CESR and Haverford College, 2012–2014. \
+COPYRIGHT = "Copyright CESR and Haverford College, 2012-2014. \
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 \
 International License."
 

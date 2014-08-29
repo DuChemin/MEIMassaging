@@ -110,7 +110,7 @@ def transform(MEI_doc, data=TransformData()):
     if data.make_invisible_space:
         make_invisible_space(MEI_tree)
     if data.copyright_text:
-        use_restrict(MEI_tree, copyright_text)
+        use_restrict(MEI_tree, data.copyright_text)
     ## The following not needed because they are handled by mei-filter.js
     # remove_annot_brackets(MEI_tree)
     # remove_metersig(MEI_tree)

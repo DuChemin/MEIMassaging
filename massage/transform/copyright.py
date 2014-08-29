@@ -7,4 +7,4 @@ def use_restrict(MEI_tree, copyright_text):
     """
     all_useRestrict = MEI_tree.getDescendantsByName('useRestrict')
     for el in all_useRestrict:
-        el.setText(copyright_text)
+        el.setValue(copyright_text)
