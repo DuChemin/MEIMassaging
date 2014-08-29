@@ -1,6 +1,12 @@
+def cleanup_all_elements(MEI_tree):
+    remove_annot_brackets(MEI_tree)
+    remove_metersig(MEI_tree)
+    remove_empty_persname(MEI_tree)
+    remove_empty_syllables(MEI_tree)
+
+
 def remove_annot_brackets(MEI_tree):
     """Removes all <annot> elements with type="bracket"."""
-
     all_annot = MEI_tree.getDescendantsByName('annot')
     for annot in all_annot:
         if annot.getAttribute('type').getValue() == 'bracket':
@@ -9,9 +15,8 @@ def remove_annot_brackets(MEI_tree):
 
 def remove_metersig(MEI_tree):
     """Removes all <meterSig> elements."""
-
-    all_metersig = MEI_tree.getDescendantsByName('meterSig')
-    for element in all_metersig:
+    all_meterSig = MEI_tree.getDescendantsByName('meterSig')
+    for element in all_meterSig:
         element.getParent().removeChild(element)
 
 
@@ -19,9 +24,8 @@ def remove_empty_persname(MEI_tree):
     """Removes all empty <persName> elements. If this leaves
     an empty parent, remove that parent as well.
     """
-
-    all_persname = MEI_tree.getDescendantsByName('persName')
-    for element in all_persname:
+    all_persName = MEI_tree.getDescendantsByName('persName')
+    for element in all_persName:
         parent = element.getParent()
         if len(element.getChildren()) == 0:
             parent.removeChild(element)
@@ -32,7 +36,6 @@ def remove_empty_persname(MEI_tree):
 
 def remove_empty_syllables(MEI_tree):
     """Removes all syllables with no text inside."""
-
     all_verses = MEI_tree.getDescendantsByName('verse')
     for verse in all_verses:
         syllables_in_verse = verse.getDescendantsByName('syl')

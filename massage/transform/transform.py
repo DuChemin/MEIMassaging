@@ -15,8 +15,7 @@ from cut_time import double_cut_time
 from beams import eliminate_bad_beams
 # from remove_elements import remove_annot_brackets
 # from remove_elements import remove_metersig
-from remove_elements import remove_empty_syllables
-from remove_elements import remove_empty_persname
+from remove_elements import cleanup_all_elements
 from invisible import make_invisible_space
 from copyright import use_restrict
 
@@ -132,8 +131,7 @@ def transform(MEI_doc, data=TransformData()):
     # Finally, clean up unwanted elements
 
     if data.cleanup:
-        remove_empty_syllables(MEI_tree)
-        remove_empty_persname(MEI_tree)
+        cleanup_all_elements(MEI_tree)
 
     # To do: remove ties from removed staves
 
