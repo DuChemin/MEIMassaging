@@ -7,6 +7,11 @@ from pymei import XmlImport, XmlExport
 from utilities import set_logging
 
 
+COPYRIGHT = "Copyright CESR and Haverford College, 2012–2014. \
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 \
+International License."
+
+
 def massage_mei(in_file, out_file):
     try:
         analysis = make_analysis(in_file)
@@ -15,7 +20,9 @@ def massage_mei(in_file, out_file):
             remove_incipit=True,
             replace_longa=True,
             editorial_resp=analysis.has_arranger_element,
-            alternates_list=analysis.alternates_list)
+            alternates_list=analysis.alternates_list,
+            copyright_text=COPYRIGHT,
+        )
         old_MEI_doc = XmlImport.documentFromFile(in_file)
         new_MEI_doc = transform_mei(old_MEI_doc, MEI_instructions)
         XmlExport.meiDocumentToFile(new_MEI_doc, out_file)

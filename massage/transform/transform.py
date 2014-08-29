@@ -18,6 +18,7 @@ from beams import eliminate_bad_beams
 from remove_elements import remove_empty_syllables
 from remove_elements import remove_empty_persname
 from invisible import make_invisible_space
+from copyright import use_restrict
 
 from constants import *
 from utilities import source_name2NCName
@@ -38,6 +39,7 @@ class TransformData:
             double_cut_time=True,
             eliminate_bad_beams=True,
             make_invisible_space=True,
+            copyright_text=None,
             cleanup=True,
         ):
         # The alternates_list field contains information about variants,
@@ -62,6 +64,7 @@ class TransformData:
         self.double_cut_time = double_cut_time
         self.eliminate_bad_beams = eliminate_bad_beams
         self.make_invisible_space = make_invisible_space
+        self.copyright_text = copyright_text
         self.cleanup = cleanup
 
 
@@ -106,6 +109,8 @@ def transform(MEI_doc, data=TransformData()):
         eliminate_bad_beams(MEI_tree)
     if data.make_invisible_space:
         make_invisible_space(MEI_tree)
+    if data.copyright_text:
+        use_restrict(MEI_tree, copyright_text)
     if data.cleanup:
         remove_empty_syllables(MEI_tree)
         remove_empty_persname(MEI_tree)
