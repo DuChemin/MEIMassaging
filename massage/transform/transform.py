@@ -13,9 +13,8 @@ from supplied import supplied_staves
 from ignored import ignored
 from cut_time import double_cut_time
 from beams import eliminate_bad_beams
-# from remove_elements import remove_annot_brackets
-# from remove_elements import remove_metersig
 from remove_elements import cleanup_all_elements
+from remove_attributes import cleanup_all_attributes
 from invisible import make_invisible_space
 from copyright import use_restrict
 
@@ -132,6 +131,7 @@ def transform(MEI_doc, data=TransformData()):
 
     if data.cleanup:
         cleanup_all_elements(MEI_tree)
+        cleanup_all_attributes(MEI_tree)
 
     # To do: remove ties from removed staves
 
