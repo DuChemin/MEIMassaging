@@ -4,6 +4,8 @@ def cleanup_all_elements(MEI_tree):
     remove_empty_persname(MEI_tree)
     remove_empty_syllables(MEI_tree)
     remove_anchored_text(MEI_tree)
+    remove_page_breaks(MEI_tree)
+    remove_section_breaks(MEI_tree)
 
 
 def remove_annot_brackets(MEI_tree):
@@ -50,4 +52,18 @@ def remove_anchored_text(MEI_tree):
     """Removes all <anchoredText> elements from the MEI tree."""
     all_anchoredText = MEI_tree.getDescendantsByName('anchoredText')
     for element in all_anchoredText:
+        element.getParent().removeChild(element)
+
+
+def remove_page_breaks(MEI_tree):
+    """Removes all <pb> elements from the MEI tree."""
+    all_pb = MEI_tree.getDescendantsByName('pb')
+    for element in all_pb:
+        element.getParent().removeChild(element)
+
+
+def remove_section_breaks(MEI_tree):
+    """Removes all <sb> elements from the MEI tree."""
+    all_sb = MEI_tree.getDescendantsByName('sb')
+    for element in all_sb:
         element.getParent().removeChild(element)
