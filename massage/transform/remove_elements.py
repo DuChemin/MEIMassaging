@@ -3,6 +3,7 @@ def cleanup_all_elements(MEI_tree):
     remove_metersig(MEI_tree)
     remove_empty_persname(MEI_tree)
     remove_empty_syllables(MEI_tree)
+    remove_anchored_text(MEI_tree)
 
 
 def remove_annot_brackets(MEI_tree):
@@ -43,3 +44,10 @@ def remove_empty_syllables(MEI_tree):
             # Delete the syllable if it has no text inside
             if not syl.getValue():
                 verse.removeChild(syl)
+
+
+def remove_anchored_text(MEI_tree):
+    """Removes all <anchoredText> elements from the MEI tree."""
+    all_anchoredText = MEI_tree.getDescendantsByName('anchoredText')
+    for element in all_anchoredText:
+        element.getParent().removeChild(element)
