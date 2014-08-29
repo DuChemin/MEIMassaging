@@ -30,7 +30,10 @@ if __name__ == "__main__":
     set_logging(parser)
     args = parser.parse_args()
     if not args.out_file:
-        args.out_file = args.in_file + '_msg.mei'
+        if '-orig' in args.in_file:
+            args.out_file = args.in_file.replace('-orig', '')
+        else:
+            args.out_file = args.in_file + '_msg.mei'
     logging.info("Massage file: " + args.in_file)
     massage_mei(args.in_file, args.out_file)
     logging.info("DONE.")
