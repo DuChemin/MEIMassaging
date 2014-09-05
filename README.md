@@ -39,4 +39,27 @@ transformations which may be necessary after export via sibmei:
  * Encoding bracketed (and italicized?) lyrics using the `<supplied>` tag
  
  * Changing `<arranger>` to `<editor>`
- 
+
+
+Usage
+=====
+
+To massage a single MEI file, run the `massage_mei.py` script in the `massage`
+directory. This script must take the name of the input file as a parameter;
+an output filename can be specified by adding `--out new_file_name.mei`
+(where you can substitute the output file name for `new_file_name.mei`.)
+
+To switch on or off any of the functions in the MEIMassaging
+modules, simply edit the relevant parameters passed to `TransformData`—
+or leave them out to use default settings.
+
+To massage an entire directory, you can use the `massage_dir.py` script.
+This also can take the `--out` parameter; instead of files, however, input
+and output _directories_ are indicated. `--ignore`, `--filter` and `-R`
+(for “recursive”) are additional, advanced optional parameters that are
+available.
+
+A simpler script, `massage_script.py`, runs massaging of a single file
+multiple times on the shell. This is not as powerful as `massage_dir.py`,
+but is potentially useful since a single segfault will not cause
+massaging of the entire directory to fail.
