@@ -13,16 +13,19 @@ def make_invisible_space(MEI_tree):
     for item in all_note_rest:
         try:
             if item.getAttribute('visible').getValue() == 'false':
-                space = MeiElement('space')
-                attributes = item.getAttributes()
-                for attr in attributes:
-                    # Don't add octave or pitch attributes to space
-                    if attr.getName() not in ['oct', 'pname']:
-                        space.addAttribute(attr)
-                # If mRest, need to calculate duration here...
-                parent = item.getParent()
-                parent.addChildBefore(item, space)
-                parent.removeChild(item)
+                # If it doesn't have `dur` information, leave it alone
+                # until MEItoVexFlow is improved to handle such elements.
+                if item.hasAttribute('dur'):
+                    space = MeiElement('space')
+                    attributes = item.getAttributes()
+                    for attr in attributes:
+                        # Don't add octave or pitch attributes to space
+                        if attr.getName() not in ['oct', 'pname']:
+                            space.addAttribute(attr)
+                    # If mRest, calculate duration here?
+                    parent = item.getParent()
+                    parent.addChildBefore(item, space)
+                    parent.removeChild(item)
         except:  # doesn't have attribute `visible`
             pass
     # Replace mRests with nothing -- just remove them
