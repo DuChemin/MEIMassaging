@@ -18,7 +18,7 @@ def get_original_staves(MEI_tree, alternates_list, original_staves_NUM):
 
 
 def get_original_staves_NUM(MEI_tree, alternates_list, var_type_list):
-    """Get numbers of all supplied staves."""
+    """Get numbers of all original staves."""
     original_staves_NUM = []
     for i in alternates_list:
         if i[2] not in original_staves_NUM and i[1] in var_type_list:
