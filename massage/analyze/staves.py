@@ -97,6 +97,8 @@ def staff_role(s):
         return VARIANT
     elif 'concord' in s.lower():
         return CONCORDANCE
+    elif 'ignore' in s.lower():
+        return IGNORED
     else:
         return 'UNKNOWN'
 

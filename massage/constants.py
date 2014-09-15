@@ -17,7 +17,7 @@ EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
 CONCORDANCE = 'concordance'
 BLANK = 'blank'
-IGNORED = '0'
+IGNORED = 'ignored'
 
 # Color data
 ANYCOLOR = 'ANYCOLOR'
