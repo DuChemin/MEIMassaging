@@ -3,9 +3,8 @@ import logging
 from analyze.analyze import analyze as make_analysis
 from transform.transform import TransformData
 from transform.transform import transform as transform_mei
-from pymei import XmlImport, XmlExport
+from pymei import documentToFile, documentFromFile
 from utilities import set_logging
-
 
 COPYRIGHT = "Copyright CESR and Haverford College, 2012-2014. \
 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 \
@@ -23,9 +22,10 @@ def massage_mei(in_file, out_file):
             alternates_list=analysis.alternates_list,
             copyright_text=COPYRIGHT,
         )
-        old_MEI_doc = XmlImport.documentFromFile(in_file)
+        res = documentFromFile(in_file)
+        old_MEI_doc = res.getMeiDocument()
         new_MEI_doc = transform_mei(old_MEI_doc, MEI_instructions)
-        XmlExport.meiDocumentToFile(new_MEI_doc, out_file)
+        meiDocumentToFile(new_MEI_doc, out_file)
     except Exception as ex:
         logging.critical(ex)
         logging.critical("Error during massaging " + in_file)
