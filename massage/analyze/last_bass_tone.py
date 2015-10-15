@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, '..')
 
 from constants import *
-from pymei import XmlImport
+from pymei import documentFromFile
 
 
 PITCH_CLASSES = {
@@ -63,6 +63,7 @@ def last_bass_tone(MEI_tree):
 
 if __name__ == "__main__":
     MEI_filename = raw_input('Enter a file name: ')
-    MEI_doc = XmlImport.documentFromFile(MEI_filename)
+    res = documentFromFile(MEI_filename)
+    MEI_doc = res.getMeiDocument()
     MEI_tree = MEI_doc.getRootElement()
     print last_bass_tone(MEI_tree)

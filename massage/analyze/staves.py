@@ -101,6 +101,3 @@ def staff_role(s):
         return IGNORED
     else:
         return 'UNKNOWN'
-
-if __name__ == "__main__":
-    pass

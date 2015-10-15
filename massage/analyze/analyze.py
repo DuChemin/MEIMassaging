@@ -1,7 +1,7 @@
 import editorial
 import staves
 
-from pymei import XmlImport
+from pymei import documentFromFile
 
 PATH = 'massage/massage/media/'
 
@@ -21,7 +21,8 @@ class AnalyzeData:
 
 
 def analyze(MEI_filename):
-    MEI_doc = XmlImport.documentFromFile(MEI_filename)
+    res = documentFromFile(MEI_filename)
+    MEI_doc = res.getMeiDocument()
     MEI_tree = MEI_doc.getRootElement()
     has_editor_element_ = editorial.has_editor_element(MEI_tree)
     has_arranger_element_ = editorial.has_arranger_element(MEI_tree)
@@ -34,6 +35,3 @@ def analyze(MEI_filename):
                        staff_list_,
                        alternates_list_,
                        )
-
-if __name__ == "__main__":
-    pass
