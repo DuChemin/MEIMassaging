@@ -100,4 +100,4 @@ def staff_role(s):
     elif 'ignore' in s.lower():
         return IGNORED
     else:
-        return 'UNKNOWN'
+        return ORIGINAL_OR_UNKNOWN

@@ -17,6 +17,7 @@ from remove_elements import cleanup_all_elements
 from remove_attributes import cleanup_all_attributes
 from invisible import make_invisible_space
 from copyright import use_restrict
+from ficta import mark_ficta
 
 from constants import *
 from utilities import source_name2NCName
@@ -26,6 +27,8 @@ import logging
 
 
 class TransformData:
+    # If you do not want to run the ficta function, use
+    # `ficta=False` rather than `ficta=ANYCOLOR`.
     def __init__(self,
             alternates_list=[],
             arranger_to_editor=False,
@@ -39,6 +42,7 @@ class TransformData:
             make_invisible_space=True,
             copyright_text=None,
             cleanup=True,
+            ficta=ANYCOLOR,
         ):
         # The alternates_list field contains information about variants,
         # emendations and reconstructions. It is a list of 4-tuples.
@@ -86,6 +90,7 @@ def transform(MEI_doc, data=TransformData()):
     logging.info('editorial_resp: ' + str(data.editorial_resp))
     logging.info('color_for_variants: ' + str(data.color_for_variants))
     logging.info('color_for_emendations: ' + str(data.color_for_emendations))
+    logging.info('color_for_ficta: ' + str(data.color_for_ficta))
     MEI_tree = MEI_doc.getRootElement()
     data.alternates_list = validate_ncnames(data.alternates_list)
     orig_clefs(MEI_tree, data.alternates_list)
@@ -115,6 +120,8 @@ def transform(MEI_doc, data=TransformData()):
     responsibility(MEI_tree, data.editorial_resp)
 
     # Only now should we do the tricky stuff.
+    if data.ficta:
+        mark_ficta(MEI_tree, data.ficta)
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
