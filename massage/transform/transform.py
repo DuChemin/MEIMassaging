@@ -42,7 +42,7 @@ class TransformData:
             make_invisible_space=True,
             copyright_text=None,
             cleanup=True,
-            ficta=ANYCOLOR,
+            color_for_ficta=ANYCOLOR,
         ):
         # The alternates_list field contains information about variants,
         # emendations and reconstructions. It is a list of 4-tuples.
@@ -120,8 +120,8 @@ def transform(MEI_doc, data=TransformData()):
     responsibility(MEI_tree, data.editorial_resp)
 
     # Only now should we do the tricky stuff.
-    if data.ficta:
-        mark_ficta(MEI_tree, data.ficta)
+    if data.color_for_ficta:
+        mark_ficta(MEI_tree, data.color_for_ficta)
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
