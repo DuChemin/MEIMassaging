@@ -29,6 +29,7 @@ def list(request):
             obliterate_incipit = request.POST.get('obliterate_incipit')
             replace_longa = request.POST.get('replace_longa')
             editorial_resp = str(request.POST.get('editorial_resp'))
+            color_for_ficta = str(request.POST.get('color_for_ficta'))
             alternates_list = []
             # To calculate number of staves
             sn = 0
@@ -46,7 +47,9 @@ def list(request):
                     obliterate_incipit=obliterate_incipit,
                     replace_longa=replace_longa,
                     editorial_resp=editorial_resp,
-                    alternates_list=alternates_list)
+                    alternates_list=alternates_list,
+                    color_for_ficta=color_for_ficta,
+                )
             write_transformation(str(MEI_filename), MEI_instructions)
 
     # Handle file upload
