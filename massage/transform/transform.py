@@ -37,12 +37,12 @@ class TransformData:
             replace_longa=False,
             color_for_variants=ANYCOLOR,
             color_for_emendations=ANYCOLOR,
+            color_for_ficta=ANYCOLOR,
             double_cut_time=True,
             eliminate_bad_beams=True,
             make_invisible_space=True,
             copyright_text=None,
             cleanup=True,
-            color_for_ficta=ANYCOLOR,
         ):
         # The alternates_list field contains information about variants,
         # emendations and reconstructions. It is a list of 4-tuples.
@@ -63,6 +63,7 @@ class TransformData:
         self.editorial_resp = editorial_resp
         self.color_for_variants = color_for_variants
         self.color_for_emendations = color_for_emendations
+        self.color_for_ficta = color_for_ficta
         self.double_cut_time = double_cut_time
         self.eliminate_bad_beams = eliminate_bad_beams
         self.make_invisible_space = make_invisible_space
