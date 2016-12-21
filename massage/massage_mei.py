@@ -5,6 +5,7 @@ from transform.transform import TransformData
 from transform.transform import transform as transform_mei
 from pymei import documentFromFile, documentToFile
 from utilities import set_logging
+from constants import *
 
 
 COPYRIGHT = "Copyright CESR and Haverford College, 2012-2014. \
