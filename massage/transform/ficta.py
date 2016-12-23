@@ -10,12 +10,17 @@ def mark_ficta(MEI_tree, color_we_want):
     """
     all_measures = MEI_tree.getDescendantsByName('measure')
     for measure in all_measures:
-        for staff in measure:
-            if staff_role(staff) == ORIGINAL_OR_UNKNOWN:
-                notes_in_staff = staff.getDescendantsByName('note')
-                for note in notes:
-                    if color_matches(get_color(note), color_we_want):
-                        mark_accid_as_editorial(note)
+        for staff in measure.getDescendantsByName('staff'):
+            try:
+                staffDef = staff.getDescendantsByName('staffDef')[0]
+                staff_n = staffDef.getAttribute('n').getValue()
+                if staff_role(staff_n) == ORIGINAL_OR_UNKNOWN:
+                    notes_in_staff = staff.getDescendantsByName('note')
+                    for note in notes:
+                        if color_matches(get_color(note), color_we_want):
+                            mark_accid_as_editorial(note)
+            except:
+                pass
 
 def mark_accid_as_editorial(note):
     """If the note given has an accidental, mark that accidental
