@@ -1,6 +1,7 @@
 from constants import *
 from alt import color_matches
 from pymei import MeiElement
+from utilities import staff_role
 
 
 def mark_ficta(MEI_tree, color_we_want):

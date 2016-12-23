@@ -1,7 +1,7 @@
 import logging
 from constants import *
 from pymei import MeiElement
-from utilities import chain_elems, get_descendants
+from utilities import chain_elems, get_descendants, staff_role
 
 
 def number_of_incipit_measures(MEI_tree):
@@ -62,11 +62,6 @@ def orig_clefs(MEI_tree, alternates_list):
             if a[2] == staff_n and a[1] in (RECONSTRUCTION, CONCORDANCE):
                 return True
         return False
-
-    def staff_role(staff_n, alternates_list):
-        for a in alternates_list:
-            if a[0] == staff_n:
-                return a[1]
 
     def mergeClefAttributes(staffDef, clef):
         # merge the following attributes:

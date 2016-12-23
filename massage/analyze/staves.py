@@ -5,6 +5,7 @@ sys.path.insert(0, '..')
 from constants import *
 from re import split
 from utilities import source_name2NCName
+from utilities import staff_role
 
 
 def is_empty(MEI_tree, staff_n):
@@ -86,18 +87,3 @@ def alternates_list(staff_list):
                               str(staff_list_item))
         result.append(res_item)
     return result
-
-
-def staff_role(s):
-    if 'recon' in s.lower():
-        return RECONSTRUCTION
-    elif 'emend' in s.lower() or 'amend' in s.lower():
-        return EMENDATION
-    elif 'variant' in s.lower():
-        return VARIANT
-    elif 'concord' in s.lower():
-        return CONCORDANCE
-    elif 'ignore' in s.lower():
-        return IGNORED
-    else:
-        return ORIGINAL_OR_UNKNOWN
