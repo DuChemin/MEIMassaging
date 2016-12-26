@@ -18,7 +18,6 @@ RECONSTRUCTION = 'reconstruction'
 CONCORDANCE = 'concordance'
 BLANK = 'blank'
 IGNORED = 'ignored'
-ORIGINAL_OR_UNKNOWN = 'original'
 
 # Color data
 ANYCOLOR = 'ANYCOLOR'
