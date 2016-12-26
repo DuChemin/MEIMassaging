@@ -22,6 +22,13 @@ def massage_mei(in_file, out_file):
             editorial_resp=analysis.has_arranger_element,
             alternates_list=analysis.alternates_list,
             copyright_text=COPYRIGHT,
+            color_for_variants=ANYCOLOR,
+            color_for_emendations=ANYCOLOR,
+            double_cut_time=True,
+            eliminate_bad_beams=True,
+            make_invisible_space=True,
+            cleanup=True,
+            ficta=ANYCOLOR,
         )
         old_res = documentFromFile(in_file)
         old_MEI_doc = old_res.getMeiDocument()
