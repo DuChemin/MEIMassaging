@@ -12,7 +12,11 @@ def mark_ficta(MEI_tree, color_we_want, alternates_list):
     for measure in all_measures:
         for staff in measure.getDescendantsByName('staff'):
             staff_n = staff.getAttribute('n').getValue()
-            if staff_role(staff_n, alternates_list) == ORIGINAL_OR_UNKNOWN:
+            # Don't make accidentals in a reconstructed staff ficta.
+            # Note that if there are accidentals in a VARIANT or
+            # CONCORDANCE staff, it will be necessary to use
+            # different colors!
+            if staff_role(staff_n, alternates_list) != RECONSTRUCTION:
                 notes_in_staff = staff.getDescendantsByName('note')
                 for note in notes_in_staff:
                     if color_matches(get_color(note), color_we_want):
