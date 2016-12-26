@@ -25,6 +25,19 @@ def is_empty(MEI_tree, staff_n):
 
 
 def staff_list(MEI_tree):
+    def get_role_from_name(staff_name):
+        if 'recon' in staff_name.lower():
+            return RECONSTRUCTION
+        elif 'emend' in staff_name.lower() or 'amend' in staff_name.lower():
+            return EMENDATION
+        elif 'concord' in staff_name.lower():
+            return CONCORDANCE
+        elif 'ignore' in staff_name.lower():
+            return IGNORED
+        # Make VARIANT the default case
+        else:
+            return VARIANT
+
     all_staffGrp = MEI_tree.getDescendantsByName('staffGrp')
     staff_list = []
     if len(all_staffGrp) < 1:
@@ -39,11 +52,13 @@ def staff_list(MEI_tree):
             staff_n = staffDef.getAttribute('n').getValue()
 
             staff_voice = staff_name_split[0]
+            # VARIANT is the default -- original staves are
+            # marked as variants of themselves.
             staff_type = VARIANT
             staff_source = ''
-            # If it's a special staff (variant, reconstruction, etc.)
+            # If it's a special staff (true variant, reconstruction, etc.)
             if len(staff_name_split) > 1:
-                staff_type = staff_role(staff_name_split[1])
+                staff_type = get_role_from_name(staff_name)
                 if len(staff_name_split) > 2:
                     staff_source = staff_name_split[2]
             # If it's an empty staff

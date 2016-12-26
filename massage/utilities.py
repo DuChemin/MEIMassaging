@@ -226,21 +226,6 @@ def dur_in_semibreves(elem):
 
 
 def staff_role(staff_n, alternates_list):
-    if alternates_list:
-        for a in alternates_list:
-            if a[0] == staff_n:
-                return a[1]
-    else:
-    	staff_name = staffDef.getAttribute('label').getValue()
-        if 'recon' in staff_name.lower():
-            return RECONSTRUCTION
-        elif 'emend' in staff_name.lower() or 'amend' in staff_name.lower():
-            return EMENDATION
-        elif 'variant' in staff_name.lower():
-            return VARIANT
-        elif 'concord' in staff_name.lower():
-            return CONCORDANCE
-        elif 'ignore' in staff_name.lower():
-            return IGNORED
-        else:
-            return ORIGINAL_OR_UNKNOWN
+    for a in alternates_list:
+        if a[0] == staff_n:
+            return a[1]
