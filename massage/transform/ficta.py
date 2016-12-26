@@ -1,26 +1,22 @@
 from constants import *
-from alt import color_matches
+from alt import get_color, color_matches
 from pymei import MeiElement
 from utilities import staff_role
 
 
-def mark_ficta(MEI_tree, color_we_want):
+def mark_ficta(MEI_tree, color_we_want, alternates_list):
     """If a staff is not an emendation, reconstruction, etc.,
     change colored notes with accidentals into ficta.
     """
     all_measures = MEI_tree.getDescendantsByName('measure')
     for measure in all_measures:
         for staff in measure.getDescendantsByName('staff'):
-            try:
-                staffDef = staff.getDescendantsByName('staffDef')[0]
-                staff_n = staffDef.getAttribute('n').getValue()
-                if staff_role(staff_n) == ORIGINAL_OR_UNKNOWN:
-                    notes_in_staff = staff.getDescendantsByName('note')
-                    for note in notes:
-                        if color_matches(get_color(note), color_we_want):
-                            mark_accid_as_editorial(note)
-            except:
-                pass
+            staff_n = staff.getAttribute('n').getValue()
+            if staff_role(staff_n, alternates_list) == ORIGINAL_OR_UNKNOWN:
+                notes_in_staff = staff.getDescendantsByName('note')
+                for note in notes_in_staff:
+                    if color_matches(get_color(note), color_we_want):
+                        mark_accid_as_editorial(note)
 
 def mark_accid_as_editorial(note):
     """If the note given has an accidental, mark that accidental

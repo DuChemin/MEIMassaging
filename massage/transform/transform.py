@@ -122,7 +122,7 @@ def transform(MEI_doc, data=TransformData()):
 
     # Only now should we do the tricky stuff.
     if data.color_for_ficta:
-        mark_ficta(MEI_tree, data.color_for_ficta)
+        mark_ficta(MEI_tree, data.color_for_ficta, data.alternates_list)
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)
