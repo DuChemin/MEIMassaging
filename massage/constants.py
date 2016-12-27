@@ -13,6 +13,7 @@ LONGA = 'long'
 
 # For alternate reading data
 VARIANT = 'variant'
+# VARIANT also marks original staves, which are variants of themselves
 EMENDATION = 'emendation'
 RECONSTRUCTION = 'reconstruction'
 CONCORDANCE = 'concordance'
