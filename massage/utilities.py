@@ -223,3 +223,9 @@ def dur_in_semibreves(elem):
         return max_dur
     else:
         return 0
+
+
+def staff_role(staff_n, alternates_list):
+    for a in alternates_list:
+        if a[0] == staff_n:
+            return a[1]

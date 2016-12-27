@@ -11,7 +11,7 @@ ORIG = 'orig'
 REG = 'reg'
 LONGA = 'long'
 
-# For alernate reading data
+# For alternate reading data
 VARIANT = 'variant'
 # VARIANT also marks original staves, which are variants of themselves
 EMENDATION = 'emendation'

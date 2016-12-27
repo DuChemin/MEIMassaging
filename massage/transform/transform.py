@@ -17,6 +17,7 @@ from remove_elements import cleanup_all_elements
 from remove_attributes import cleanup_all_attributes
 from invisible import make_invisible_space
 from copyright import use_restrict
+from ficta import mark_ficta
 
 from constants import *
 from utilities import source_name2NCName
@@ -26,6 +27,8 @@ import logging
 
 
 class TransformData:
+    # If you do not want to run the ficta function, use
+    # `ficta=False` rather than `ficta=ANYCOLOR`.
     def __init__(self,
             alternates_list=[],
             arranger_to_editor=False,
@@ -34,6 +37,7 @@ class TransformData:
             replace_longa=False,
             color_for_variants=ANYCOLOR,
             color_for_emendations=ANYCOLOR,
+            color_for_ficta=ANYCOLOR,
             double_cut_time=True,
             eliminate_bad_beams=True,
             make_invisible_space=True,
@@ -59,6 +63,7 @@ class TransformData:
         self.editorial_resp = editorial_resp
         self.color_for_variants = color_for_variants
         self.color_for_emendations = color_for_emendations
+        self.color_for_ficta = color_for_ficta
         self.double_cut_time = double_cut_time
         self.eliminate_bad_beams = eliminate_bad_beams
         self.make_invisible_space = make_invisible_space
@@ -86,6 +91,7 @@ def transform(MEI_doc, data=TransformData()):
     logging.info('editorial_resp: ' + str(data.editorial_resp))
     logging.info('color_for_variants: ' + str(data.color_for_variants))
     logging.info('color_for_emendations: ' + str(data.color_for_emendations))
+    logging.info('color_for_ficta: ' + str(data.color_for_ficta))
     MEI_tree = MEI_doc.getRootElement()
     data.alternates_list = validate_ncnames(data.alternates_list)
     orig_clefs(MEI_tree, data.alternates_list)
@@ -115,6 +121,8 @@ def transform(MEI_doc, data=TransformData()):
     responsibility(MEI_tree, data.editorial_resp)
 
     # Only now should we do the tricky stuff.
+    if data.color_for_ficta:
+        mark_ficta(MEI_tree, data.color_for_ficta, data.alternates_list)
     sources_and_editors(MEI_tree, data.alternates_list)
     variants(MEI_tree, data.alternates_list, data.color_for_variants)
     emendations(MEI_tree, data.alternates_list, data.color_for_emendations)

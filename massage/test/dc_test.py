@@ -139,6 +139,7 @@ class DuCheminTest(unittest.TestCase):
                 ('8', VARIANT, '8', ''), 
                 ('9', VARIANT, '8', '1554/22'), 
                 ]
+        transform_data.color_for_ficta = ANY_COLOR
         transformed_mei = TransformTestCase(name, mei_file, transform_data).Run()
         # TODO: do some asserts on transformed_mei
 
@@ -162,6 +163,7 @@ class DuCheminTest(unittest.TestCase):
                 ('9', RECONSTRUCTION, '8', 'Apgar'),
                 ('10', RECONSTRUCTION, '8', 'Clement'),
                 ]
+        transform_data.color_for_ficta = ANYCOLOR
         transformed_mei = TransformTestCase(name, mei_file, transform_data).Run()
         # TODO: do some asserts on transformed_mei
 
