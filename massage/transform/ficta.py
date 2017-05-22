@@ -4,7 +4,7 @@ from pymei import MeiElement
 from utilities import staff_role
 
 
-def mark_ficta(MEI_tree, color_we_want, alternates_list):
+def mark_ficta(MEI_tree, color_we_want, alternates_list, remove_color=True):
     """If a staff is not an emendation, reconstruction, etc.,
     change colored notes with accidentals into ficta.
     """
@@ -21,6 +21,8 @@ def mark_ficta(MEI_tree, color_we_want, alternates_list):
                 for note in notes_in_staff:
                     if color_matches(get_color(note), color_we_want):
                         mark_accid_as_editorial(note)
+                        if remove_color:
+                            note.removeAttribute('color')
 
 def mark_accid_as_editorial(note):
     """If the note given has an accidental, mark that accidental
